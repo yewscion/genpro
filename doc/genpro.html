@@ -1,0 +1,2697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2022-03-08 Tue 14:50 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>genpro</title>
+<meta name="author" content="Christopher Rodriguez" />
+<meta name="description" content="Generate and build LaTeX papers." />
+<meta name="generator" content="Org Mode" />
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">genpro
+<br>
+<span class="subtitle">Generate and build LaTeX papers.</span>
+</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org4f16593">1. Concept</a>
+<ul>
+<li><a href="#org2d3da6a">1.1. Overview</a></li>
+</ul>
+</li>
+<li><a href="#orgabe7461">2. Generic Project Files</a>
+<ul>
+<li><a href="#orgb05600e">2.1. README</a></li>
+<li><a href="#org25097d9">2.2. LICENSE</a></li>
+<li><a href="#org9df3122">2.3. Changelog</a></li>
+<li><a href="#orga354944">2.4. AUTHORS</a></li>
+<li><a href="#org83a398d">2.5. .gitignore</a></li>
+</ul>
+</li>
+<li><a href="#org604c33d">3. Language Project Files</a>
+<ul>
+<li><a href="#org7ac851b">3.1. Bootstrap</a></li>
+<li><a href="#orga061a7b">3.2. Configure</a>
+<ul>
+<li><a href="#org69a1219">3.2.1. Initialize</a></li>
+<li><a href="#orgc3f10be">3.2.2. Configure Options</a></li>
+<li><a href="#orgf83171b">3.2.3. Guile Options</a></li>
+<li><a href="#orgb34a1ad">3.2.4. Wrap Up</a></li>
+</ul>
+</li>
+<li><a href="#org9ccd133">3.3. Make</a>
+<ul>
+<li><a href="#org495203e">3.3.1. Guile</a></li>
+<li><a href="#orgf9c4f73">3.3.2. Sources</a></li>
+<li><a href="#org14744aa">3.3.3. Additional Dist Files</a></li>
+<li><a href="#org1c315d8">3.3.4. Binaries</a></li>
+<li><a href="#org1e9590c">3.3.5. Tests</a></li>
+<li><a href="#org53eeec4">3.3.6. Cleaning Targets</a></li>
+<li><a href="#orgc069bbe">3.3.7. Actual Work</a></li>
+<li><a href="#orgf0af221">3.3.8. Cleanup</a></li>
+</ul>
+</li>
+<li><a href="#orgbc1bcf0">3.4. guile.am</a></li>
+<li><a href="#org92e325a">3.5. pre-inst-env.in</a></li>
+</ul>
+</li>
+<li><a href="#orgf344e6c">4. Code</a>
+<ul>
+<li><a href="#org0b68e89">4.1. Library</a>
+<ul>
+<li><a href="#orgc9f189e">4.1.1. Preamble</a></li>
+<li><a href="#org869937b">4.1.2. Data Structure</a></li>
+<li><a href="#orga981291">4.1.3. Sanitize Strings</a></li>
+<li><a href="#org6b079ec">4.1.4. Build File Name</a></li>
+<li><a href="#orgea4edff">4.1.5. Build Meta File</a></li>
+<li><a href="#org323e208">4.1.6. Other Build Functions</a></li>
+<li><a href="#orgd7a7c5e">4.1.7. Make File</a></li>
+<li><a href="#org451d256">4.1.8. Make Project</a></li>
+<li><a href="#org69775d9">4.1.9. Compile Project</a></li>
+</ul>
+</li>
+<li><a href="#org7cc8144">4.2. Executable</a>
+<ul>
+<li><a href="#org397e3d4">4.2.1. Preamble</a></li>
+<li><a href="#orgbf2305a">4.2.2. Main Function</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org9c32a21">5. Tests</a>
+<ul>
+<li><a href="#orgcef2e6f">5.1. Main Tests</a>
+<ul>
+<li><a href="#org8196f6b">5.1.1. Preamble</a></li>
+<li><a href="#org6589140">5.1.2. Basic Tests</a></li>
+<li><a href="#org6b55ba7">5.1.3. Main</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org4f16593" class="outline-2">
+<h2 id="org4f16593"><span class="section-number-2">1.</span> Concept</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This is a literate programming file made to support the genpro
+project.
+</p>
+
+<p>
+This section is reserved for a high-level abstract description of what the
+genpro is. In particular, the overview should walk through the
+program flow as much as possible, to ensure clarity of thought before coding
+begins.
+</p>
+</div>
+<div id="outline-container-org2d3da6a" class="outline-3">
+<h3 id="org2d3da6a"><span class="section-number-3">1.1.</span> Overview</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+This space intentionally left blank. Please fill it in with more details before
+You actually start coding.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgabe7461" class="outline-2">
+<h2 id="orgabe7461"><span class="section-number-2">2.</span> Generic Project Files</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+These files exist in every repository, or should, anyway. As this is a literate
+programming file, however, they are also included here. While they can mostly
+stand for themselves, I will add a sentence or two about each, as well as any
+deviations from the norm for this specific repo.
+</p>
+</div>
+
+<div id="outline-container-orgb05600e" class="outline-3">
+<h3 id="orgb05600e"><span class="section-number-3">2.1.</span> README</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+This is the all-important gateway into the repository. I follow <a href="https://www.makeareadme.com/">Make a README</a>'s
+specification in all of my projects, as I think it is important to standardize
+such an outward-facing part of the documentation.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-markdown"><span style="color: #b3b3b3;"># </span><span style="color: #00ede1; font-weight: bold;">genpro</span>
+
+One Line Description.
+
+<span style="color: #b3b3b3;">## </span><span style="color: #00ede1; font-weight: bold;">Installation</span>
+
+There are a couple ways to install this package.
+
+<span style="color: #b3b3b3;">### </span><span style="color: #00ede1; font-weight: bold;">GNU Guix</span>
+
+If You use <span style="color: #b3b3b3;">[</span><span style="color: #59e9ff; text-decoration: underline;">GNU Guix</span><span style="color: #b3b3b3;">][</span><span style="color: #b3b3b3;">a</span><span style="color: #b3b3b3;">]</span>, this package is on <span style="color: #b3b3b3;">[</span><span style="color: #59e9ff; text-decoration: underline;">my channel</span><span style="color: #b3b3b3;">][</span><span style="color: #b3b3b3;">b</span><span style="color: #b3b3b3;">]</span>. Once You have it
+set up, You can just run:
+
+<span style="color: #b3b3b3;">```</span>
+<span style="color: #008b8b;">guix pull</span>
+<span style="color: #008b8b;">guix install genpro</span>
+<span style="color: #b3b3b3;">```</span>
+
+<span style="color: #b3b3b3;">### </span><span style="color: #00ede1; font-weight: bold;">Source</span>
+
+If You don't want to use <span style="color: #b3b3b3;">[</span><span style="color: #59e9ff; text-decoration: underline;">GNU Guix</span><span style="color: #b3b3b3;">][</span><span style="color: #b3b3b3;">a</span><span style="color: #b3b3b3;">]</span>, You can clone this repo and install it
+Yourself.
+
+<span style="color: #b3b3b3;">## </span><span style="color: #00ede1; font-weight: bold;">Usage</span>
+
+<span style="color: #b3b3b3;">```</span><span style="color: #34cae2;">bash</span>
+<span style="color: #008b8b;">genpro</span>
+<span style="color: #b3b3b3;">```</span>
+
+<span style="color: #b3b3b3;">## </span><span style="color: #00ede1; font-weight: bold;">Contributing</span>
+Pull Requests are welcome, as are bugfixes and extensions. Please open
+issues as needed. If You contribute a feature, needs to be tests and
+documentation.
+
+<span style="color: #b3b3b3;">## </span><span style="color: #00ede1; font-weight: bold;">License</span>
+<span style="color: #b3b3b3;">[</span><span style="color: #59e9ff; text-decoration: underline;">AGPL-3.0</span><span style="color: #b3b3b3;">][</span><span style="color: #b3b3b3;">c</span><span style="color: #b3b3b3;">]</span>
+
+<span style="color: #b3b3b3;">[</span><span style="color: #b3b3b3;">a</span><span style="color: #b3b3b3;">]:</span> <span style="color: #e67128;">https://guix.gnu.org/</span>
+<span style="color: #b3b3b3;">[</span><span style="color: #b3b3b3;">b</span><span style="color: #b3b3b3;">]:</span> <span style="color: #e67128;">https://sr.ht/~yewscion/yewscion-guix-channel/</span>
+<span style="color: #b3b3b3;">[</span><span style="color: #b3b3b3;">c</span><span style="color: #b3b3b3;">]:</span> <span style="color: #e67128;">https://choosealicense.com/licenses/agpl-3.0/</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org25097d9" class="outline-3">
+<h3 id="org25097d9"><span class="section-number-3">2.2.</span> LICENSE</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+I am a huge supporter of <a href="https://en.wikipedia.org/wiki/Free_software">Free Software</a>, and as such generally use licenses to
+support that stance.
+</p>
+
+<p>
+I want to avoid my code being locked away into something someone else is doing,
+and I want to encourage others to also create Free Software. I use the <a href="https://www.gnu.org/licenses/agpl-3.0.en.html">GNU
+Affero General Public License</a> for most of my work because of this. However, if
+You want to debate licenses, I am open to a casual, friendly discussion.
+</p>
+
+<p>
+I chose the following license for this project, for reasons that should be
+explained here if they differ from the above.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">                    GNU AFFERO GENERAL PUBLIC LICENSE
+                       Version 3, 19 November 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <a href="https://fsf.org/">&lt;https://fsf.org/&gt;</a>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+                            Preamble
+
+  The GNU Affero General Public License is a free, copyleft license for
+software and other kinds of works, specifically designed to ensure
+cooperation with the community in the case of network server software.
+
+  The licenses for most software and other practical works are designed
+to take away your freedom to share and change the works.  By contrast,
+our General Public Licenses are intended to guarantee your freedom to
+share and change all versions of a program--to make sure it remains free
+software for all its users.
+
+  When we speak of free software, we are referring to freedom, not
+price.  Our General Public Licenses are designed to make sure that you
+have the freedom to distribute copies of free software (and charge for
+them if you wish), that you receive source code or can get it if you
+want it, that you can change the software or use pieces of it in new
+free programs, and that you know you can do these things.
+
+  Developers that use our General Public Licenses protect your rights
+with two steps: (1) assert copyright on the software, and (2) offer
+you this License which gives you legal permission to copy, distribute
+and/or modify the software.
+
+  A secondary benefit of defending all users' freedom is that
+improvements made in alternate versions of the program, if they
+receive widespread use, become available for other developers to
+incorporate.  Many developers of free software are heartened and
+encouraged by the resulting cooperation.  However, in the case of
+software used on network servers, this result may fail to come about.
+The GNU General Public License permits making a modified version and
+letting the public access it on a server without ever releasing its
+source code to the public.
+
+  The GNU Affero General Public License is designed specifically to
+ensure that, in such cases, the modified source code becomes available
+to the community.  It requires the operator of a network server to
+provide the source code of the modified version running there to the
+users of that server.  Therefore, public use of a modified version, on
+a publicly accessible server, gives the public access to the source
+code of the modified version.
+
+  An older license, called the Affero General Public License and
+published by Affero, was designed to accomplish similar goals.  This is
+a different license, not a version of the Affero GPL, but Affero has
+released a new version of the Affero GPL which permits relicensing under
+this license.
+
+  The precise terms and conditions for copying, distribution and
+modification follow.
+
+                       TERMS AND CONDITIONS
+
+  0. Definitions.
+
+  "This License" refers to version 3 of the GNU Affero General Public License.
+
+  "Copyright" also means copyright-like laws that apply to other kinds of
+works, such as semiconductor masks.
+
+  "The Program" refers to any copyrightable work licensed under this
+License.  Each licensee is addressed as "you".  "Licensees" and
+"recipients" may be individuals or organizations.
+
+  To "modify" a work means to copy from or adapt all or part of the work
+in a fashion requiring copyright permission, other than the making of an
+exact copy.  The resulting work is called a "modified version" of the
+earlier work or a work "based on" the earlier work.
+
+  A "covered work" means either the unmodified Program or a work based
+on the Program.
+
+  To "propagate" a work means to do anything with it that, without
+permission, would make you directly or secondarily liable for
+infringement under applicable copyright law, except executing it on a
+computer or modifying a private copy.  Propagation includes copying,
+distribution (with or without modification), making available to the
+public, and in some countries other activities as well.
+
+  To "convey" a work means any kind of propagation that enables other
+parties to make or receive copies.  Mere interaction with a user through
+a computer network, with no transfer of a copy, is not conveying.
+
+  An interactive user interface displays "Appropriate Legal Notices"
+to the extent that it includes a convenient and prominently visible
+feature that (1) displays an appropriate copyright notice, and (2)
+tells the user that there is no warranty for the work (except to the
+extent that warranties are provided), that licensees may convey the
+work under this License, and how to view a copy of this License.  If
+the interface presents a list of user commands or options, such as a
+menu, a prominent item in the list meets this criterion.
+
+  1. Source Code.
+
+  The "source code" for a work means the preferred form of the work
+for making modifications to it.  "Object code" means any non-source
+form of a work.
+
+  A "Standard Interface" means an interface that either is an official
+standard defined by a recognized standards body, or, in the case of
+interfaces specified for a particular programming language, one that
+is widely used among developers working in that language.
+
+  The "System Libraries" of an executable work include anything, other
+than the work as a whole, that (a) is included in the normal form of
+packaging a Major Component, but which is not part of that Major
+Component, and (b) serves only to enable use of the work with that
+Major Component, or to implement a Standard Interface for which an
+implementation is available to the public in source code form.  A
+"Major Component", in this context, means a major essential component
+(kernel, window system, and so on) of the specific operating system
+(if any) on which the executable work runs, or a compiler used to
+produce the work, or an object code interpreter used to run it.
+
+  The "Corresponding Source" for a work in object code form means all
+the source code needed to generate, install, and (for an executable
+work) run the object code and to modify the work, including scripts to
+control those activities.  However, it does not include the work's
+System Libraries, or general-purpose tools or generally available free
+programs which are used unmodified in performing those activities but
+which are not part of the work.  For example, Corresponding Source
+includes interface definition files associated with source files for
+the work, and the source code for shared libraries and dynamically
+linked subprograms that the work is specifically designed to require,
+such as by intimate data communication or control flow between those
+subprograms and other parts of the work.
+
+  The Corresponding Source need not include anything that users
+can regenerate automatically from other parts of the Corresponding
+Source.
+
+  The Corresponding Source for a work in source code form is that
+same work.
+
+  2. Basic Permissions.
+
+  All rights granted under this License are granted for the term of
+copyright on the Program, and are irrevocable provided the stated
+conditions are met.  This License explicitly affirms your unlimited
+permission to run the unmodified Program.  The output from running a
+covered work is covered by this License only if the output, given its
+content, constitutes a covered work.  This License acknowledges your
+rights of fair use or other equivalent, as provided by copyright law.
+
+  You may make, run and propagate covered works that you do not
+convey, without conditions so long as your license otherwise remains
+in force.  You may convey covered works to others for the sole purpose
+of having them make modifications exclusively for you, or provide you
+with facilities for running those works, provided that you comply with
+the terms of this License in conveying all material for which you do
+not control copyright.  Those thus making or running the covered works
+for you must do so exclusively on your behalf, under your direction
+and control, on terms that prohibit them from making any copies of
+your copyrighted material outside their relationship with you.
+
+  Conveying under any other circumstances is permitted solely under
+the conditions stated below.  Sublicensing is not allowed; section 10
+makes it unnecessary.
+
+  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
+
+  No covered work shall be deemed part of an effective technological
+measure under any applicable law fulfilling obligations under article
+11 of the WIPO copyright treaty adopted on 20 December 1996, or
+similar laws prohibiting or restricting circumvention of such
+measures.
+
+  When you convey a covered work, you waive any legal power to forbid
+circumvention of technological measures to the extent such circumvention
+is effected by exercising rights under this License with respect to
+the covered work, and you disclaim any intention to limit operation or
+modification of the work as a means of enforcing, against the work's
+users, your or third parties' legal rights to forbid circumvention of
+technological measures.
+
+  4. Conveying Verbatim Copies.
+
+  You may convey verbatim copies of the Program's source code as you
+receive it, in any medium, provided that you conspicuously and
+appropriately publish on each copy an appropriate copyright notice;
+keep intact all notices stating that this License and any
+non-permissive terms added in accord with section 7 apply to the code;
+keep intact all notices of the absence of any warranty; and give all
+recipients a copy of this License along with the Program.
+
+  You may charge any price or no price for each copy that you convey,
+and you may offer support or warranty protection for a fee.
+
+  5. Conveying Modified Source Versions.
+
+  You may convey a work based on the Program, or the modifications to
+produce it from the Program, in the form of source code under the
+terms of section 4, provided that you also meet all of these conditions:
+
+    a) The work must carry prominent notices stating that you modified
+    it, and giving a relevant date.
+
+    b) The work must carry prominent notices stating that it is
+    released under this License and any conditions added under section
+    7.  This requirement modifies the requirement in section 4 to
+    "keep intact all notices".
+
+    c) You must license the entire work, as a whole, under this
+    License to anyone who comes into possession of a copy.  This
+    License will therefore apply, along with any applicable section 7
+    additional terms, to the whole of the work, and all its parts,
+    regardless of how they are packaged.  This License gives no
+    permission to license the work in any other way, but it does not
+    invalidate such permission if you have separately received it.
+
+    d) If the work has interactive user interfaces, each must display
+    Appropriate Legal Notices; however, if the Program has interactive
+    interfaces that do not display Appropriate Legal Notices, your
+    work need not make them do so.
+
+  A compilation of a covered work with other separate and independent
+works, which are not by their nature extensions of the covered work,
+and which are not combined with it such as to form a larger program,
+in or on a volume of a storage or distribution medium, is called an
+"aggregate" if the compilation and its resulting copyright are not
+used to limit the access or legal rights of the compilation's users
+beyond what the individual works permit.  Inclusion of a covered work
+in an aggregate does not cause this License to apply to the other
+parts of the aggregate.
+
+  6. Conveying Non-Source Forms.
+
+  You may convey a covered work in object code form under the terms
+of sections 4 and 5, provided that you also convey the
+machine-readable Corresponding Source under the terms of this License,
+in one of these ways:
+
+    a) Convey the object code in, or embodied in, a physical product
+    (including a physical distribution medium), accompanied by the
+    Corresponding Source fixed on a durable physical medium
+    customarily used for software interchange.
+
+    b) Convey the object code in, or embodied in, a physical product
+    (including a physical distribution medium), accompanied by a
+    written offer, valid for at least three years and valid for as
+    long as you offer spare parts or customer support for that product
+    model, to give anyone who possesses the object code either (1) a
+    copy of the Corresponding Source for all the software in the
+    product that is covered by this License, on a durable physical
+    medium customarily used for software interchange, for a price no
+    more than your reasonable cost of physically performing this
+    conveying of source, or (2) access to copy the
+    Corresponding Source from a network server at no charge.
+
+    c) Convey individual copies of the object code with a copy of the
+    written offer to provide the Corresponding Source.  This
+    alternative is allowed only occasionally and noncommercially, and
+    only if you received the object code with such an offer, in accord
+    with subsection 6b.
+
+    d) Convey the object code by offering access from a designated
+    place (gratis or for a charge), and offer equivalent access to the
+    Corresponding Source in the same way through the same place at no
+    further charge.  You need not require recipients to copy the
+    Corresponding Source along with the object code.  If the place to
+    copy the object code is a network server, the Corresponding Source
+    may be on a different server (operated by you or a third party)
+    that supports equivalent copying facilities, provided you maintain
+    clear directions next to the object code saying where to find the
+    Corresponding Source.  Regardless of what server hosts the
+    Corresponding Source, you remain obligated to ensure that it is
+    available for as long as needed to satisfy these requirements.
+
+    e) Convey the object code using peer-to-peer transmission, provided
+    you inform other peers where the object code and Corresponding
+    Source of the work are being offered to the general public at no
+    charge under subsection 6d.
+
+  A separable portion of the object code, whose source code is excluded
+from the Corresponding Source as a System Library, need not be
+included in conveying the object code work.
+
+  A "User Product" is either (1) a "consumer product", which means any
+tangible personal property which is normally used for personal, family,
+or household purposes, or (2) anything designed or sold for incorporation
+into a dwelling.  In determining whether a product is a consumer product,
+doubtful cases shall be resolved in favor of coverage.  For a particular
+product received by a particular user, "normally used" refers to a
+typical or common use of that class of product, regardless of the status
+of the particular user or of the way in which the particular user
+actually uses, or expects or is expected to use, the product.  A product
+is a consumer product regardless of whether the product has substantial
+commercial, industrial or non-consumer uses, unless such uses represent
+the only significant mode of use of the product.
+
+  "Installation Information" for a User Product means any methods,
+procedures, authorization keys, or other information required to install
+and execute modified versions of a covered work in that User Product from
+a modified version of its Corresponding Source.  The information must
+suffice to ensure that the continued functioning of the modified object
+code is in no case prevented or interfered with solely because
+modification has been made.
+
+  If you convey an object code work under this section in, or with, or
+specifically for use in, a User Product, and the conveying occurs as
+part of a transaction in which the right of possession and use of the
+User Product is transferred to the recipient in perpetuity or for a
+fixed term (regardless of how the transaction is characterized), the
+Corresponding Source conveyed under this section must be accompanied
+by the Installation Information.  But this requirement does not apply
+if neither you nor any third party retains the ability to install
+modified object code on the User Product (for example, the work has
+been installed in ROM).
+
+  The requirement to provide Installation Information does not include a
+requirement to continue to provide support service, warranty, or updates
+for a work that has been modified or installed by the recipient, or for
+the User Product in which it has been modified or installed.  Access to a
+network may be denied when the modification itself materially and
+adversely affects the operation of the network or violates the rules and
+protocols for communication across the network.
+
+  Corresponding Source conveyed, and Installation Information provided,
+in accord with this section must be in a format that is publicly
+documented (and with an implementation available to the public in
+source code form), and must require no special password or key for
+unpacking, reading or copying.
+
+  7. Additional Terms.
+
+  "Additional permissions" are terms that supplement the terms of this
+License by making exceptions from one or more of its conditions.
+Additional permissions that are applicable to the entire Program shall
+be treated as though they were included in this License, to the extent
+that they are valid under applicable law.  If additional permissions
+apply only to part of the Program, that part may be used separately
+under those permissions, but the entire Program remains governed by
+this License without regard to the additional permissions.
+
+  When you convey a copy of a covered work, you may at your option
+remove any additional permissions from that copy, or from any part of
+it.  (Additional permissions may be written to require their own
+removal in certain cases when you modify the work.)  You may place
+additional permissions on material, added by you to a covered work,
+for which you have or can give appropriate copyright permission.
+
+  Notwithstanding any other provision of this License, for material you
+add to a covered work, you may (if authorized by the copyright holders of
+that material) supplement the terms of this License with terms:
+
+    a) Disclaiming warranty or limiting liability differently from the
+    terms of sections 15 and 16 of this License; or
+
+    b) Requiring preservation of specified reasonable legal notices or
+    author attributions in that material or in the Appropriate Legal
+    Notices displayed by works containing it; or
+
+    c) Prohibiting misrepresentation of the origin of that material, or
+    requiring that modified versions of such material be marked in
+    reasonable ways as different from the original version; or
+
+    d) Limiting the use for publicity purposes of names of licensors or
+    authors of the material; or
+
+    e) Declining to grant rights under trademark law for use of some
+    trade names, trademarks, or service marks; or
+
+    f) Requiring indemnification of licensors and authors of that
+    material by anyone who conveys the material (or modified versions of
+    it) with contractual assumptions of liability to the recipient, for
+    any liability that these contractual assumptions directly impose on
+    those licensors and authors.
+
+  All other non-permissive additional terms are considered "further
+restrictions" within the meaning of section 10.  If the Program as you
+received it, or any part of it, contains a notice stating that it is
+governed by this License along with a term that is a further
+restriction, you may remove that term.  If a license document contains
+a further restriction but permits relicensing or conveying under this
+License, you may add to a covered work material governed by the terms
+of that license document, provided that the further restriction does
+not survive such relicensing or conveying.
+
+  If you add terms to a covered work in accord with this section, you
+must place, in the relevant source files, a statement of the
+additional terms that apply to those files, or a notice indicating
+where to find the applicable terms.
+
+  Additional terms, permissive or non-permissive, may be stated in the
+form of a separately written license, or stated as exceptions;
+the above requirements apply either way.
+
+  8. Termination.
+
+  You may not propagate or modify a covered work except as expressly
+provided under this License.  Any attempt otherwise to propagate or
+modify it is void, and will automatically terminate your rights under
+this License (including any patent licenses granted under the third
+paragraph of section 11).
+
+  However, if you cease all violation of this License, then your
+license from a particular copyright holder is reinstated (a)
+provisionally, unless and until the copyright holder explicitly and
+finally terminates your license, and (b) permanently, if the copyright
+holder fails to notify you of the violation by some reasonable means
+prior to 60 days after the cessation.
+
+  Moreover, your license from a particular copyright holder is
+reinstated permanently if the copyright holder notifies you of the
+violation by some reasonable means, this is the first time you have
+received notice of violation of this License (for any work) from that
+copyright holder, and you cure the violation prior to 30 days after
+your receipt of the notice.
+
+  Termination of your rights under this section does not terminate the
+licenses of parties who have received copies or rights from you under
+this License.  If your rights have been terminated and not permanently
+reinstated, you do not qualify to receive new licenses for the same
+material under section 10.
+
+  9. Acceptance Not Required for Having Copies.
+
+  You are not required to accept this License in order to receive or
+run a copy of the Program.  Ancillary propagation of a covered work
+occurring solely as a consequence of using peer-to-peer transmission
+to receive a copy likewise does not require acceptance.  However,
+nothing other than this License grants you permission to propagate or
+modify any covered work.  These actions infringe copyright if you do
+not accept this License.  Therefore, by modifying or propagating a
+covered work, you indicate your acceptance of this License to do so.
+
+  10. Automatic Licensing of Downstream Recipients.
+
+  Each time you convey a covered work, the recipient automatically
+receives a license from the original licensors, to run, modify and
+propagate that work, subject to this License.  You are not responsible
+for enforcing compliance by third parties with this License.
+
+  An "entity transaction" is a transaction transferring control of an
+organization, or substantially all assets of one, or subdividing an
+organization, or merging organizations.  If propagation of a covered
+work results from an entity transaction, each party to that
+transaction who receives a copy of the work also receives whatever
+licenses to the work the party's predecessor in interest had or could
+give under the previous paragraph, plus a right to possession of the
+Corresponding Source of the work from the predecessor in interest, if
+the predecessor has it or can get it with reasonable efforts.
+
+  You may not impose any further restrictions on the exercise of the
+rights granted or affirmed under this License.  For example, you may
+not impose a license fee, royalty, or other charge for exercise of
+rights granted under this License, and you may not initiate litigation
+(including a cross-claim or counterclaim in a lawsuit) alleging that
+any patent claim is infringed by making, using, selling, offering for
+sale, or importing the Program or any portion of it.
+
+  11. Patents.
+
+  A "contributor" is a copyright holder who authorizes use under this
+License of the Program or a work on which the Program is based.  The
+work thus licensed is called the contributor's "contributor version".
+
+  A contributor's "essential patent claims" are all patent claims
+owned or controlled by the contributor, whether already acquired or
+hereafter acquired, that would be infringed by some manner, permitted
+by this License, of making, using, or selling its contributor version,
+but do not include claims that would be infringed only as a
+consequence of further modification of the contributor version.  For
+purposes of this definition, "control" includes the right to grant
+patent sublicenses in a manner consistent with the requirements of
+this License.
+
+  Each contributor grants you a non-exclusive, worldwide, royalty-free
+patent license under the contributor's essential patent claims, to
+make, use, sell, offer for sale, import and otherwise run, modify and
+propagate the contents of its contributor version.
+
+  In the following three paragraphs, a "patent license" is any express
+agreement or commitment, however denominated, not to enforce a patent
+(such as an express permission to practice a patent or covenant not to
+sue for patent infringement).  To "grant" such a patent license to a
+party means to make such an agreement or commitment not to enforce a
+patent against the party.
+
+  If you convey a covered work, knowingly relying on a patent license,
+and the Corresponding Source of the work is not available for anyone
+to copy, free of charge and under the terms of this License, through a
+publicly available network server or other readily accessible means,
+then you must either (1) cause the Corresponding Source to be so
+available, or (2) arrange to deprive yourself of the benefit of the
+patent license for this particular work, or (3) arrange, in a manner
+consistent with the requirements of this License, to extend the patent
+license to downstream recipients.  "Knowingly relying" means you have
+actual knowledge that, but for the patent license, your conveying the
+covered work in a country, or your recipient's use of the covered work
+in a country, would infringe one or more identifiable patents in that
+country that you have reason to believe are valid.
+
+  If, pursuant to or in connection with a single transaction or
+arrangement, you convey, or propagate by procuring conveyance of, a
+covered work, and grant a patent license to some of the parties
+receiving the covered work authorizing them to use, propagate, modify
+or convey a specific copy of the covered work, then the patent license
+you grant is automatically extended to all recipients of the covered
+work and works based on it.
+
+  A patent license is "discriminatory" if it does not include within
+the scope of its coverage, prohibits the exercise of, or is
+conditioned on the non-exercise of one or more of the rights that are
+specifically granted under this License.  You may not convey a covered
+work if you are a party to an arrangement with a third party that is
+in the business of distributing software, under which you make payment
+to the third party based on the extent of your activity of conveying
+the work, and under which the third party grants, to any of the
+parties who would receive the covered work from you, a discriminatory
+patent license (a) in connection with copies of the covered work
+conveyed by you (or copies made from those copies), or (b) primarily
+for and in connection with specific products or compilations that
+contain the covered work, unless you entered into that arrangement,
+or that patent license was granted, prior to 28 March 2007.
+
+  Nothing in this License shall be construed as excluding or limiting
+any implied license or other defenses to infringement that may
+otherwise be available to you under applicable patent law.
+
+  12. No Surrender of Others' Freedom.
+
+  If conditions are imposed on you (whether by court order, agreement or
+otherwise) that contradict the conditions of this License, they do not
+excuse you from the conditions of this License.  If you cannot convey a
+covered work so as to satisfy simultaneously your obligations under this
+License and any other pertinent obligations, then as a consequence you may
+not convey it at all.  For example, if you agree to terms that obligate you
+to collect a royalty for further conveying from those to whom you convey
+the Program, the only way you could satisfy both those terms and this
+License would be to refrain entirely from conveying the Program.
+
+  13. Remote Network Interaction; Use with the GNU General Public License.
+
+  Notwithstanding any other provision of this License, if you modify the
+Program, your modified version must prominently offer all users
+interacting with it remotely through a computer network (if your version
+supports such interaction) an opportunity to receive the Corresponding
+Source of your version by providing access to the Corresponding Source
+from a network server at no charge, through some standard or customary
+means of facilitating copying of software.  This Corresponding Source
+shall include the Corresponding Source for any work covered by version 3
+of the GNU General Public License that is incorporated pursuant to the
+following paragraph.
+
+  Notwithstanding any other provision of this License, you have
+permission to link or combine any covered work with a work licensed
+under version 3 of the GNU General Public License into a single
+combined work, and to convey the resulting work.  The terms of this
+License will continue to apply to the part which is the covered work,
+but the work with which it is combined will remain governed by version
+3 of the GNU General Public License.
+
+  14. Revised Versions of this License.
+
+  The Free Software Foundation may publish revised and/or new versions of
+the GNU Affero General Public License from time to time.  Such new versions
+will be similar in spirit to the present version, but may differ in detail to
+address new problems or concerns.
+
+  Each version is given a distinguishing version number.  If the
+Program specifies that a certain numbered version of the GNU Affero General
+Public License "or any later version" applies to it, you have the
+option of following the terms and conditions either of that numbered
+version or of any later version published by the Free Software
+Foundation.  If the Program does not specify a version number of the
+GNU Affero General Public License, you may choose any version ever published
+by the Free Software Foundation.
+
+  If the Program specifies that a proxy can decide which future
+versions of the GNU Affero General Public License can be used, that proxy's
+public statement of acceptance of a version permanently authorizes you
+to choose that version for the Program.
+
+  Later license versions may give you additional or different
+permissions.  However, no additional obligations are imposed on any
+author or copyright holder as a result of your choosing to follow a
+later version.
+
+  15. Disclaimer of Warranty.
+
+  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY
+OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
+IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
+ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+  16. Limitation of Liability.
+
+  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
+THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
+EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
+  17. Interpretation of Sections 15 and 16.
+
+  If the disclaimer of warranty and limitation of liability provided
+above cannot be given local legal effect according to their terms,
+reviewing courts shall apply local law that most closely approximates
+an absolute waiver of all civil liability in connection with the
+Program, unless a warranty or assumption of liability accompanies a
+copy of the Program in return for a fee.
+
+                     END OF TERMS AND CONDITIONS
+
+            How to Apply These Terms to Your New Programs
+
+  If you develop a new program, and you want it to be of the greatest
+possible use to the public, the best way to achieve this is to make it
+free software which everyone can redistribute and change under these terms.
+
+  To do so, attach the following notices to the program.  It is safest
+to attach them to the start of each source file to most effectively
+state the exclusion of warranty; and each file should have at least
+the "copyright" line and a pointer to where the full notice is found.
+
+    &lt;one line to give the program's name and a brief idea of what it does.&gt;
+    Copyright (C) &lt;year&gt;  &lt;name of author&gt;
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <a href="https://www.gnu.org/licenses/">&lt;https://www.gnu.org/licenses/&gt;</a>.
+
+Also add information on how to contact you by electronic and paper mail.
+
+  If your software can interact with users remotely through a computer
+network, you should also make sure that it provides a way for users to
+get its source.  For example, if your program is a web application, its
+interface could display a "Source" link that leads users to an archive
+of the code.  There are many ways you could offer source, and different
+solutions will be better for different programs; see section 13 for the
+specific requirements.
+
+  You should also get your employer (if you work as a programmer) or school,
+if any, to sign a "copyright disclaimer" for the program, if necessary.
+For more information on this, and how to apply and follow the GNU AGPL, see
+<a href="https://www.gnu.org/licenses/">&lt;https://www.gnu.org/licenses/&gt;</a>.
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9df3122" class="outline-3">
+<h3 id="org9df3122"><span class="section-number-3">2.3.</span> Changelog</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+All updates to this repository should be logged here. I follow <a href="https://keepachangelog.com/">Keep a
+Changelog</a>'s recommendations here, because again, standardization is important
+for outward-facing documentation.
+</p>
+
+<p>
+It's worth noting here that I will keep the links updated to the <a href="https://sr.ht/">Sourcehut</a>
+repository commits, as that is the main place I will be uploading the source to
+share.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-markdown"><span style="color: #b3b3b3;"># </span><span style="color: #00ede1; font-weight: bold;">Changelog</span>
+All notable changes to this project will be documented in this file.
+
+The format is based on <span style="color: #b3b3b3;">[</span><span style="color: #59e9ff; text-decoration: underline;">Keep a Changelog</span><span style="color: #b3b3b3;">](</span><span style="color: #e67128;">https://keepachangelog.com/en/1.0.0/</span><span style="color: #b3b3b3;">)</span>,
+and this projectadheres to <span style="color: #b3b3b3;">[</span><span style="color: #59e9ff; text-decoration: underline;">Semantic Versioning</span><span style="color: #b3b3b3;">](</span><span style="color: #e67128;">https://semver.org/spec/v2.0.0.html</span><span style="color: #b3b3b3;">)</span>.
+
+<span style="color: #b3b3b3;">## </span><span style="color: #00ede1; font-weight: bold;">[Unreleased]</span>
+<span style="color: #00ede1; font-weight: bold;">### Added</span>
+<span style="color: #b3b3b3;">-</span>
+<span style="color: #00ede1; font-weight: bold;">### Changed</span>
+<span style="color: #b3b3b3;">-</span>
+<span style="color: #00ede1; font-weight: bold;">### Removed</span>
+<span style="color: #b3b3b3;">-</span>
+
+<span style="color: #b3b3b3;">[</span><span style="color: #b3b3b3;">Unreleased</span><span style="color: #b3b3b3;">]:</span> <span style="color: #e67128;">https://git.sr.ht/~yewscion/genpro/log</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga354944" class="outline-3">
+<h3 id="orga354944"><span class="section-number-3">2.4.</span> AUTHORS</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+If You contribute to this repo, Your information belongs in this file. I will
+attempt to ensure this, but if You'd like to simply include Your information
+here in any pull requests, I am more than happy to accept that.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-conf"><span style="color: #74af68;"># </span><span style="color: #74af68;">This is the list of the genpro project's significant contributors.</span>
+<span style="color: #74af68;">#</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">This does not necessarily list everyone who has contributed code.  To see the</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">full list of contributors, see the revision history in source control.</span>
+Christopher Rodriguez <a href="mailto:yewscion%40gmail.com">&lt;yewscion@gmail.com&gt;</a>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org83a398d" class="outline-3">
+<h3 id="org83a398d"><span class="section-number-3">2.5.</span> .gitignore</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+This is an important file for any git repository. I generate mine using
+<a href="https://www.toptal.com/developers/gitignore">gitignore.io</a> right now, and add to it as needed during work on the project.
+</p>
+
+<p>
+The default I normally use include emacs, linux, common lisp, scheme, latex, and
+autotools. Any other software used should have things added to this file, or in
+place of this file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-conf">
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Created by https://www.toptal.com/developers/gitignore/api/emacs,linux,commonlisp,scheme,latex,autotools</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Edit at https://www.toptal.com/developers/gitignore?templates=emacs,linux,commonlisp,scheme,latex,autotools</span>
+
+<span style="color: #74af68;">### </span><span style="color: #74af68;">Autotools ###</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">http://www.gnu.org/software/automake</span>
+
+Makefile.in
+/ar-lib
+/mdate-sh
+/py-compile
+/test-driver
+/ylwrap
+.deps/
+.dirstamp
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">http://www.gnu.org/software/autoconf</span>
+
+autom4te.cache
+/autoscan.log
+/autoscan-*.log
+/aclocal.m4
+/compile
+/config.cache
+/config.guess
+/config.h.in
+/config.log
+/config.status
+/config.sub
+/configure
+/configure.scan
+/depcomp
+/install-sh
+/missing
+/stamp-h1
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">https://www.gnu.org/software/libtool/</span>
+
+/ltmain.sh
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">http://www.gnu.org/software/texinfo</span>
+
+/texinfo.tex
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">http://www.gnu.org/software/m4/</span>
+
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Generated Makefile</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">(meta build system like autotools,</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">can automatically generate from config.status script</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">(which is called by configure script))</span>
+Makefile
+
+<span style="color: #74af68;">### </span><span style="color: #74af68;">Autotools Patch ###</span>
+
+<span style="color: #74af68;">### </span><span style="color: #74af68;">CommonLisp ###</span>
+*.FASL
+*.fasl
+*.lisp-temp
+*.dfsl
+*.pfsl
+*.d64fsl
+*.p64fsl
+*.lx64fsl
+*.lx32fsl
+*.dx64fsl
+*.dx32fsl
+*.fx64fsl
+*.fx32fsl
+*.sx64fsl
+*.sx32fsl
+*.wx64fsl
+*.wx32fsl
+
+<span style="color: #74af68;">### </span><span style="color: #74af68;">Emacs ###</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">-*- mode: gitignore; -*-</span>
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Org-mode</span>
+.org-id-locations
+*_archive
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">flymake-mode</span>
+*_flymake.*
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">eshell files</span>
+/eshell/history
+/eshell/lastdir
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">elpa packages</span>
+/elpa/
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">reftex files</span>
+*.rel
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">AUCTeX auto folder</span>
+/auto/
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">cask packages</span>
+.cask/
+dist/
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Flycheck</span>
+flycheck_*.el
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">server auth directory</span>
+/server/
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">projectiles files</span>
+.projectile
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">directory configuration</span>
+.dir-locals.el
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">network security</span>
+/network-security.data
+
+
+<span style="color: #74af68;">### </span><span style="color: #74af68;">LaTeX ###</span>
+<span style="color: #74af68;">## </span><span style="color: #74af68;">Core latex/pdflatex auxiliary files:</span>
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+
+<span style="color: #74af68;">## </span><span style="color: #74af68;">Intermediate documents:</span>
+*.dvi
+*.xdv
+*-converted-to.*
+<span style="color: #74af68;"># </span><span style="color: #74af68;">these rules might exclude image files for figures etc.</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">*.ps</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">*.eps</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">*.pdf</span>
+
+<span style="color: #74af68;">## </span><span style="color: #74af68;">Generated if empty string is given at "Please type another file name for output:"</span>
+.pdf
+
+<span style="color: #74af68;">## </span><span style="color: #74af68;">Bibliography auxiliary files (bibtex/biblatex/biber):</span>
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+<span style="color: #74af68;">## </span><span style="color: #74af68;">Build tool auxiliary files:</span>
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
+
+<span style="color: #74af68;">## </span><span style="color: #74af68;">Build tool directories for auxiliary files</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">latexrun</span>
+latex.out/
+
+<span style="color: #74af68;">## </span><span style="color: #74af68;">Auxiliary and intermediate files from other packages:</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">algorithms</span>
+*.alg
+*.loa
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">achemso</span>
+acs-*.bib
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">amsthm</span>
+*.thm
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">beamer</span>
+*.nav
+*.pre
+*.snm
+*.vrb
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">changes</span>
+*.soc
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">comment</span>
+*.cut
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">cprotect</span>
+*.cpt
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">elsarticle (documentclass of Elsevier journals)</span>
+*.spl
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">endnotes</span>
+*.ent
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">fixme</span>
+*.lox
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">feynmf/feynmp</span>
+*.mf
+*.mp
+*.t[1-9]
+*.t[1-9][0-9]
+*.tfm
+
+<span style="color: #74af68;">#</span><span style="color: #74af68;">(r)(e)ledmac/(r)(e)ledpar</span>
+*.end
+*.?end
+*.[1-9]
+*.[1-9][0-9]
+*.[1-9][0-9][0-9]
+*.[1-9]R
+*.[1-9][0-9]R
+*.[1-9][0-9][0-9]R
+*.eledsec[1-9]
+*.eledsec[1-9]R
+*.eledsec[1-9][0-9]
+*.eledsec[1-9][0-9]R
+*.eledsec[1-9][0-9][0-9]
+*.eledsec[1-9][0-9][0-9]R
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">glossaries</span>
+*.acn
+*.acr
+*.glg
+*.glo
+*.gls
+*.glsdefs
+*.lzo
+*.lzs
+*.slg
+*.slo
+*.sls
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">uncomment this for glossaries-extra (will ignore makeindex's style files!)</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">*.ist</span>
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">gnuplot</span>
+*.gnuplot
+*.table
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">gnuplottex</span>
+*-gnuplottex-*
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">gregoriotex</span>
+*.gaux
+*.glog
+*.gtex
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">htlatex</span>
+*.4ct
+*.4tc
+*.idv
+*.lg
+*.trc
+*.xref
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">hyperref</span>
+*.brf
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">knitr</span>
+*-concordance.tex
+<span style="color: #74af68;"># </span><span style="color: #74af68;">TODO Uncomment the next line if you use knitr and want to ignore its generated tikz files</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">*.tikz</span>
+*-tikzDictionary
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">listings</span>
+*.lol
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">luatexja-ruby</span>
+*.ltjruby
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">makeidx</span>
+*.idx
+*.ilg
+*.ind
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">minitoc</span>
+*.maf
+*.mlf
+*.mlt
+*.mtc[0-9]*
+*.slf[0-9]*
+*.slt[0-9]*
+*.stc[0-9]*
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">minted</span>
+_minted*
+*.pyg
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">morewrites</span>
+*.mw
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">newpax</span>
+*.newpax
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">nomencl</span>
+*.nlg
+*.nlo
+*.nls
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">pax</span>
+*.pax
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">pdfpcnotes</span>
+*.pdfpc
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">sagetex</span>
+*.sagetex.sage
+*.sagetex.py
+*.sagetex.scmd
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">scrwfile</span>
+*.wrt
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">svg</span>
+svg-inkscape/
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">sympy</span>
+*.sout
+*.sympy
+sympy-plots-for-*.tex/
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">pdfcomment</span>
+*.upa
+*.upb
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">pythontex</span>
+*.pytxcode
+pythontex-files-*/
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">tcolorbox</span>
+*.listing
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">thmtools</span>
+*.loe
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">TikZ &amp; PGF</span>
+*.dpth
+*.md5
+*.auxlock
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">titletoc</span>
+*.ptc
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">todonotes</span>
+*.tdo
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">vhistory</span>
+*.hst
+*.ver
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">easy-todo</span>
+*.lod
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">xcolor</span>
+*.xcp
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">xmpincl</span>
+*.xmpi
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">xindy</span>
+*.xdy
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">xypic precompiled matrices and outlines</span>
+*.xyc
+*.xyd
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">endfloat</span>
+*.ttt
+*.fff
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Latexian</span>
+TSWLatexianTemp*
+
+<span style="color: #74af68;">## </span><span style="color: #74af68;">Editors:</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">WinEdt</span>
+*.bak
+*.sav
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Texpad</span>
+.texpadtmp
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">LyX</span>
+*.lyx~
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Kile</span>
+*.backup
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">gummi</span>
+.*.swp
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">KBibTeX</span>
+*~[0-9]*
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">TeXnicCenter</span>
+*.tps
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">auto folder when using emacs and auctex</span>
+./auto/*
+*.el
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">expex forward references with \gathertags</span>
+*-tags.tex
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">standalone packages</span>
+*.sta
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Makeindex log files</span>
+*.lpz
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">xwatermark package</span>
+*.xwm
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">REVTeX puts footnotes in the bibliography by default, unless the nofootinbib</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">option is specified. Footnotes are the stored in a file with suffix Notes.bib.</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Uncomment the next line to have this generated file ignored.</span>
+<span style="color: #74af68;">#</span><span style="color: #74af68;">*Notes.bib</span>
+
+<span style="color: #74af68;">### </span><span style="color: #74af68;">LaTeX Patch ###</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">LIPIcs / OASIcs</span>
+*.vtc
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">glossaries</span>
+*.glstex
+
+<span style="color: #74af68;">### </span><span style="color: #74af68;">Linux ###</span>
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">temporary files which can be created if a process still has a handle open of a deleted file</span>
+.fuse_hidden*
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">KDE directory preferences</span>
+.directory
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Linux trash folder which might appear on any partition or disk</span>
+.Trash-*
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">.nfs files are created when an open file is removed but is still being accessed</span>
+.nfs*
+
+<span style="color: #74af68;">### </span><span style="color: #74af68;">Scheme ###</span>
+*.ss~
+*.ss<span style="color: #74af68;">#</span><span style="color: #74af68;">*</span>
+.<span style="color: #74af68;">#</span><span style="color: #74af68;">*.ss</span>
+
+*.scm~
+*.scm<span style="color: #74af68;">#</span><span style="color: #74af68;">*</span>
+.<span style="color: #74af68;">#</span><span style="color: #74af68;">*.scm</span>
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">End of https://www.toptal.com/developers/gitignore/api/emacs,linux,commonlisp,scheme,latex,autotools</span>
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Custom Add-ons</span>
+
+*~
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Add any binaries/preinstall files here.</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org604c33d" class="outline-2">
+<h2 id="org604c33d"><span class="section-number-2">3.</span> Language Project Files</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+These files vary based on the programming languages used in a
+project. Otherwise, basically the same as above: Files that need to exist for
+the project, but don't include code outside of defining the project in some
+abstract way.
+</p>
+
+<p>
+That said, Guile Scheme doesn't use a project file of any kind (outside of
+things like <a href="https://gitlab.com/a-sassmannshausen/guile-hall">guile-hall</a>).
+</p>
+
+<p>
+Instead, I've opted to use <a href="https://www.gnu.org/software/automake/faq/autotools-faq.html">GNU Autotools</a>, as I already was familiar with this
+setup.
+</p>
+</div>
+
+<div id="outline-container-org7ac851b" class="outline-3">
+<h3 id="org7ac851b"><span class="section-number-3">3.1.</span> Bootstrap</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+First, we need to bootstrap our setup using <code>autoreconf</code>. I use a script to
+automate this process, but it is really just a single command that needs to be
+run.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #23d7d7;">echo</span> <span style="color: #e67128;">"Bootstrapping Autotools..."</span>;
+autoreconf --verbose --install --force;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga061a7b" class="outline-3">
+<h3 id="orga061a7b"><span class="section-number-3">3.2.</span> Configure</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+That said, it's not much good if there is no <code>configure.ac</code> file for it to use
+as a guide.
+</p>
+</div>
+
+<div id="outline-container-org69a1219" class="outline-4">
+<h4 id="org69a1219"><span class="section-number-4">3.2.1.</span> Initialize</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+We'll initialize autotools with the following: the name of our project, the
+current version, a contact email for bug reports, an expected tarball name, and
+the homepage (which will be the sourcehut mirror of our repo).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-autoconf"><span style="color: #74af68;">dnl </span><span style="color: #74af68;">Process this file with autoconf</span>
+<span style="color: #ffad29; font-weight: bold;">AC_INIT</span>([genpro],
+        [0.0.1],
+        [yewscion@gmail.com],
+        [genpro-0.0.1.tar.gz],
+        [https://sr.ht/~yewscion/genpro])
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc3f10be" class="outline-4">
+<h4 id="orgc3f10be"><span class="section-number-4">3.2.2.</span> Configure Options</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+Next, we need to set some <code>./configure</code> specific variables.
+</p>
+
+<p>
+<code>AC_CONFIG_SRCDIR</code>: This is a file we expect to be in the directory that
+configure is being called in, used as a safety check.
+</p>
+
+<p>
+<code>AC_CONFIG_AUX_DIR</code>: Commonly specified directory for auxillary scripts, in case
+it is needed.
+</p>
+
+<p>
+<code>AM_INIT_AUTOMAKE</code>: Set Up Automake, with sane defaults for C.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-autoconf"><span style="color: #ffad29; font-weight: bold;">AC_CONFIG_SRCDIR</span>([genpro.org])
+<span style="color: #ffad29; font-weight: bold;">AC_CONFIG_AUX_DIR</span>([build-aux])
+<span style="color: #ffad29; font-weight: bold;">AM_INIT_AUTOMAKE</span>([-Wall -Werror foreign])
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf83171b" class="outline-4">
+<h4 id="orgf83171b"><span class="section-number-4">3.2.3.</span> Guile Options</h4>
+<div class="outline-text-4" id="text-3-2-3">
+<p>
+Now we'll set up Guile, in the same way as above.
+</p>
+
+<p>
+<code>GUILE_PKG</code>: This specifies the version of Guile we are looking for with
+<code>pkg-config</code>.
+</p>
+
+<p>
+<code>GUILE_PROGS</code>: This macro looks for programs guile and guild, setting variables
+GUILE and GUILD to their paths, respectively.
+</p>
+
+<p>
+<code>GUILE_SITE_DIR</code>: This looks for Guile’s "site" directories. The variable
+GUILE<sub>SITE</sub> will be set to Guile’s "site" directory for Scheme source files
+(usually something like PREFIX/share/guile/site).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-autoconf">GUILE_PKG([3.0])
+GUILE_PROGS
+if test "x$GUILD" = "x"; then
+   <span style="color: #ffad29; font-weight: bold;">AC_MSG_ERROR</span>(['guild' binary not found;
+   please check Your guile installation.])
+fi
+GUILE_SITE_DIR
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb34a1ad" class="outline-4">
+<h4 id="orgb34a1ad"><span class="section-number-4">3.2.4.</span> Wrap Up</h4>
+<div class="outline-text-4" id="text-3-2-4">
+<p>
+Specify the files that need to be processed, and process them. Commit with
+<code>AC_OUTPUT</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-autoconf"><span style="color: #ffad29; font-weight: bold;">AC_CONFIG_FILES</span>([Makefile])
+<span style="color: #ffad29; font-weight: bold;">AC_CONFIG_FILES</span>([pre-inst-env], [chmod +x pre-inst-env])
+<span style="color: #ffad29; font-weight: bold;">AC_OUTPUT</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9ccd133" class="outline-3">
+<h3 id="org9ccd133"><span class="section-number-3">3.3.</span> Make</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Now we can move on to configuring how the project is made.
+</p>
+</div>
+
+<div id="outline-container-org495203e" class="outline-4">
+<h4 id="org495203e"><span class="section-number-4">3.3.1.</span> Guile</h4>
+<div class="outline-text-4" id="text-3-3-1">
+<p>
+There are some Guile-specific things that made sense to keep in their own file,
+and so we'll just include that file here.
+</p>
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #ffad29; font-weight: bold;">include</span> <span style="color: #dbdb95;">guile.am</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf9c4f73" class="outline-4">
+<h4 id="orgf9c4f73"><span class="section-number-4">3.3.2.</span> Sources</h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+These are the source files that will be installed as libraries.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #dbdb95;">SOURCES</span> =                               \
+cdr255/genpro.scm
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org14744aa" class="outline-4">
+<h4 id="org14744aa"><span class="section-number-4">3.3.3.</span> Additional Dist Files</h4>
+<div class="outline-text-4" id="text-3-3-3">
+<p>
+These files are the files that should be installed alongside the rest of the
+program, for documentation purposes. This includes the unaltered binary scripts,
+the <code>bootstrap</code> file and <code>pre-inst-env.in</code> files, and the <code>README.md</code> should be
+included here.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #dbdb95;">EXTRA_DIST</span> =                            \
+README.md                               \
+bootstrap                               \
+pre-inst-env.in                         \
+bin/genpro.scm
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1c315d8" class="outline-4">
+<h4 id="org1c315d8"><span class="section-number-4">3.3.4.</span> Binaries</h4>
+<div class="outline-text-4" id="text-3-3-4">
+<p>
+There aren't really guile binaries, but there are scripts I use as though they
+were binaries, the ones that actually use the functions I write that are
+installed as libraries.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #dbdb95;">bin_SCRIPTS</span> =                           \
+genpro
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1e9590c" class="outline-4">
+<h4 id="org1e9590c"><span class="section-number-4">3.3.5.</span> Tests</h4>
+<div class="outline-text-4" id="text-3-3-5">
+<p>
+We can specify the tests we want run with <code>make test</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #dbdb95;">TESTS</span>=run-tests
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org53eeec4" class="outline-4">
+<h4 id="org53eeec4"><span class="section-number-4">3.3.6.</span> Cleaning Targets</h4>
+<div class="outline-text-4" id="text-3-3-6">
+<p>
+We also have to specify how make should clean up. Here is the set of heuristics
+that is often quoted for what should be removed where:
+</p>
+
+<ul class="org-ul">
+<li>If make built it, and it is commonly something that one would want to
+rebuild (for instance, a .o file), then <b>mostlyclean</b> should delete it.</li>
+<li>Otherwise, if make built it, then <b>clean</b> should delete it.</li>
+<li>If configure built it, then <b>distclean</b> should delete it.</li>
+<li>If the maintainer built it (for instance, a .info file), then
+<b>maintainer-clean</b> should delete it. However maintainer-clean should not
+delete anything that needs to exist in order to run ‘./configure &amp;&amp; make’.</li>
+</ul>
+
+
+<p>
+The associated variables are <code>MOSTLYCLEANFILES</code>, <code>CLEANFILES</code>, <code>DISTCLEANFILES</code>,
+and <code>MAINTAINERCLEANFILES</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #74af68;">#</span><span style="color: #74af68;">MOSTLYCLEANFILES +=                    </span>
+
+<span style="color: #dbdb95;">CLEANFILES</span> +=                           \
+genpro                        \
+cdr255/genpro.scm     \
+genpro
+
+<span style="color: #dbdb95;">DISTCLEANFILES</span> =                        \
+config.status                           \
+config.log                              \
+Makefile                                \
+run-tests                               \
+basic-tests.log
+
+<span style="color: #74af68;">#</span><span style="color: #74af68;">MAINTAINERCLEANFILES +=                 </span>
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc069bbe" class="outline-4">
+<h4 id="orgc069bbe"><span class="section-number-4">3.3.7.</span> Actual Work</h4>
+<div class="outline-text-4" id="text-3-3-7">
+</div>
+<ol class="org-ol">
+<li><a id="org98249eb"></a>Binaries<br>
+<div class="outline-text-5" id="text-3-3-7-1">
+<p>
+We should replace the shebang that calls <code>/usr/bin/env</code> with the actual guile
+path on the target machine. That's the main process here, which is mostly
+accomplished with the following call to <code>sed</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash" id="org5c0bdb5">        sed -e <span style="color: #e67128;">'s,#!\/usr\/bin\/env -S guile -e main -s,\#!$(</span><span style="color: #fa8072;">GUILE</span><span style="color: #e67128;">) \\,g'</span>
+</pre>
+</div>
+
+<p>
+The main executable is included here to speed up single-program development, but
+the basic pattern is the same no matter how many executable scripts are in the
+repository.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #00ede1; font-weight: bold;">genpro</span>: src/exe.scm
+                sed -e <span style="color: #e67128;">'s,#!\/usr\/bin\/env -S guile -e main -s,\#!$(</span><span style="color: #dbdb95;">GUILE</span><span style="color: #e67128;">) \\,g'</span> \
+         &lt; $(<span style="color: #dbdb95;">srcdir</span>)/src/exe.scm &gt; ./genpro
+        chmod +x genpro
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org64369cf"></a>Libraries<br>
+<div class="outline-text-5" id="text-3-3-7-2">
+<p>
+The libraries contain the bulk of the code that is part of this project. We'll
+do the same as above, include the main library as an example of the form.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #00ede1; font-weight: bold;">cdr255/genpro.scm</span>:
+        mkdir -pv cdr255/
+        cat &lt; $(<span style="color: #dbdb95;">srcdir</span>)/src/main.scm \
+        &gt; cdr255/genpro.scm
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org062a906"></a>Tests<br>
+<div class="outline-text-5" id="text-3-3-7-3">
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #00ede1; font-weight: bold;">run-tests</span>:
+                sed -e <span style="color: #e67128;">'s,#!\/usr\/bin\/env -S guile -e main -s,\#!$(</span><span style="color: #dbdb95;">GUILE</span><span style="color: #e67128;">) \\,g'</span> \
+        &lt; $(<span style="color: #dbdb95;">srcdir</span>)/test/maintests.scm \
+        &gt; run-tests
+        chmod +x run-tests
+        guile -C ./ ./run-tests
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orgf0af221" class="outline-4">
+<h4 id="orgf0af221"><span class="section-number-4">3.3.8.</span> Cleanup</h4>
+</div>
+</div>
+
+<div id="outline-container-orgbc1bcf0" class="outline-3">
+<h3 id="orgbc1bcf0"><span class="section-number-3">3.4.</span> guile.am</h3>
+<div class="outline-text-3" id="text-3-4">
+<div class="org-src-container">
+<pre class="src src-makefile-automake"><span style="color: #dbdb95;">moddir</span> = $(<span style="color: #dbdb95;">datadir</span>)/guile/site/$(<span style="color: #dbdb95;">GUILE_EFFECTIVE_VERSION</span>)
+<span style="color: #dbdb95;">godir</span> = $(<span style="color: #dbdb95;">libdir</span>)/guile/$(<span style="color: #dbdb95;">GUILE_EFFECTIVE_VERSION</span>)/site-ccache
+
+<span style="color: #dbdb95;">GOBJECTS</span> = $(<span style="color: #dbdb95;">SOURCES</span>:<span style="color: #dbdb95;">%.scm</span>=%.go)
+
+<span style="color: #dbdb95;">nobase_dist_mod_DATA</span> = $(<span style="color: #dbdb95;">SOURCES</span>) $(<span style="color: #dbdb95;">NOCOMP_SOURCES</span>)
+<span style="color: #dbdb95;">nobase_go_DATA</span> = $(<span style="color: #dbdb95;">GOBJECTS</span>)
+
+<span style="color: #74af68;"># </span><span style="color: #74af68;">Make sure source files are installed first, so that the mtime of</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">installed compiled files is greater than that of installed source</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">files.  See</span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;"><a href="http://lists.gnu.org/archive/html/guile-devel/2010-07/msg00125.html">&lt;http://lists.gnu.org/archive/html/guile-devel/2010-07/msg00125.html&gt;</a></span>
+<span style="color: #74af68;"># </span><span style="color: #74af68;">for details.</span>
+<span style="color: #dbdb95;">guile_install_go_files</span> = install-nobase_goDATA
+<span style="color: #00ede1; font-weight: bold;">$(</span><span style="color: #00ede1; font-weight: bold;">guile_install_go_files</span><span style="color: #00ede1; font-weight: bold;">)</span>: install-nobase_dist_modDATA
+
+<span style="color: #dbdb95;">CLEANFILES</span> = $(<span style="color: #dbdb95;">GOBJECTS</span>)
+<span style="color: #dbdb95;">GUILE_WARNINGS</span> = -Wunbound-variable -Warity-mismatch -Wformat
+<span style="color: #dbdb95;">SUFFIXES</span> = .scm .go
+<span style="color: #00ede1; font-weight: bold;">.scm.go</span>:
+        $(<span style="color: #dbdb95;">AM_V_GEN</span>)$(<span style="color: #dbdb95;">top_builddir</span>)/pre-inst-env $(<span style="color: #dbdb95;">GUILD</span>) \
+        compile $(<span style="color: #dbdb95;">GUILE_WARNINGS</span>) -o <span style="color: #e67128;">"</span><span style="color: #e67128; font-weight: bold;">$</span><span style="color: #008b8b; font-weight: bold;">@</span><span style="color: #e67128;">"</span> <span style="color: #e67128;">"$</span><span style="color: #008b8b;">&lt;</span><span style="color: #e67128;">"</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org92e325a" class="outline-3">
+<h3 id="org92e325a"><span class="section-number-3">3.5.</span> pre-inst-env.in</h3>
+<div class="outline-text-3" id="text-3-5">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #74af68;">#</span><span style="color: #74af68;">!/bin/</span><span style="color: #ffad29; font-weight: bold;">sh</span>
+
+<span style="color: #dbdb95;">abs_top_srcdir</span>=<span style="color: #e67128;">"`cd "@abs_top_srcdir@" &gt; /dev/null; pwd`"</span>
+<span style="color: #dbdb95;">abs_top_builddir</span>=<span style="color: #e67128;">"`cd "@abs_top_builddir@" &gt; /dev/null; pwd`"</span>
+
+<span style="color: #dbdb95;">GUILE_LOAD_COMPILED_PATH</span>=<span style="color: #e67128;">"$abs_top_builddir${GUILE_LOAD_COMPILED_PATH:+:}$GUILE_LOAD_COMPILED_PATH"</span>
+<span style="color: #dbdb95;">GUILE_LOAD_PATH</span>=<span style="color: #e67128;">"$abs_top_builddir:$abs_top_srcdir${GUILE_LOAD_PATH:+:}:$GUILE_LOAD_PATH"</span>
+<span style="color: #23d7d7;">export</span> GUILE_LOAD_COMPILED_PATH GUILE_LOAD_PATH
+
+<span style="color: #dbdb95;">PATH</span>=<span style="color: #e67128;">"$abs_top_builddir:$PATH"</span>
+<span style="color: #23d7d7;">export</span> PATH
+
+<span style="color: #ffad29; font-weight: bold;">exec</span> <span style="color: #e67128;">"$@"</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf344e6c" class="outline-2">
+<h2 id="orgf344e6c"><span class="section-number-2">4.</span> Code</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Finally, we've gotten to the actual code!
+</p>
+</div>
+
+<div id="outline-container-org0b68e89" class="outline-3">
+<h3 id="org0b68e89"><span class="section-number-3">4.1.</span> Library</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Well, almost, anyway. First, let's declare the top of each file as defining a
+specific module, and add any top-of-the-file comments. I refer to these blocks
+as the <i>preamble</i> of each file.
+</p>
+</div>
+
+<div id="outline-container-orgc9f189e" class="outline-4">
+<h4 id="orgc9f189e"><span class="section-number-4">4.1.1.</span> Preamble</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+This is the top of that file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define-module</span> (<span style="color: #34cae2;">cdr255 genpro</span>)
+  <span style="color: #23d7d7;">:use-module</span> (ice-9 ftw)           <span style="color: #74af68;">; </span><span style="color: #74af68;">For Filesystem Access.</span>
+  <span style="color: #23d7d7;">:use-module</span> (ice-9 textual-ports) <span style="color: #74af68;">; </span><span style="color: #74af68;">For Writing to Files.</span>
+  <span style="color: #23d7d7;">:use-module</span> (srfi srfi-19)        <span style="color: #74af68;">; </span><span style="color: #74af68;">For Dates.</span>
+  <span style="color: #23d7d7;">:export</span> (make-project
+           compile-project
+           hash-meta-info))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org869937b" class="outline-4">
+<h4 id="org869937b"><span class="section-number-4">4.1.2.</span> Data Structure</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<p>
+We'll need a function to create our data structure, which will be a 7 item hash
+table.
+</p>
+
+<p>
+It will take the values we want to store, and return a hash table with those
+values tied to appropriate keys.
+</p>
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">hash-meta-info</span> bib
+                        pro
+                        aut
+                        sch
+                        sec
+                        prf
+                        dat)
+  <span style="color: #e67128;">"Takes the project's metadata and turns it into a seven-element hash table.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+
+<span style="color: #e67128;">BIB &lt;string&gt;: Filepath to the biblatex bibliography You are using.</span>
+<span style="color: #e67128;">PRO &lt;string&gt;: Title of the project or paper.</span>
+<span style="color: #e67128;">AUT &lt;string&gt;: Name of the Author(s).</span>
+<span style="color: #e67128;">SCH &lt;string&gt;: Name of the School/Organization the paper was published under.</span>
+<span style="color: #e67128;">SEC &lt;string&gt;: The section, website, or journal that the paper was written for.</span>
+<span style="color: #e67128;">PRF &lt;string&gt;: Professor's Name (if Applicable).</span>
+<span style="color: #e67128;">DAT &lt;string&gt;: Canonical date of the paper in YYYY-MM-DD format (ISO8601 brief).</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+
+<span style="color: #e67128;">A 7 Parameter &lt;hash-table&gt; with the following keys: </span>
+
+<span style="color: #e67128;">'bibliography &lt;string&gt;, from BIB. </span>
+<span style="color: #e67128;">'project &lt;string&gt;, from PRO. Stored in Title Case.</span>
+<span style="color: #e67128;">'author &lt;string&gt;, from AUT.</span>
+<span style="color: #e67128;">'school &lt;string&gt;, from SCH.</span>
+<span style="color: #e67128;">'section &lt;string&gt;, from SEC.</span>
+<span style="color: #e67128;">'professor &lt;string&gt;, from PRF.</span>
+<span style="color: #e67128;">'date &lt;srfi-19 date&gt;, from DAT. Time set to all zeros, offset to local timezone.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+
+<span style="color: #e67128;">None. This is a purely functional function."</span>
+  (<span style="color: #ffad29; font-weight: bold;">let</span> ((table (make-hash-table 7)))
+    (hashq-create-handle! table 'bibliography bib)
+    (hashq-create-handle! table 'project pro)
+    (hashq-create-handle! table 'author aut)
+    (hashq-create-handle! table 'school sch)
+    (hashq-create-handle! table 'section sec)
+    (hashq-create-handle! table 'professor prf)
+    (hashq-create-handle! table 'date (string-&gt;date dat <span style="color: #e67128;">"~Y-~m-~d"</span>))
+    table))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga981291" class="outline-4">
+<h4 id="orga981291"><span class="section-number-4">4.1.3.</span> Sanitize Strings</h4>
+<div class="outline-text-4" id="text-4-1-3">
+<p>
+Since we'll be making a file using input from the user, we should sanitize that
+input somewhat.
+</p>
+
+<p>
+Right now I mostly need this for the filename given to the end result, so it
+takes a few characters I don't like in filenames and substitutes them
+appropriately.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">sanitize-string</span> string)
+  <span style="color: #e67128;">"Cleans a string up, removing characters that may be undesirable or problematic.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">STRING &lt;string&gt;: The string to be cleaned up, in its unaltered state.</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">A &lt;string&gt; that has been transformed by replacing characters with safer </span>
+<span style="color: #e67128;">alternatives.</span>
+
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">None; Purely Functional."</span>
+  (string-map (<span style="color: #ffad29; font-weight: bold;">lambda</span> (x) (<span style="color: #ffad29; font-weight: bold;">cond</span> ((<span style="color: #ffad29; font-weight: bold;">or</span>
+                                  (eq? #\! x)
+                                  (eq? #\: x)
+                                  (eq? #\, x)
+                                  (eq? #\; x)
+                                  (eq? #\' x)
+                                  (eq? #\[ x)
+                                  (eq? #\{ x)
+                                  (eq? #\] x)
+                                  (eq? #\} x)
+                                  (eq? #\= x))
+                                  #\_)
+                                ((eq? #\space x)
+                                 #\-)
+                                (<span style="color: #ffad29; font-weight: bold;">else</span> x))) string))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6b079ec" class="outline-4">
+<h4 id="org6b079ec"><span class="section-number-4">4.1.4.</span> Build File Name</h4>
+<div class="outline-text-4" id="text-4-1-4">
+<p>
+We'll actually build the filename in this function, assembling it from our
+meta-info data structure and applying a sanitization function to it before
+downcasing it.
+</p>
+
+<p>
+There will be no extension, though, so that it can be useful in more places.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">build-file-name</span> meta-info)
+  <span style="color: #e67128;">"Builds a filename (sans extension) from our meta-info data structure.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">META-INFO &lt;hash-table&gt;: A Seven-Parameter Hash table with the keys </span>
+<span style="color: #e67128;">                        'date &lt;srfi-19 date&gt;, 'section &lt;string&gt;, </span>
+<span style="color: #e67128;">                        and 'project &lt;string&gt;.</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">A &lt;string&gt; of the format \"date.section.project-name\", with only </span>
+<span style="color: #e67128;">the part of the section before the colon included.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">None; Purely Functional."</span>
+  (string-downcase
+   (sanitize-string (string-append (date-&gt;string (cdr (hashq-get-handle meta-info 'date)) <span style="color: #e67128;">"~1"</span>)
+                  <span style="color: #e67128;">"."</span>
+                  (car (string-split (cdr (hashq-get-handle meta-info 'section)) #\:))
+                  <span style="color: #e67128;">"."</span>
+                  (cdr (hashq-get-handle meta-info 'project))))))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgea4edff" class="outline-4">
+<h4 id="orgea4edff"><span class="section-number-4">4.1.5.</span> Build Meta File</h4>
+<div class="outline-text-4" id="text-4-1-5">
+<p>
+The <code>meta.tex</code> is actually the most complex of the files to build, because it
+uses all of the info we've stored in our meta-info data structure. Because of
+this, I've split the build into two functions: One to build the string
+(<code>build-meta-file-content</code>) and one to extract the metadata (<code>build-meta-file</code>)
+that calls the first function internally.
+</p>
+
+<p>
+For the first function, we are going to assume the inputs are strings, since
+extracting the metadata has been isolated to a separate function. And then, it's
+just a matter of building the string with those inputs.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">build-meta-file-content</span> bibliography
+                        title
+                        author
+                        school
+                        section
+                        professor
+                        due-date)
+  <span style="color: #e67128;">"Builds the actual content of the meta.tex file for a latex project.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">BIBLIOGRAPHY &lt;string&gt;: The filepath to the project's bibliography.</span>
+<span style="color: #e67128;">TITLE &lt;string&gt;: The title of the paper.</span>
+<span style="color: #e67128;">AUTHOR &lt;string&gt;: The author(s) of the paper.</span>
+<span style="color: #e67128;">SCHOOL &lt;string&gt;: The school/organization for the paper.</span>
+<span style="color: #e67128;">SECTION &lt;string&gt;: The section/project/journal for the paper.</span>
+<span style="color: #e67128;">PROFESSOR &lt;string&gt;: The professor that assigned the paper (if applicable).</span>
+<span style="color: #e67128;">DUE-DATE &lt;string: The canonical date of the paper, in YYYY-MM-DD format.</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">A &lt;string&gt; that represents the contents of the meta.tex file for the project.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">None; Purely Functional."</span>
+  (string-append <span style="color: #e67128;">"\\newcommand{\\localbibliography}{\\string"</span>
+                 bibliography
+                 <span style="color: #e67128;">"}\n\\newcommand{\\localtitle}{"</span>
+                 title
+                 <span style="color: #e67128;">"}\n\\newcommand{\\localauthor}{"</span>
+                 author
+                 <span style="color: #e67128;">"}\n\\newcommand{\\localschool}{"</span>
+                 school
+                 <span style="color: #e67128;">"}\n\\newcommand{\\localsection}{"</span>
+                 section
+                 <span style="color: #e67128;">"}\n\\newcommand{\\localprofessor}{"</span>
+                 professor
+                 <span style="color: #e67128;">"}\n\\newcommand{\\localduedate}{"</span>
+                 due-date
+                 <span style="color: #e67128;">"}\n\n% Generated with the wrapper script.\n"</span>))
+</pre>
+</div>
+
+<p>
+The second function will actually extract the strings that the first function is
+going to use and call that function.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">build-meta-file</span> meta-info)
+  <span style="color: #e67128;">"Build the meta.tex file from the meta-info data structure.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">META-INFO &lt;hash-table&gt;: A 7 element data structure with the following keys:</span>
+
+<span style="color: #e67128;">'bibliography &lt;string&gt;</span>
+<span style="color: #e67128;">'project &lt;string&gt;</span>
+<span style="color: #e67128;">'author &lt;string&gt;</span>
+<span style="color: #e67128;">'school &lt;string&gt;</span>
+<span style="color: #e67128;">'section &lt;string&gt;</span>
+<span style="color: #e67128;">'professor &lt;string&gt;</span>
+<span style="color: #e67128;">'date &lt;srfi-19 date&gt;.</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">A &lt;string&gt; representing the contents of the meta.tex file for this project.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">None; Purely Functional."</span>
+  (build-meta-file-content (cdr (hashq-get-handle
+                                 meta-info 'bibliography))
+                           (cdr (hashq-get-handle meta-info 'project))
+                           (cdr (hashq-get-handle meta-info 'author))
+                           (cdr (hashq-get-handle meta-info 'school))
+                           (cdr (hashq-get-handle meta-info 'section))
+                           (cdr (hashq-get-handle meta-info 'professor))
+                           (date-&gt;string (cdr (hashq-get-handle meta-info 'date)) <span style="color: #e67128;">"~1"</span>)))
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org323e208" class="outline-4">
+<h4 id="org323e208"><span class="section-number-4">4.1.6.</span> Other Build Functions</h4>
+<div class="outline-text-4" id="text-4-1-6">
+<p>
+The other files we need are:
+</p>
+
+<ul class="org-ul">
+<li><code>preamble.tex</code>: The preamble of our latex document.</li>
+<li><code>main.tex</code>: The file that ties everything together.</li>
+<li><code>title-page.tex</code>: The defined title page of our latex document.</li>
+<li><code>content.tex</code>: The place where the actual text of our latex document will go,
+eventually.</li>
+</ul>
+
+<p>
+We'll create <code>content.tex</code> when we populate the project, but the rest of them
+will have "templates" of their own. These functions really just take a long set
+of properly-formatted, hardcoded strings and build a long string out of
+them. Not much needs to be said about them, but they need to exist.
+</p>
+
+<p>
+I may refactor these someday for more flexibility.
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="org1820898"></a>Preamble<br>
+<div class="outline-text-5" id="text-4-1-6-1">
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">build-preamble-file</span> meta-info)
+  <span style="color: #e67128;">"Dumps my standard preamble.tex out as a &lt;string&gt;.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">META-INFO &lt;hash-table&gt;: A 7 element data structure with the following keys:</span>
+
+<span style="color: #e67128;">                        'bibliography &lt;string&gt;</span>
+<span style="color: #e67128;">                        'project &lt;string&gt;</span>
+<span style="color: #e67128;">                        'author &lt;string&gt;</span>
+<span style="color: #e67128;">                        'school &lt;string&gt;</span>
+<span style="color: #e67128;">                        'section &lt;string&gt;</span>
+<span style="color: #e67128;">                        'professor &lt;string&gt;</span>
+<span style="color: #e67128;">                        'date &lt;srfi-19 date&gt;</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">A &lt;string&gt; representing the contents of preamble.tex.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">None; Purely Functional."</span>
+  (string-append
+   <span style="color: #e67128;">"\\usepackage{geometry}\n"</span>
+   <span style="color: #e67128;">"\\geometry{\n"</span>
+   <span style="color: #e67128;">"  letterpaper,\n"</span>
+   <span style="color: #e67128;">"  left=1in,\n"</span>
+   <span style="color: #e67128;">"  right=1in,\n"</span>
+   <span style="color: #e67128;">"  top=1in,\n"</span>
+   <span style="color: #e67128;">"  bottom=1in}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{etoolbox}\n"</span>
+   <span style="color: #e67128;">"\\patchcmd{\\titlepage}\n"</span>
+   <span style="color: #e67128;">"  {\\thispagestyle{empty}}\n"</span>
+   <span style="color: #e67128;">"  {\\thispagestyle{fancy}}\n"</span>
+   <span style="color: #e67128;">"  {}\n"</span>
+   <span style="color: #e67128;">"  {}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{fancyhdr}\n"</span>
+   <span style="color: #e67128;">"\\pagestyle{fancy}\n"</span>
+   <span style="color: #e67128;">"\\lhead{}\n"</span>
+   <span style="color: #e67128;">"\\chead{}\n"</span>
+   <span style="color: #e67128;">"\\rhead{\\thepage}\n"</span>
+   <span style="color: #e67128;">"\\lfoot{}\n"</span>
+   <span style="color: #e67128;">"\\cfoot{}\n"</span>
+   <span style="color: #e67128;">"\\rfoot{}\n"</span>
+   <span style="color: #e67128;">"\\renewcommand{\\headrulewidth}{0pt}\n"</span>
+   <span style="color: #e67128;">"\\usepackage[utf8]{inputenc}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{babel,csquotes,xpatch}% recommended\n"</span>
+   <span style="color: #e67128;">"\\selectlanguage{english}\n"</span>
+   <span style="color: #e67128;">"\\usepackage[backend=biber,style=apa]{biblatex}\n"</span>
+   <span style="color: #e67128;">"\\usepackage[doublespacing]{setspace}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{indentfirst}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{fontspec}\n"</span>
+   <span style="color: #e67128;">"\\setmainfont{Nimbus Roman}\n"</span>
+   <span style="color: #e67128;">"\\appto{\\bibsetup}{\\raggedright}\n"</span>
+   <span style="color: #e67128;">"\\bibliography{\\localbibliography}\n"</span>
+   <span style="color: #e67128;">"\\DeclareLanguageMapping{english}{american-apa}\n"</span>
+   <span style="color: #e67128;">"\\setlength{\\parindent}{4em}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{titlesec}\n"</span>
+   <span style="color: #e67128;">"\\titleformat{\\section}\n"</span>
+   <span style="color: #e67128;">"  {\\centering\\normalfont\\normalsize\\bfseries}{\\thesection.}{1em}{}\n"</span>
+   <span style="color: #e67128;">"\\titleformat{\\subsection}\n"</span>
+   <span style="color: #e67128;">"  {\\normalfont\\normalsize\\itshape}{\\thesubsection.}{1em}{}\n"</span>
+   <span style="color: #e67128;">"\\titleformat{\\subsubsection}\n"</span>
+   <span style="color: #e67128;">"  {\\normalfont\\normalsize\\itshape}{\\thesubsubsection.}{1em}{}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{graphicx}\n"</span>
+   <span style="color: #e67128;">"\\graphicspath{ {./images/} }\n"</span>
+   <span style="color: #e67128;">"\\usepackage[nomarkers]{endfloat}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{fancyvrb}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{color}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{listings}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{minted}\n"</span>
+   <span style="color: #e67128;">"\\usepackage{datetime2}\n"</span>
+   <span style="color: #e67128;">"\n% Generated with wrapper.scm\n"</span>))
+</pre>
+</div>
+</div>
+</li>
+<li><a id="orgf9e09b1"></a>Main<br>
+<div class="outline-text-5" id="text-4-1-6-2">
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">build-main-file</span> meta-info)
+  <span style="color: #e67128;">"Dumps my standard main.tex out as a &lt;string&gt;.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">META-INFO &lt;hash-table&gt;: A 7 element data structure with the following keys:</span>
+
+<span style="color: #e67128;">                        'bibliography &lt;string&gt;</span>
+<span style="color: #e67128;">                        'project &lt;string&gt;</span>
+<span style="color: #e67128;">                        'author &lt;string&gt;</span>
+<span style="color: #e67128;">                        'school &lt;string&gt;</span>
+<span style="color: #e67128;">                        'section &lt;string&gt;</span>
+<span style="color: #e67128;">                        'professor &lt;string&gt;</span>
+<span style="color: #e67128;">                        'date &lt;srfi-19 date&gt;</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">A &lt;string&gt; representing the contents of main.tex.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">None; Purely Functional."</span>
+  (string-append
+   <span style="color: #e67128;">"% This is main.tex\n"</span>
+   <span style="color: #e67128;">"\\documentclass[12pt, english]{article}\n"</span>
+   <span style="color: #e67128;">"\\input{meta}\n"</span>
+   <span style="color: #e67128;">"\\input{preamble}\n"</span>
+   <span style="color: #e67128;">"\\begin{document}\n"</span>
+   <span style="color: #e67128;">"\\input{title-page}\n"</span>
+   <span style="color: #e67128;">"\\section*{\\localtitle{}}\n"</span>
+   <span style="color: #e67128;">"\\input{content}\n"</span>
+   <span style="color: #e67128;">"\\newpage\n"</span>
+   <span style="color: #e67128;">"\\printbibliography\n"</span>
+   <span style="color: #e67128;">"\\end{document}"</span>))
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org0ea0e87"></a>Title Page<br>
+<div class="outline-text-5" id="text-4-1-6-3">
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">build-title-file</span> meta-info)
+  <span style="color: #e67128;">"Dumps my standard title-page.tex out as a &lt;string&gt;.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">META-INFO &lt;hash-table&gt;: A 7 element data structure with the following keys:</span>
+
+<span style="color: #e67128;">                        'bibliography &lt;string&gt;</span>
+<span style="color: #e67128;">                        'project &lt;string&gt;</span>
+<span style="color: #e67128;">                        'author &lt;string&gt;</span>
+<span style="color: #e67128;">                        'school &lt;string&gt;</span>
+<span style="color: #e67128;">                        'section &lt;string&gt;</span>
+<span style="color: #e67128;">                        'professor &lt;string&gt;</span>
+<span style="color: #e67128;">                        'date &lt;srfi-19 date&gt;</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">A &lt;string&gt; representing the contents of title-page.tex.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">None; Purely Functional."</span>
+  (string-append
+   <span style="color: #e67128;">"\\begin{titlepage}\n"</span>
+   <span style="color: #e67128;">"  \\begin{center}\n"</span>
+   <span style="color: #e67128;">"    \\vspace*{5cm}\n"</span>
+   <span style="color: #e67128;">"    \\textbf{\\localtitle}\\\\\n"</span>
+   <span style="color: #e67128;">"    \\vspace{\\baselineskip}\n"</span>
+   <span style="color: #e67128;">"    \\localauthor\\\\\n"</span>
+   <span style="color: #e67128;">"    \\localschool\\\\\n"</span>
+   <span style="color: #e67128;">"    \\localsection\\\\\n"</span>
+   <span style="color: #e67128;">"    \\localprofessor\\\\\n"</span>
+   <span style="color: #e67128;">"    \\localduedate\n"</span>
+   <span style="color: #e67128;">"  \\end{center}\n"</span>
+   <span style="color: #e67128;">"\\end{titlepage}\n"</span>
+   <span style="color: #e67128;">"\\setcounter{page}{2}"</span>))
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orgd7a7c5e" class="outline-4">
+<h4 id="orgd7a7c5e"><span class="section-number-4">4.1.7.</span> Make File</h4>
+<div class="outline-text-4" id="text-4-1-7">
+<p>
+Once things (really just strings) are build, we need to put them in
+files.
+</p>
+
+<p>
+I was able to extract out the core of what needed to be done into a single
+function for this, which is <code>make-file</code>. It will take the meta-info structure,
+the file name, and a build function for the file's contents, and create a file
+in the current working directory.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">make-file</span> meta-info file-name string-function)
+  <span style="color: #e67128;">"Creates a file based on supplied arguments. Pre-existing files will be </span>
+<span style="color: #e67128;">overwritten.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">META-INFO &lt;hash-table&gt;: A 7 element data structure with the following keys:</span>
+
+<span style="color: #e67128;">                        'bibliography &lt;string&gt;</span>
+<span style="color: #e67128;">                        'project &lt;string&gt;</span>
+<span style="color: #e67128;">                        'author &lt;string&gt;</span>
+<span style="color: #e67128;">                        'school &lt;string&gt;</span>
+<span style="color: #e67128;">                        'section &lt;string&gt;</span>
+<span style="color: #e67128;">                        'professor &lt;string&gt;</span>
+<span style="color: #e67128;">                        'date &lt;srfi-19 date&gt;</span>
+<span style="color: #e67128;">FILE-NAME &lt;string&gt;: The name of the file to create.</span>
+<span style="color: #e67128;">STRING-FUNCTION &lt;function&gt;: A generator function for the contents of the file.</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">&lt;undefined&gt; on success. Errors on errors.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">Creates the file FILE-NAME in the current directory and fills it with the output</span>
+<span style="color: #e67128;">of STRING-FUNCTION called with META-INFO as its only argument.</span>
+<span style="color: #e67128;">"</span>
+  (<span style="color: #ffad29; font-weight: bold;">call-with-output-file</span> file-name
+    (<span style="color: #ffad29; font-weight: bold;">lambda</span> (port)
+      (put-string port
+                  (apply string-function
+                         (list meta-info))))))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org451d256" class="outline-4">
+<h4 id="org451d256"><span class="section-number-4">4.1.8.</span> Make Project</h4>
+<div class="outline-text-4" id="text-4-1-8">
+<p>
+This is the initialization function, that will take an empty directory and fill
+it with the files we need.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">make-project</span> meta-info)
+  <span style="color: #e67128;">"Creates the files needed for a latex project.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">META-INFO &lt;hash-table&gt;: A 7 element data structure with the following keys:</span>
+
+<span style="color: #e67128;">                        'bibliography &lt;string&gt;</span>
+<span style="color: #e67128;">                        'project &lt;string&gt;</span>
+<span style="color: #e67128;">                        'author &lt;string&gt;</span>
+<span style="color: #e67128;">                        'school &lt;string&gt;</span>
+<span style="color: #e67128;">                        'section &lt;string&gt;</span>
+<span style="color: #e67128;">                        'professor &lt;string&gt;</span>
+<span style="color: #e67128;">                        'date &lt;srfi-19 date&gt;</span>
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">&lt;undefined&gt; on success, errors on errors.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">Creates the following files in the current directory, overwriting them if they </span>
+<span style="color: #e67128;">exist:</span>
+
+<span style="color: #e67128;">main.tex</span>
+<span style="color: #e67128;">meta.tex</span>
+<span style="color: #e67128;">preamble.tex</span>
+<span style="color: #e67128;">title-page.tex</span>
+<span style="color: #e67128;">content.tex"</span>
+  (make-file meta-info <span style="color: #e67128;">"main.tex"</span> build-main-file)
+  (make-file meta-info <span style="color: #e67128;">"meta.tex"</span> build-meta-file)
+  (make-file meta-info <span style="color: #e67128;">"preamble.tex"</span> build-preamble-file)
+  (make-file meta-info <span style="color: #e67128;">"title-page.tex"</span> build-title-file)
+  (system <span style="color: #e67128;">"touch content.tex"</span>))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org69775d9" class="outline-4">
+<h4 id="org69775d9"><span class="section-number-4">4.1.9.</span> Compile Project</h4>
+<div class="outline-text-4" id="text-4-1-9">
+<p>
+This project started because I wanted to be able to submit my papers with a
+custom filename without having to alter the way <code>lualatex</code> was called in
+<code>emacs</code>. These functions actually compile this project into a pdf.
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="org49ad28b"></a>Run Lualatex<br>
+<div class="outline-text-5" id="text-4-1-9-1">
+<p>
+This function calls the system command <code>lualatex</code> on the <code>main.tex</code> file in the
+current directory to create a PDF with the correct name, and uses
+<code>--shell-escape</code> to allow <code>pygmentize</code> to do its thing.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">run-lualatex</span> name)
+  <span style="color: #e67128;">"Runs the lualatex program with some sensible defaults, specifying a jobname </span>
+<span style="color: #e67128;">based on the project.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">NAME &lt;string&gt;: The jobname for lualatex.</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">&lt;undefined&gt; on success, errors on errors.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">Calls the program \"lualatex\" on the file \"main.tex\" in the current </span>
+<span style="color: #e67128;">directory, to create (among other intermediary files) a PDF document. Can be</span>
+<span style="color: #e67128;">UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed."</span>
+  (system (string-append <span style="color: #e67128;">"lualatex --output-format pdf --jobname="</span>
+                         name
+                         <span style="color: #e67128;">" --shell-escape main.tex"</span>)))
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org20af764"></a>Compile Project<br>
+<div class="outline-text-5" id="text-4-1-9-2">
+<p>
+This is the function that actually compiles the project correctly, as multiple
+passes of <code>lualatex</code> and <code>biber</code> are needed to get citations and page references
+correct.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">compile-project</span> meta-info)
+  <span style="color: #e67128;">"Compiles the LaTeX project in the current directory, assuming the </span>
+<span style="color: #e67128;">\"main.tex\" file exists.</span>
+
+<span style="color: #e67128;">Arguments</span>
+<span style="color: #e67128;">=========</span>
+<span style="color: #e67128;">META-INFO &lt;hash-table&gt;: A 7 element data structure with the following keys:</span>
+
+<span style="color: #e67128;">                        'bibliography &lt;string&gt;</span>
+<span style="color: #e67128;">                        'project &lt;string&gt;</span>
+<span style="color: #e67128;">                        'author &lt;string&gt;</span>
+<span style="color: #e67128;">                        'school &lt;string&gt;</span>
+<span style="color: #e67128;">                        'section &lt;string&gt;</span>
+<span style="color: #e67128;">                        'professor &lt;string&gt;</span>
+<span style="color: #e67128;">                        'date &lt;srfi-19 date&gt;</span>
+
+<span style="color: #e67128;">Returns</span>
+<span style="color: #e67128;">=======</span>
+<span style="color: #e67128;">&lt;undefined&gt; on success, errors on errors.</span>
+
+<span style="color: #e67128;">Side Effects</span>
+<span style="color: #e67128;">============</span>
+<span style="color: #e67128;">Runs system commands in this order:</span>
+
+<span style="color: #e67128;">lualatex</span>
+<span style="color: #e67128;">biber</span>
+<span style="color: #e67128;">lualatex</span>
+<span style="color: #e67128;">lualatex</span>
+
+<span style="color: #e67128;">Which creates a large number of intermediary files, but ideally creates NAME.pdf</span>
+<span style="color: #e67128;">from main.tex."</span>
+  (<span style="color: #ffad29; font-weight: bold;">let</span> ((name (build-file-name meta-info)))
+    (run-lualatex name)
+    (system (string-append <span style="color: #e67128;">"biber "</span> name))
+    (run-lualatex name)
+    (run-lualatex name)))
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org7cc8144" class="outline-3">
+<h3 id="org7cc8144"><span class="section-number-3">4.2.</span> Executable</h3>
+<div class="outline-text-3" id="text-4-2">
+</div>
+
+<div id="outline-container-org397e3d4" class="outline-4">
+<h4 id="org397e3d4"><span class="section-number-4">4.2.1.</span> Preamble</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<p>
+This is the top of that file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">#!/usr/bin/env -S guile -e main -s
+-e main -s
+!#
+(<span style="color: #ffad29; font-weight: bold;">use-modules</span> (cdr255 genpro)
+             (ice-9 getopt-long))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbf2305a" class="outline-4">
+<h4 id="orgbf2305a"><span class="section-number-4">4.2.2.</span> Main Function</h4>
+<div class="outline-text-4" id="text-4-2-2">
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> <span style="color: #00ede1; font-weight: bold;">option-spec</span>
+  '((version (single-char #\v) (value #f))
+    (generate (single-char #\g) (value #f))
+    (publish (single-char #\p) (value #f))))
+
+(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">main</span> args)
+  (<span style="color: #ffad29; font-weight: bold;">let*</span> ((options (getopt-long args option-spec))
+         (version (option-ref options 'version #f))
+         (generate (option-ref options 'generate #f))
+         (publish (option-ref options 'publish #f)))
+    (<span style="color: #ffad29; font-weight: bold;">unless</span> (file-exists? <span style="color: #e67128;">".metadata"</span>)
+      (<span style="color: #ffad29; font-weight: bold;">call-with-output-file</span> <span style="color: #e67128;">".metadata"</span>
+        (<span style="color: #ffad29; font-weight: bold;">lambda</span> (port)
+          (put-string port
+                      <span style="color: #e67128;">";;; -*- scheme -*-</span>
+<span style="color: #e67128;">;;; This is the metadata file for genpro projects.</span>
+<span style="color: #e67128;">;;;</span>
+<span style="color: #e67128;">;;; Replace the default values with the ones appropriate for Your</span>
+<span style="color: #e67128;">;;; project.</span>
+<span style="color: #e67128;">(define project-metadata-file-info</span>
+<span style="color: #e67128;">'((title \"Project Title\")</span>
+<span style="color: #e67128;">  (author \"Christopher Rodriguez\")</span>
+<span style="color: #e67128;">  (bibliography \"~/Documents/biblio/main.bib\")</span>
+<span style="color: #e67128;">  (school \"Colorado State University Global\")</span>
+<span style="color: #e67128;">  (section \"Some Class: Some Title of Class\")</span>
+<span style="color: #e67128;">  (professor \"Dr. Some Professor\")</span>
+<span style="color: #e67128;">  (date \"2022-03-08\")))"</span>)))
+      (display
+       (string-append <span style="color: #e67128;">"Created the .metadata file with defaults.\n\nPlease edit "</span>
+                      <span style="color: #e67128;">"those and then run the script again.\n"</span>))
+      (quit))
+    (load <span style="color: #e67128;">"./.metadata"</span>)
+    (<span style="color: #ffad29; font-weight: bold;">define</span> <span style="color: #00ede1; font-weight: bold;">meta-info</span>
+      (hash-meta-info (cadr (assoc 'bibliography
+                                   project-metadata-file-info))
+                      (cadr (assoc 'title
+                                   project-metadata-file-info))
+                      (cadr (assoc 'author
+                                   project-metadata-file-info))
+                      (cadr (assoc 'school
+                                   project-metadata-file-info))
+                      (cadr (assoc 'section
+                                   project-metadata-file-info))
+                      (cadr (assoc 'professor
+                                   project-metadata-file-info))
+                      (cadr (assoc 'date
+                                   project-metadata-file-info))))
+    (<span style="color: #ffad29; font-weight: bold;">cond</span> (version (display <span style="color: #e67128;">"genpro v0.0.1\n"</span>))
+          (generate (display <span style="color: #e67128;">"Generate Flag!\n"</span>)
+                    (make-project meta-info))
+          (publish (display <span style="color: #e67128;">"Publish Flag!\n"</span>)
+                   (compile-project meta-info))
+          (<span style="color: #ffad29; font-weight: bold;">else</span> (display-help)))))
+
+(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">display-help</span>)
+  (display (string-append
+            <span style="color: #e67128;">"Usage: genpro -g || -p \n\n"</span>
+            
+            <span style="color: #e67128;">"Explanation of Options:\n\n"</span>
+            
+            <span style="color: #e67128;">"  -g: Generate a new set of latex files based on the\n"</span>
+            <span style="color: #e67128;">"      contents of the .metadata file.\n"</span>
+            <span style="color: #e67128;">"  -p: Publish the project (run lualatex and biber on\n"</span>
+            <span style="color: #e67128;">"      main.tex)\n\n"</span>
+
+            <span style="color: #e67128;">"This program is entirely written in GNU Guile Scheme,\n"</span>
+            <span style="color: #e67128;">"and You are welcome to change it how You see fit.\n\n"</span>
+
+            <span style="color: #e67128;">"Guile Online Help: <a href="https://www.gnu.org/software/guile/">&lt;https://www.gnu.org/software/guile/&gt;</a>\n"</span>
+            <span style="color: #e67128;">"Local Online Help: 'info guile'\n"</span>)))
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9c32a21" class="outline-2">
+<h2 id="org9c32a21"><span class="section-number-2">5.</span> Tests</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+It's important to me to use <a href="https://en.wikipedia.org/wiki/Unit_testing">Unit Testing</a> throughout my development process,
+oftentimes before I actually implement a specific feature. I guess I subscribe
+to the notion of <a href="https://en.wikipedia.org/wiki/Test-driven_development">TDD</a>, whether through habit or preference.
+</p>
+</div>
+
+<div id="outline-container-orgcef2e6f" class="outline-3">
+<h3 id="orgcef2e6f"><span class="section-number-3">5.1.</span> Main Tests</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+Anyway, all related files will live under <code>test/</code>, and the main file should be
+called <code>maintests.scm</code>.
+</p>
+</div>
+
+<div id="outline-container-org8196f6b" class="outline-4">
+<h4 id="org8196f6b"><span class="section-number-4">5.1.1.</span> Preamble</h4>
+<div class="outline-text-4" id="text-5-1-1">
+<p>
+We require the files defined above, as well as <a href="https://srfi.schemers.org/srfi-64/srfi-64.html">SRFI-64</a> for a testing
+framework.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scheme">#!/usr/bin/env -S guile -e main -s
+-e main -s
+!#
+(<span style="color: #ffad29; font-weight: bold;">use-modules</span> ((srfi srfi-64))) <span style="color: #74af68;">;; </span><span style="color: #74af68;">For Unit Testing</span>
+(load <span style="color: #e67128;">"genpro.scm"</span>)
+</pre>
+</div>
+
+<p>
+Then we move on to the actual tests.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6589140" class="outline-4">
+<h4 id="org6589140"><span class="section-number-4">5.1.2.</span> Basic Tests</h4>
+<div class="outline-text-4" id="text-5-1-2">
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">basic-tests</span>)
+  <span style="color: #74af68;">;; </span><span style="color: #74af68;">Initialize and give a name to a simple testsuite.</span>
+  (<span style="color: #ffad29; font-weight: bold;">test-begin</span> <span style="color: #e67128;">"basic-tests"</span>)
+  <span style="color: #74af68;">;; </span><span style="color: #74af68;">Test our Hello World Function's Output to be as expected.</span>
+  (<span style="color: #ffad29; font-weight: bold;">test-equal</span> <span style="color: #e67128;">"Hello World!\n"</span> (<span style="color: #ffad29; font-weight: bold;">with-output-to-string</span> say-hello))
+  <span style="color: #74af68;">;; </span><span style="color: #74af68;">End the test.</span>
+  (<span style="color: #ffad29; font-weight: bold;">test-end</span> <span style="color: #e67128;">"basic-tests"</span>))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6b55ba7" class="outline-4">
+<h4 id="org6b55ba7"><span class="section-number-4">5.1.3.</span> Main</h4>
+<div class="outline-text-4" id="text-5-1-3">
+<div class="org-src-container">
+<pre class="src src-scheme">(<span style="color: #ffad29; font-weight: bold;">define</span> (<span style="color: #00ede1; font-weight: bold;">main</span> args)
+  (basic-tests))
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
