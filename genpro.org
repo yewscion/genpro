@@ -1646,7 +1646,7 @@ SUFFIXES = .scm .go
 	compile $(GUILE_WARNINGS) -o "$@" "$<"
 #+end_src
 ** pre-inst-env.in
-#+begin_src bash :tangle pre-inst-env.in
+#+begin_src bash :tangle pre-inst-env.in :shebang
 #!/bin/sh
 
 abs_top_srcdir="`cd "@abs_top_srcdir@" > /dev/null; pwd`"
