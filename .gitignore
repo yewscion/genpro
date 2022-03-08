@@ -465,5 +465,11 @@ TSWLatexianTemp*
 # Custom Add-ons
 
 *~
-
+*.go
+.metadata
+/src/.metadata
+/genpro
+/build-aux
+/genpro.scm
+/temp.scm
 # Add any binaries/preinstall files here.

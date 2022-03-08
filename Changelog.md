@@ -6,10 +6,12 @@ and this projectadheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
--
+- Initial Project Files
+
 ### Changed
--
+- README is now accurate to script use.
+
 ### Removed
--
+- Unneeded temporary files from git repo.
 
 [Unreleased]: https://git.sr.ht/~yewscion/genpro/log
