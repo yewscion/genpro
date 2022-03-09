@@ -39,7 +39,7 @@
        (string-append "Created the .metadata file with defaults.\n\nPlease edit "
                       "those and then run the script again.\n"))
       (quit))
-    (load "./.metadata")
+    (load ".metadata")
     (define meta-info
       (hash-meta-info (cadr (assoc 'bibliography
                                    project-metadata-file-info))
