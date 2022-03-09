@@ -2,7 +2,11 @@
 -e main -s
 !#
 (use-modules (cdr255 genpro)
-             (ice-9 getopt-long))
+             (ice-9 getopt-long)   ; For CLI Options and Flags.
+             (ice-9 ftw)           ; For Filesystem Access.
+             (ice-9 textual-ports) ; For Writing to Files.
+             (srfi srfi-19)        ; For Dates.
+)
 
 (define option-spec
   '((version (single-char #\v) (value #f))
