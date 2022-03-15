@@ -206,6 +206,7 @@ Side Effects
 None; Purely Functional."
   (string-append
    "\\usepackage[mathjax]{lwarp}"
+   "\\CSSFilename{https://cdr255.com/css/lwarp-cdr255.css}"
    "\\usepackage{geometry}\n"
    "\\geometry{\n"
    "  letterpaper,\n"
