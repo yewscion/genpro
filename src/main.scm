@@ -410,9 +410,9 @@ exist:
     (copy-file (string-append name ".pdf") (string-append "../" name ".pdf"))
     (delete-file (string-append name ".pdf"))
     (symlink (string-append "../" name ".pdf") (string-append name ".pdf"))
-    (copy-file (string-append name "_html.html") (string-append "../" name "_html.html"))
-    (delete-file (string-append name "_html.html"))
-    (symlink (string-append "../" name "_html.html") (string-append name "_html.html"))
+    (copy-file (string-append name ".html") (string-append "../" name ".html"))
+    (delete-file (string-append name ".html"))
+    (symlink (string-append "../" name ".html") (string-append name ".html"))
     (chdir "../")))
 
 (define (run-lualatex name)
