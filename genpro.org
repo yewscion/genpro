@@ -2141,19 +2141,38 @@ Returns
 
 Side Effects
 ============
-Creates the following files in the current directory, overwriting them if they 
+Creates the following files, symlinks, and directories, overwriting them if they
 exist:
 
-main.tex
-meta.tex
-preamble.tex
-title-page.tex
-content.tex"
-  (make-file meta-info "main.tex" build-main-file)
-  (make-file meta-info "meta.tex" build-meta-file)
-  (make-file meta-info "preamble.tex" build-preamble-file)
-  (make-file meta-info "title-page.tex" build-title-file)
-  (system "touch content.tex"))
+./src/
+./out/
+./src/main.tex
+./src/meta.tex
+./src/preamble.tex
+./src/title-page.tex
+./content.tex
+./src/content.tex => ../content.tex
+./src/.metainfo -> ../.metainfo"
+  (let ((name (build-file-name meta-info)))
+    (mkdir "./src")
+    (mkdir "./out")
+    (make-file meta-info "./src/main.tex" build-main-file)
+    (make-file meta-info "./src/meta.tex" build-meta-file)
+    (make-file meta-info "./src/preamble.tex" build-preamble-file)
+    (make-file meta-info "./src/title-page.tex" build-title-file)
+    (system "touch content.tex")
+    (symlink "../.metainfo" "./src/.metainfo")
+    (symlink "../content.tex" "./src/content.tex")
+    (chdir "src/")
+    (run-lualatex name)
+    (system (string-append "lwarpmk html"))
+    (copy-file (string-append name ".pdf") (string-append "../" name ".pdf"))
+    (copy-file (string-append name "_html.html") (string-append "../" name "_html.html"))
+    (delete-file (string-append name ".pdf"))
+    (delete-file (string-append name "_html.html"))
+    (symlink (string-append "../" name "_html.html") (string-append name "_html.html"))
+    (symlink (string-append "../" name ".pdf") (string-append name ".pdf"))
+    (chdir "../")))
 #+end_src
 *** Compile Project
 This project started because I wanted to be able to submit my papers with a
@@ -2193,7 +2212,7 @@ correct.
 
 #+begin_src scheme
 (define (compile-project meta-info)
-  "Compiles the LaTeX project in the current directory, assuming the 
+  "Compiles the LaTeX project in the ./src/ directory, assuming the 
 \"main.tex\" file exists.
 
 Arguments
@@ -2217,17 +2236,25 @@ Side Effects
 Runs system commands in this order:
 
 lualatex
+lwarpmk
+biber
 biber
 lualatex
 lualatex
+lwarpmk
 
 Which creates a large number of intermediary files, but ideally creates NAME.pdf
-from main.tex."
+and NAME_html.html from main.tex."
+  (chdir "src")
   (let ((name (build-file-name meta-info)))
     (run-lualatex name)
+    (system (string-append "lwarpmk html"))
     (system (string-append "biber " name))
+    (system (string-append "biber " name "_html"))
     (run-lualatex name)
-    (run-lualatex name)))
+    (run-lualatex name)
+    (system (string-append "lwarpmk html")))
+  (chdir "..")
 #+end_src
 ** Executable
 :PROPERTIES:
