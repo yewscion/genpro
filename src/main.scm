@@ -205,6 +205,7 @@ Side Effects
 ============
 None; Purely Functional."
   (string-append
+   "\\usepackage[mathjax]{lwarp}"
    "\\usepackage{geometry}\n"
    "\\geometry{\n"
    "  letterpaper,\n"
@@ -227,7 +228,6 @@ None; Purely Functional."
    "\\cfoot{}\n"
    "\\rfoot{}\n"
    "\\renewcommand{\\headrulewidth}{0pt}\n"
-   "\\usepackage[utf8]{inputenc}\n"
    "\\usepackage{babel,csquotes,xpatch}% recommended\n"
    "\\selectlanguage{english}\n"
    "\\usepackage[backend=biber,style=apa]{biblatex}\n"
