@@ -460,22 +460,22 @@ Side Effects
 Runs system commands in this order:
 
 lualatex
-lwarp
+lwarpmk
 biber
 biber
 lualatex
 lualatex
-lwarp
+lwarpmk
 
 Which creates a large number of intermediary files, but ideally creates NAME.pdf
 and NAME_html.html from main.tex."
   (chdir "src")
   (let ((name (build-file-name meta-info)))
     (run-lualatex name)
-    (system (string-append "lwarp html"))
+    (system (string-append "lwarpmk html"))
     (system (string-append "biber " name))
     (system (string-append "biber " name "_html"))
     (run-lualatex name)
     (run-lualatex name)
-    (system (string-append "lwarp html")))
-  (chdir "..")
+    (system (string-append "lwarpmk html")))
+  (chdir ".."))

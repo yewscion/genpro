@@ -2254,7 +2254,7 @@ and NAME_html.html from main.tex."
     (run-lualatex name)
     (run-lualatex name)
     (system (string-append "lwarpmk html")))
-  (chdir "..")
+  (chdir ".."))
 #+end_src
 ** Executable
 :PROPERTIES:
