@@ -2250,11 +2250,13 @@ and NAME_html.html from main.tex."
   (let ((name (build-file-name meta-info)))
     (run-lualatex name)
     (system (string-append "lwarpmk again"))
+    (system (string-append "lwarpmk html"))
     (system (string-append "biber " name))
     (system (string-append "biber " name "_html"))
     (run-lualatex name)
     (run-lualatex name)
-    (system (string-append "lwarpmk again")))
+    (system (string-append "lwarpmk again"))
+    (system (string-append "lwarpmk html")))
   (chdir ".."))
 #+end_src
 ** Executable
