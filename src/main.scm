@@ -229,13 +229,13 @@ None; Purely Functional."
    "\\cfoot{}\n"
    "\\rfoot{}\n"
    "\\renewcommand{\\headrulewidth}{0pt}\n"
-   "\\usepackage{babel,csquotes,xpatch}% recommended\n"
+   "\\usepackage{babel,xpatch}% recommended\n"
    "\\selectlanguage{english}\n"
    "\\usepackage[backend=biber,style=apa]{biblatex}\n"
    "\\usepackage[doublespacing]{setspace}\n"
    "\\usepackage{indentfirst}\n"
    "\\usepackage{fontspec}\n"
-   "\\setmainfont{Nimbus Roman}\n"
+   "\\setmainfont{TeXGyreTermes}\n"
    "\\appto{\\bibsetup}{\\raggedright}\n"
    "\\bibliography{\\localbibliography}\n"
    "\\DeclareLanguageMapping{english}{american-apa}\n"
@@ -255,7 +255,8 @@ None; Purely Functional."
    "\\usepackage{listings}\n"
    "\\usepackage{minted}\n"
    "\\usepackage{datetime2}\n"
-   "\n% Generated with wrapper.scm\n"))
+   "\\usepackage{csquotes}\n"
+   "\n% Generated with genpro.\n"))
 
 (define (build-main-file meta-info)
   "Dumps my standard main.tex out as a <string>.
