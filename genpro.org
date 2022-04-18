@@ -1618,7 +1618,6 @@ run-tests:
 	guile -C ./ ./run-tests
 #+end_src
 *** Cleanup
-
 ** guile.am
 
 #+begin_src makefile-automake :tangle guile.am
