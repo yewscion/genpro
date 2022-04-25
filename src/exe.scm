@@ -42,7 +42,7 @@
          (help (option-ref options 'help #f)))
     (cond (help (display-help))
           (version (display "genpro v0.0.2\n"))
-          (not (or (file-exists? ".metadata") skip-metadata))
+          (and (not (file-exists? ".metadata")) (not skip-metadata))
           ((call-with-output-file ".metadata"
              (lambda (port)
                (put-string port
