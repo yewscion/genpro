@@ -57,7 +57,7 @@
                             " edit those and then run the script again.\n"))
             (quit)))
           (else
-           ((eval-string (call-with-input-file ".metadata"
+           (eval-string (call-with-input-file ".metadata"
                           (lambda (port)
                             (get-string-all port))))
             (let ((meta-info
@@ -77,7 +77,7 @@
                                                 project-metadata-file-info)))))
               (cond (generate (make-project meta-info))
                     (publish (compile-project meta-info))
-                    (else (display-help)))))))))
+                    (else (display-help))))))))
 
 (define (display-help)
   (display (string-append
