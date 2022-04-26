@@ -47,14 +47,16 @@
               (lambda (port)
                 (put-string port
                             default-metadata-contents)))
-            (unless (or (file-exists? ".projectile") skip-projectile)
-              (call-with-output-file ".projectile"
-                (lambda (port)
-                  (put-string port
-                              ";;; Generated with Genpro."))))
+            (if (and (not (file-exists? ".projectile")) (not skip-projectile))
+                (call-with-output-file ".projectile"
+                  (lambda (port)
+                    (put-string port
+                                ";;; Generated with Genpro.")))
+                (display "Skipping .projectile…"))
             (display
-             (string-append "Created the .metadata file with defaults.\n\nPlease"
-                            " edit those and then run the script again.\n"))
+             (string-append
+              "Created the .metadata file with defaults.\n\nPlease"
+              " edit those and then run the script again.\n"))
             (quit)))
           (else
            (eval-string (call-with-input-file ".metadata"
