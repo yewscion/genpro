@@ -29,9 +29,29 @@
   (school \"Colorado State University Global\")
   (section \"Some Class: Some Title of Class\")
   (professor \"Dr. Some Professor\")
-  (date \"2022-03-08\")))")
+  (date \"2022-03-08\")
+  (annotated-bibliography? #false)))")
   
 
+(define (create-metadata-file)
+  (call-with-output-file ".metadata"
+    (lambda (port)
+      (put-string port
+                  default-metadata-contents)))
+  (display
+   (string-append
+    "Created the .metadata file with defaults.\n\nPlease"
+    " edit those and then run the script again.\n")))
+
+(define (create-projectile-file)
+  (call-with-output-file ".projectile"
+    (lambda (port)
+      (put-string port
+                  ";;; Generated with Genpro.")))
+  (display
+   (string-append
+    "Created a .projectile file, for use with projectile in GNU Emacs.\n\n"
+    "Projectile is Ready to Go.\n")))
 (define (main args)
   (let* ((options (getopt-long args option-spec))
          (version (option-ref options 'version #f))
@@ -40,47 +60,38 @@
          (skip-metadata (option-ref options 'no-metadata #f))
          (skip-projectile (option-ref options 'no-projectile #f))
          (help (option-ref options 'help #f)))
+    
+    (if (and (not (file-exists? ".projectile")) (not skip-projectile))
+        (create-projectile-file))
     (cond (help (display-help))
           (version (display "genpro v0.0.2\n"))
           ((and (not (file-exists? ".metadata")) (not skip-metadata))
-           ((call-with-output-file ".metadata"
-              (lambda (port)
-                (put-string port
-                            default-metadata-contents)))
-            (if (and (not (file-exists? ".projectile")) (not skip-projectile))
-                (call-with-output-file ".projectile"
-                  (lambda (port)
-                    (put-string port
-                                ";;; Generated with Genpro.")))
-                (display "Skipping .projectile…"))
-            (display
-             (string-append
-              "Created the .metadata file with defaults.\n\nPlease"
-              " edit those and then run the script again.\n"))
-            (quit)))
+           (create-metadata-file)
+           (quit))
           (else
            (eval-string (call-with-input-file ".metadata"
                           (lambda (port)
                             (get-string-all port))))
-            (let ((meta-info
-                   (hash-meta-info (cadr (assoc 'bibliography
-                                                project-metadata-file-info))
-                                   (cadr (assoc 'title
-                                                project-metadata-file-info))
-                                   (cadr (assoc 'author
-                                                project-metadata-file-info))
-                                   (cadr (assoc 'school
-                                                project-metadata-file-info))
-                                   (cadr (assoc 'section
-                                                project-metadata-file-info))
-                                   (cadr (assoc 'professor
-                                                project-metadata-file-info))
-                                   (cadr (assoc 'date
-                                                project-metadata-file-info)))))
-              (cond (generate (make-project meta-info))
-                    (publish (compile-project meta-info))
-                    (else (display-help))))))))
-
+           (let ((meta-info
+                  (hash-meta-info (cadr (assoc 'bibliography
+                                               project-metadata-file-info))
+                                  (cadr (assoc 'title
+                                               project-metadata-file-info))
+                                  (cadr (assoc 'author
+                                               project-metadata-file-info))
+                                  (cadr (assoc 'school
+                                               project-metadata-file-info))
+                                  (cadr (assoc 'section
+                                               project-metadata-file-info))
+                                  (cadr (assoc 'professor
+                                               project-metadata-file-info))
+                                  (cadr (assoc 'date
+                                               project-metadata-file-info))
+                                  (cadr (assoc 'annotated-bibliography?
+                                         project-metadata-file-info)))))
+             (cond (generate (make-project meta-info))
+                   (publish (compile-project meta-info))
+                   (else (display-help))))))))
 (define (display-help)
   (display (string-append
             "Usage: genpro -g || -p \n\n"

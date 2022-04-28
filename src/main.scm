@@ -12,7 +12,8 @@
                         sch
                         sec
                         prf
-                        dat)
+                        dat
+                        ann)
   "Takes the project's metadata and turns it into a seven-element hash table.
 
 Arguments
@@ -25,11 +26,12 @@ SCH <string>: Name of the School/Organization the paper was published under.
 SEC <string>: The section, website, or journal that the paper was written for.
 PRF <string>: Professor's Name (if Applicable).
 DAT <string>: Canonical date of the paper in YYYY-MM-DD format (ISO8601 brief).
+ANN <bool>:   Are we making an annotated bibliography? 
 
 Returns
 =======
 
-A 7 Parameter <hash-table> with the following keys: 
+An 8 Parameter <hash-table> with the following keys: 
 
 'bibliography <string>, from BIB. 
 'project <string>, from PRO. Stored in Title Case.
@@ -38,12 +40,13 @@ A 7 Parameter <hash-table> with the following keys:
 'section <string>, from SEC.
 'professor <string>, from PRF.
 'date <srfi-19 date>, from DAT. Time set to all zeros, offset to local timezone.
+'annotated-bibliography <bool>, from ANN.
 
 Side Effects
 ============
 
 None. This is a purely functional function."
-  (let ((table (make-hash-table 7)))
+  (let ((table (make-hash-table 8)))
     (hashq-create-handle! table 'bibliography bib)
     (hashq-create-handle! table 'project pro)
     (hashq-create-handle! table 'author aut)
@@ -51,6 +54,7 @@ None. This is a purely functional function."
     (hashq-create-handle! table 'section sec)
     (hashq-create-handle! table 'professor prf)
     (hashq-create-handle! table 'date (string->date dat "~Y-~m-~d"))
+    (hashq-create-handle! table 'annotated-bibliography ann)
     table))
 
 (define (sanitize-string string)
@@ -92,7 +96,7 @@ Arguments
 =========
 META-INFO <hash-table>: A Seven-Parameter Hash table with the keys 
                         'date <srfi-19 date>, 'section <string>, 
-                        and 'project <string>.
+                        'annotated-bibliography, and 'project <string>.
 
 Returns
 =======
@@ -103,11 +107,17 @@ Side Effects
 ============
 None; Purely Functional."
   (string-downcase
-   (sanitize-string (string-append (date->string (cdr (hashq-get-handle meta-info 'date)) "~1")
+   (sanitize-string (string-append
+                     (date->string
+                      (cdr (hashq-get-handle meta-info 'date)) "~1")
                   "."
-                  (car (string-split (cdr (hashq-get-handle meta-info 'section)) #\:))
+                  (car (string-split
+                        (cdr (hashq-get-handle meta-info 'section)) #\:))
                   "."
-                  (cdr (hashq-get-handle meta-info 'project))))))
+                  (cdr (hashq-get-handle meta-info 'project))
+                  (if (cdr (hashq-get-handle meta-info 'annotated-bibliography))
+                      (string-append "-annotated-bibliography")
+                      "")))))
 
 (define (build-meta-file-content bibliography
                         title
@@ -156,7 +166,7 @@ None; Purely Functional."
 
 Arguments
 =========
-META-INFO <hash-table>: A 7 element data structure with the following keys:
+META-INFO <hash-table>: A 8 element data structure with the following keys:
 
 'bibliography <string>
 'project <string>
@@ -187,7 +197,7 @@ None; Purely Functional."
 
 Arguments
 =========
-META-INFO <hash-table>: A 7 element data structure with the following keys:
+META-INFO <hash-table>: A 8 element data structure with the following keys:
 
                         'bibliography <string>
                         'project <string>
@@ -196,6 +206,7 @@ META-INFO <hash-table>: A 7 element data structure with the following keys:
                         'section <string>
                         'professor <string>
                         'date <srfi-19 date>
+                        'annotated-bibliography <bool>
 
 Returns
 =======
@@ -205,8 +216,8 @@ Side Effects
 ============
 None; Purely Functional."
   (string-append
-   "\\usepackage[mathjax]{lwarp}"
-   "\\CSSFilename{https://cdr255.com/css/lwarp-cdr255.css}"
+   "\\usepackage[mathjax]{lwarp}\n"
+   "\\CSSFilename{https://cdr255.com/css/lwarp-cdr255.css}\n"
    "\\usepackage{geometry}\n"
    "\\geometry{\n"
    "  letterpaper,\n"
@@ -229,9 +240,15 @@ None; Purely Functional."
    "\\cfoot{}\n"
    "\\rfoot{}\n"
    "\\renewcommand{\\headrulewidth}{0pt}\n"
-   "\\usepackage{babel,xpatch}% recommended\n"
+   "\\usepackage[american]{babel}\n"
+   "\\usepackage{xpatch}\n"
    "\\selectlanguage{english}\n"
-   "\\usepackage[backend=biber,style=apa]{biblatex}\n"
+   "\\usepackage[backend=biber,"
+   "style=apa,"
+   (if (cdr (hashq-get-handle meta-info 'annotated-bibliography))
+       (string-append "annotation=true,")
+       (string-append "annotation=false,"))
+   "loadfiles=true]{biblatex}\n"
    "\\usepackage[doublespacing]{setspace}\n"
    "\\usepackage{indentfirst}\n"
    "\\usepackage{fontspec}\n"
@@ -263,7 +280,7 @@ None; Purely Functional."
 
 Arguments
 =========
-META-INFO <hash-table>: A 7 element data structure with the following keys:
+META-INFO <hash-table>: A 8 element data structure with the following keys:
 
                         'bibliography <string>
                         'project <string>
@@ -272,6 +289,7 @@ META-INFO <hash-table>: A 7 element data structure with the following keys:
                         'section <string>
                         'professor <string>
                         'date <srfi-19 date>
+                        'annotated-bibliography <bool>
 
 Returns
 =======
@@ -298,7 +316,7 @@ None; Purely Functional."
 
 Arguments
 =========
-META-INFO <hash-table>: A 7 element data structure with the following keys:
+META-INFO <hash-table>: A 8 element data structure with the following keys:
 
                         'bibliography <string>
                         'project <string>
@@ -307,6 +325,7 @@ META-INFO <hash-table>: A 7 element data structure with the following keys:
                         'section <string>
                         'professor <string>
                         'date <srfi-19 date>
+                        'annotated-bibliography <bool>
 
 Returns
 =======
@@ -336,7 +355,7 @@ overwritten.
 
 Arguments
 =========
-META-INFO <hash-table>: A 7 element data structure with the following keys:
+META-INFO <hash-table>: A 8 element data structure with the following keys:
 
                         'bibliography <string>
                         'project <string>
@@ -345,6 +364,7 @@ META-INFO <hash-table>: A 7 element data structure with the following keys:
                         'section <string>
                         'professor <string>
                         'date <srfi-19 date>
+                        'annotated-bibliography <bool>
 FILE-NAME <string>: The name of the file to create.
 STRING-FUNCTION <function>: A generator function for the contents of the file.
 
@@ -368,7 +388,7 @@ of STRING-FUNCTION called with META-INFO as its only argument.
 
 Arguments
 =========
-META-INFO <hash-table>: A 7 element data structure with the following keys:
+META-INFO <hash-table>: A 8 element data structure with the following keys:
 
                         'bibliography <string>
                         'project <string>
@@ -377,6 +397,7 @@ META-INFO <hash-table>: A 7 element data structure with the following keys:
                         'section <string>
                         'professor <string>
                         'date <srfi-19 date>
+                        'annotated-bibliography <bool>
 Returns
 =======
 <undefined> on success, errors on errors.
@@ -444,7 +465,7 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed."
 
 Arguments
 =========
-META-INFO <hash-table>: A 7 element data structure with the following keys:
+META-INFO <hash-table>: A 8 element data structure with the following keys:
 
                         'bibliography <string>
                         'project <string>
@@ -453,6 +474,7 @@ META-INFO <hash-table>: A 7 element data structure with the following keys:
                         'section <string>
                         'professor <string>
                         'date <srfi-19 date>
+                        'annotated-bibliography <bool>
 
 Returns
 =======
