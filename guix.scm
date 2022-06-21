@@ -10,18 +10,19 @@
  (guix download)
  (guix build-system gnu)
  ((guix licenses) #:prefix license:)
- (guix git-download)
  (guix utils)
  (guix store)
  (guix gexp))
 (package
  (name "genpro")
- (version "0.1.0")
+ (version "0.1.1")
  (source (local-file "./genpro-0.1.0.tar.bz2"))
  (build-system gnu-build-system)
  (arguments
   `(#:tests? #f))
- (propagated-inputs `())
+ (propagated-inputs (list
+                     guile-3.0
+                     texlive-base))
  (native-inputs (list
                  pkg-config
                  guile-3.0
@@ -35,6 +36,7 @@
                  texlive-bin
                  texlive-capt-of
                  texlive-csquotes
+                 texlive-dvips
                  texlive-etoolbox
                  texlive-fontspec
                  texlive-generic-etexcmds
@@ -80,7 +82,6 @@
                  texlive-lm
                  texlive-luaotfload
                  texlive-svn-prov
-                 texlive-tetex
                  texlive-tex-gyre
                  texlive-tracklang
                  texlive-varwidth
