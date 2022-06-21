@@ -5,8 +5,7 @@
              (ice-9 getopt-long)   ; For CLI Options and Flags.
              (ice-9 ftw)           ; For Filesystem Access.
              (ice-9 textual-ports) ; For Writing to Files.
-             (srfi srfi-19)        ; For Dates.
-)
+             (srfi srfi-19))       ; For Dates.
 
 (define option-spec
   '((version (single-char #\v) (value #f))
@@ -17,7 +16,8 @@
     (no-metadata (single-char #\N) (value #f))))
 
 (define default-metadata-contents
-  ";;; -*- scheme -*-
+  (string-append
+   ";;; -*- scheme -*-
 ;;; This is the metadata file for genpro projects.
 ;;;
 ;;; Replace the default values with the ones appropriate for Your
@@ -29,8 +29,10 @@
   (school \"Colorado State University Global\")
   (section \"Some Class: Some Title of Class\")
   (professor \"Dr. Some Professor\")
-  (date \"2022-03-08\")
-  (annotated-bibliography? #false)))")
+  (date \""
+  (date->string (current-date) "~1")
+  "\")
+  (annotated-bibliography? #false)))"))
   
 
 (define (create-metadata-file)
@@ -106,9 +108,20 @@
             "                      generate.\n"
             "  -N/--no-metadata:   Skip making a .metadata file if it doesn't\n"
             "                      already exist.\n\n"
+            
+            "This program is a part of @PACKAGE_STRING@\n"
+            "@LICENSE@"
+            "Please report bugs to @PACKAGE_BUGREPORT@\n"
+            "and see @PACKAGE_URL@\n"
+            "for the latest version.\n\n"
 
             "This program is entirely written in GNU Guile Scheme,\n"
             "and You are welcome to change it how You see fit.\n\n"
 
             "Guile Online Help: <https://www.gnu.org/software/guile/>\n"
             "Local Online Help: 'info guile'\n")))
+
+;; Local Variables:
+;; mode: scheme
+;; coding: utf-8-unix
+;; End:

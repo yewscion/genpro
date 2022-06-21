@@ -1,0 +1,103 @@
+#+title: The =genpro= Project
+#+subtitle: A project manager for research projects.
+#+date: <2022-03-08 Tue 19:52>
+#+description:
+#+keywords:
+#+subauthor:
+#+html_doctype: html5
+#+html_container: div
+#+html_link_home:
+#+html_link_up:
+#+html_mathjax:
+#+html_equation_reference_format: \eqref{%s}
+#+html_head:
+#+html_head_extra:
+#+infojs_opt:
+#+creator: Emacs and Org Mode on Guix
+#+latex_header:
+#+texinfo_filename:
+#+texinfo_class: info
+#+texinfo_header:
+#+texinfo_post_header:
+#+texinfo_dir_category:
+#+texinfo_dir_title:
+#+texinfo_dir_desc:
+#+texinfo_printed_title:
+#+man_class:
+#+man_class_options:
+#+man_header:
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:nil |:t
+#+options: html-preamble:nil html-scripts:nil html-style:nil
+#+options: html-link-use-abs-url:nil html-postamble:nil
+#+options: html5-fancy:nil tex:t
+#+author: Christopher Rodriguez
+#+email: yewscion@gmail.com
+#+language: en
+#+select_tags: export yup
+#+exclude_tags: noexport nope
+#+property: header-args :mkdirp yes :results output verbatim
+#+property: header-args:text :eval never
+#+property: header-args:markdown :eval never
+#+property: header-args:fundamental :eval never
+#+property: header-args:lisp :noweb yes :mkdirp yes
+#+property: header-args:scheme :noweb yes :mkdirp yes :session GUILE
+#+property: header-args:dot :cmd sfdp :mkdirp yes
+#+property: header-args:bash :dir ~ :shebang #!/usr/bin/env -S bash -i
+#+macro: lastupdate (eval (format-time-string "%F (W%V) %T %Z" nil t))
+#+macro: summary A Project Manager for Research Projects.
+#+macro: guixinfo (eval (cdr:readme-guix-instructions "genpro"))
+#+macro: srcinfo (eval (cdr:readme-src-instructions "genpro"))
+#+macro: installinfo (eval (cdr:readme-install-instructions "genpro"))
+#+macro: useinfo (eval (cdr:readme-std-usage-instructions "genpro"))
+#+macro: contribinfo (eval (cdr:readme-contrib-instructions "genpro"))
+#+macro: licenseinfo (eval (cdr:readme-license-instructions "genpro" "agpl"))
+** {{{TITLE}}}
+
+*{{{summary}}}*
+
+/README Last Updated: {{{lastupdate}}}/
+
+# This is where the long description goes.
+This project was born from a need to write a lot of papers for school very
+quickly. I wanted a standardized way to not only define the projects, but also
+run the more repetetive actions (=lualatex=, =biber=) on them. What I originally
+wrote to do this eventually became =genpro=.
+
+{{{installinfo}}}
+{{{useinfo}}}
+# This is where specific usage instructions go.
+
+In an empty directory, run the program once to generate the =.metadata= and
+=.projectile= files with some defaults.
+
+#+begin_src bash
+genpro
+#+end_src
+
+Edit the defaults inside of =.metadata=, then run with the =-g= or =--generate=
+flag to generate the files needed.
+
+#+begin_src bash
+genpro -g
+#+end_src
+
+Write Your paper in =content.tex= and then publish it with the =-p= or
+=--publish= flag.
+
+#+begin_src bash
+genpro -p
+#+end_src
+
+This will create both =PDF= and =HTML= output for the paper You've written,
+allowing it to be shared or hosted as needed for the assignment.
+
+{{{contribinfo}}}
+{{{licenseinfo}}}
+# Local Variables:
+# mode: org
+# coding: utf-8-unix
+# End:

@@ -473,3 +473,8 @@ TSWLatexianTemp*
 /genpro.scm
 /temp.scm
 # Add any binaries/preinstall files here.
+/genpro-*.tar.bz2
+/doc/genpro.info
+/doc/stamp-vti
+/doc/version.texi
+/build/

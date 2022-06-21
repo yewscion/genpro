@@ -1,0 +1,20 @@
+#+TITLE: =genpro= NEWS – history of user-visible changes
+#+STARTUP: content
+
+Copyright © (2022) Christopher Rodriguez <yewscion@gmail.com>
+
+  Copying and distribution of this file, with or without modification,
+  are permitted in any medium without royalty provided the copyright
+  notice and this notice are preserved.
+
+Please send guile cdr255 bug reports to
+[yewscion@gmail.com](mailto:yewscion@gmail.com).
+
+* 0.1.0
+Not released yet, everything is volatile and experimental. Ye've ben warn'd.
+
+
+# Local Variables:
+# mode: org
+# coding: utf-8-unix
+# End:

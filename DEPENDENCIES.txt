@@ -1,0 +1,6 @@
+- GNU Guile <https://www.gnu.org/software/guile/>
+- lualatex <https://www.luatex.org/>
+- biber <http://biblatex-biber.sourceforge.net/>
+- pygmentize <https://pygments.org/docs/cmdline/>
+- lwarp <https://bdtechconcepts.com/LaTeX-HTML-Converter-The-Lwarp-package.html#autosec-155>
+
