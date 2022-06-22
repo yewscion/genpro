@@ -1,6 +1,6 @@
 (use-modules
  (guix packages)
- (tex)
+ (cdr255 tex)
  (gnu packages pkg-config)
  (gnu packages autotools)
  (gnu packages guile)
