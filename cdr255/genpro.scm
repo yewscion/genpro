@@ -761,7 +761,7 @@ and NAME_html.html from main.tex.
     (if metapost
         (compile-metapost-component))
     (if (or pdf html)
-        (lambda _
+        (begin
           (compile-lualatex-setup name)
           (compile-biber-component name)))
     (if pdf
