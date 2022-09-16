@@ -92,7 +92,7 @@
                           java))
         (if pkginfo
             (dump-to-file "src/assignment/package-info.java"
-                          pkginfo0))
+                          pkginfo))
         (if metapost
             (dump-to-file "src/figure.mp"
                           metapost))
