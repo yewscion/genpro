@@ -6,18 +6,26 @@
 # program before installing in an easy and repeatable way.
 
 timestamp() {
-    date --iso-8601=s | sed 's/^/Timestamp: /'
+    date --iso-8601=s 
+}
+genprocmd() {
+    guile -q -l ../cdr255/genpro.scm -e main -s ../bin/genpro.in "$@"
 }
 
-
-logfile="localtest-$(timestamp).log"
-
-echo "------------------------------------"
-echo $(timestamp)
-echo "Running Local Test. Good Luck!"
-echo "------------------------------------"
-echo ""
-guile -q -l src/main.scm -e main -s src/exe.scm "$@"
-echo ""
-echo "------------------------------------"
-echo "How'd it go?"
+if [ $(basename $PWD) = "sandbox" ]
+then
+    echo "------------------------------------"
+    echo ""
+    echo $(timestamp)
+    echo ""
+    echo "Running Local Test. Good Luck!"
+    echo "------------------------------------"
+    echo ""
+    genprocmd "$@"
+    exit
+    echo ""
+    echo "------------------------------------"
+    echo "How'd it go?"
+else
+    echo "Please run ../localtesh.sh from the /sandbox directory!"
+fi

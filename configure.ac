@@ -1,9 +1,9 @@
 dnl Process this file with autoconf
 AC_INIT([genpro],
-        [0.1.0],
+        [0.5.0],
         [yewscion@gmail.com],
         [genpro],
-        [https://sr.ht/~yewscion/genpro])
+        [https://cdr255.com/projects/genpro/])
 
 dnl General Project Variables
 AC_SUBST(LICENSE, ["Copyright (C) 2022 Christopher Rodriguez
@@ -38,19 +38,6 @@ if test "x$GUILD" = "x"; then
    please check Your guile installation.])
 fi
 GUILE_SITE_DIR
-
-dnl Set Up Java
-dnl AC_PROG_CC
-dnl AX_CHECK_CLASSPATH
-dnl AX_PROG_JAVA_CC
-dnl AX_PROG_JAVAC
-dnl AX_PROG_JAVA
-dnl AX_PROG_JAR
-dnl AX_PROG_JAVADOC
-dnl AC_SUBST(MYJAVAPKG, [whatever])
-
-dnl Checks for classes
-dnl AX_CHECK_RQRD_CLASS(org.whatever)
 
 dnl Installation directories for .scm and .go files.
 guilemoduledir="${datarootdir}/guile/site/$GUILE_EFFECTIVE_VERSION"

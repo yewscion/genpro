@@ -12,8 +12,17 @@
     (help (single-char #\h) (value #f))
     (generate (single-char #\g) (value #f))
     (publish (single-char #\p) (value #f))
-    (no-projectile (single-char #\n) (value #f))
-    (no-metadata (single-char #\N) (value #f))))
+    (pdf (single-char #\d) (value #f))
+    (html (single-char #\w) (value #f))
+    (clean (single-char #\c) (value #f))
+    (java (single-char #\j) (value #f))
+    (metapost (single-char #\m) (value #f))
+    (no-projectile (single-char #\P) (value #f))
+    (no-metadata (single-char #\N) (value #f))
+    (no-java (single-char #\J) (value #f))
+    (no-metapost (single-char #\M) (value #f))
+    (no-pdf (single-char #\D) (value #f))
+    (no-html (single-char #\W) (value #f))))
 
 (define default-metadata-contents
   (string-append
@@ -30,35 +39,82 @@
   (section \"Some Class: Some Title of Class\")
   (professor \"Dr. Some Professor\")
   (date \""
-  (date->string (current-date) "~1")
-  "\")
+   (date->string (current-date) "~1")
+   "\")
   (annotated-bibliography? #false)))"))
-  
 
-(define (create-metadata-file)
-  (call-with-output-file ".metadata"
+(define (dump-to-file file string)
+  (call-with-output-file file
     (lambda (port)
       (put-string port
-                  default-metadata-contents)))
+                  string))))
+
+(define (create-metadata-file)
+  (dump-to-file ".metadata" default-metadata-contents)
   (display
    (string-append
     "Created the .metadata file with defaults.\n\nPlease"
     " edit those and then run the script again.\n")))
 
 (define (create-projectile-file)
-  (call-with-output-file ".projectile"
-    (lambda (port)
-      (put-string port
-                  ";;; Generated with Genpro.")))
+  (dump-to-file ".projectile" ";;; Generated with Genpro.")
   (display
    (string-append
     "Created a .projectile file, for use with projectile in GNU Emacs.\n\n"
     "Projectile is Ready to Go.\n")))
+
+(define (clean-project metainfo)
+  (if (and (file-exists? "content.tex")
+           (file-exists? ".metadata"))
+      (let ((content (call-with-input-file "content.tex" get-string-all))
+            (metadata (call-with-input-file ".metadata" get-string-all))
+            (java (if (file-exists? "src/assignment/Implementation.java")
+                      (call-with-input-file
+                          "src/assignment/Implementation.java"
+                        get-string-all)
+                      #f))
+            (pkginfo (if (file-exists? "src/assignment/package-info.java")
+                         (call-with-input-file
+                             "src/assignment/package-info.java"
+                           get-string-all)
+                         #f))
+            (metapost (if (file-exists? "src/figure.mp")
+                          (call-with-input-file
+                              "src/figure.mp"
+                            get-string-all)
+                          #f)))
+        (system "rm -rfv *")
+        (dump-to-file ".metadata" metadata)
+        (make-project metainfo)
+        (dump-to-file "content.tex" content)
+        (if java
+            (dump-to-file "src/assignment/Implementation.java"
+                          java))
+        (if pkginfo
+            (dump-to-file "src/assignment/package-info.java"
+                          pkginfo0))
+        (if metapost
+            (dump-to-file "src/figure.mp"
+                          metapost))
+        (compile-project metainfo )
+        (display "Genpro Project Cleaned and Rebuild Complete.\n"))
+      (display (string-append "This doesn't seem like a Genpro project…\n"
+                              "Not cleaning anything.\n"))))
+
 (define (main args)
   (let* ((options (getopt-long args option-spec))
          (version (option-ref options 'version #f))
          (generate (option-ref options 'generate #f))
          (publish (option-ref options 'publish #f))
+         (clean (option-ref options 'clean #f))
+         (pdf (and (option-ref options 'pdf #f)
+                   (not (option-ref options 'no-pdf #f))))
+         (html (and (option-ref options 'html #f)
+                    (not (option-ref options 'no-html #f))))
+         (java (and (option-ref options 'java #f)
+                    (not (option-ref options 'no-java #f))))
+         (metapost (and (option-ref options 'metapost #f)
+                        (not (option-ref options 'no-metapost #f))))
          (skip-metadata (option-ref options 'no-metadata #f))
          (skip-projectile (option-ref options 'no-projectile #f))
          (help (option-ref options 'help #f)))
@@ -66,7 +122,7 @@
     (if (and (not (file-exists? ".projectile")) (not skip-projectile))
         (create-projectile-file))
     (cond (help (display-help))
-          (version (display "genpro v0.0.2\n"))
+          (version (display "@PACKAGE_STRING@\n"))
           ((and (not (file-exists? ".metadata")) (not skip-metadata))
            (create-metadata-file)
            (quit))
@@ -90,36 +146,67 @@
                                   (cadr (assoc 'date
                                                project-metadata-file-info))
                                   (cadr (assoc 'annotated-bibliography?
-                                         project-metadata-file-info)))))
-             (cond (generate (make-project meta-info))
-                   (publish (compile-project meta-info))
+                                               project-metadata-file-info)))))
+             (cond (clean (clean-project meta-info))
+                   (generate (if (not (file-exists? "src/"))
+                                 (make-project meta-info)
+                                 (display
+                                  (string-append "It looks like this project "
+                                                 "is already generated…\n\n"
+                                                 "Maybe try 'genpro -p'?"))))
+                   (publish (if (not (or pdf
+                                         html
+                                         java
+                                         metapost))
+                                (compile-project meta-info)
+                                (compile-project meta-info
+                                                 pdf html java metapost)))
                    (else (display-help))))))))
 (define (display-help)
-  (display (string-append
-            "Usage: genpro -g || -p \n\n"
-            
-            "Explanation of Options:\n\n"
-            
-            "  -g/--generate:      Generate a new set of latex files based on\n"
-            "                      the contents of the .metadata file.\n"
-            "  -p/--publish:       Publish the project (run lualatex,\n"
-            "                      lwarpmk, and biber on src/main.tex)\n"
-            "  -n/--no-projectile: Skip making a .projectile file on\n"
-            "                      generate.\n"
-            "  -N/--no-metadata:   Skip making a .metadata file if it doesn't\n"
-            "                      already exist.\n\n"
-            
-            "This program is a part of @PACKAGE_STRING@\n"
-            "@LICENSE@"
-            "Please report bugs to @PACKAGE_BUGREPORT@\n"
-            "and see @PACKAGE_URL@\n"
-            "for the latest version.\n\n"
+  (display
+   (string-append
+    "Usage: genpro [ACTION] [OPTIONS]\n\n"
 
-            "This program is entirely written in GNU Guile Scheme,\n"
-            "and You are welcome to change it how You see fit.\n\n"
+    "Actions:\n\n"
 
-            "Guile Online Help: <https://www.gnu.org/software/guile/>\n"
-            "Local Online Help: 'info guile'\n")))
+    "  -c, --clean:         Recreate a clean project environment,\n"
+    "                         preserving content.tex, .metadata,\n"
+    "                         src/assignment/Implementation.java,\n"
+    "                         src/assignment/package-info.java,\n"
+    "                         and src/figure.mp.\n"
+    "  -g, --generate:      Generate a new set of latex files based on\n"
+    "                         the contents of the .metadata file.\n"
+    "  -h, --help:          Display this help message.\n"
+    "  -p, --publish:       Publish the project (run lualatex,\n"
+    "                         lwarpmk, and biber on src/main.tex)\n"
+    "  -v, --version:       Display just the version string.\n\n"
+    
+    "Publish Options (capitals for the [no-] options):\n\n"
+    "  -d, --[no-]pdf:      Control the generation of a PDF\n"
+    "                         document for the project.\n"
+    "  -j, --[no-]java:     Control the compilation of the java\n"
+    "                         component of the project.\n"
+    "  -m, --[no-]metapost: Control the compilation of the metapost\n"
+    "                         component of the project.\n\n"
+    "  -w, --[no-]html:     Control the generation of an HTML\n"
+    "                         document for the project.\n"
+    "General Options (default to on):\n\n"
+    "  -N, --no-metadata:   Skip making a .metadata file if it doesn't\n"
+    "                         already exist.\n"
+    "  -P, --no-projectile: Skip making a .projectile file on\n"
+    "                         generate.\n\n"
+    
+    "This program is a part of @PACKAGE_STRING@\n"
+    "@LICENSE@"
+    "Please report bugs to @PACKAGE_BUGREPORT@\n"
+    "and see @PACKAGE_URL@\n"
+    "for the latest version.\n\n"
+
+    "This program is entirely written in GNU Guile Scheme,\n"
+    "and You are welcome to change it how You see fit.\n\n"
+    
+    "Guile Online Help: <https://www.gnu.org/software/guile/>\n"
+    "Local Online Help: 'info genpro'\n")))
 
 ;; Local Variables:
 ;; mode: scheme

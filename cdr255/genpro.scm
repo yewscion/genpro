@@ -271,11 +271,6 @@ None.
    "  top=1in,\n"
    "  bottom=1in}\n"
    "\\usepackage{etoolbox}\n"
-   "\\patchcmd{\\titlepage}\n"
-   "  {\\thispagestyle{empty}}\n"
-   "  {\\thispagestyle{fancy}}\n"
-   "  {}\n"
-   "  {}\n"
    "\\usepackage{fancyhdr}\n"
    "\\pagestyle{fancy}\n"
    "\\lhead{}\n"
@@ -311,13 +306,46 @@ None.
    "\\usepackage{graphicx}\n"
    "\\graphicspath{ {./images/} }\n"
    "\\usepackage[nomarkers]{endfloat}\n"
+   "\\usepackage[html]{xcolor}\n"
+   "\\definecolor{color-link}{HTML}{03872d}\n"
+   "\\definecolor{color-file}{HTML}{032d87}\n"
+   "\\definecolor{color-url}{HTML}{032d87}\n"
+   "\\definecolor{color-cite}{HTML}{2d0387}\n"
+   "\\definecolor{color-anchor}{HTML}{87032d}\n"
+   "\\definecolor{color-menu}{HTML}{03872d}\n"
+   "\\definecolor{color-run}{HTML}{87032d}\n"
+   "\\usepackage{hyperref}\n"
+   "\\hypersetup{colorlinks  = true, % Swap these two if You \n"
+   "            %hidelinks   = false,  % Don't want links to be obvious.\n"
+   "             linkcolor   = color-link,\n"
+   "             filecolor   = color-file,\n"
+   "             urlcolor    = color-url, \n"
+   "             anchorcolor = color-anchor,\n"
+   "             citecolor   = color-cite,\n"
+   "             menucolor   = color-menu,\n"
+   "             runcolor    = color-run,\n"
+   "             linktoc     = all,\n"
+   "             pdftitle    = \\localtitle,\n"
+   "             pdfauthor   = \\localauthor,\n"
+   "            %pdfsubject  = key topic,  % Metadata not supported by\n"
+   "            %pdfkeywords = key words,  % Genpro yet.\n"
+   "}\n"
    "\\usepackage[noabbrev]{cleveref}\n"
    "\\usepackage{fancyvrb}\n"
    "\\usepackage{color}\n"
    "\\usepackage{listings}\n"
    "\\usepackage{minted}\n"
    "\\usepackage{datetime2}\n"
+   "\\usepackage{luamplib}\n"
+   "\\mplibtextextlabel{enable}\n"
+   "\\everymplib{input metauml;}\n"
+   "\\mplibforcehmode\n"
    "\\usepackage{csquotes}\n"
+   "\\renewcommand\\labelitemi{\\bullet}\n"
+   "\\renewcommand\\labelitemii{\\cdot}\n"
+   "\\renewcommand\\labelitemiii{\\circ}\n"
+   "\\AtBeginEnvironment{appendices}{\\crefalias{section}{appendix}}\n"
+   "\\newcommand{\\hlabel}{\\phantomsection\\label}\n"
    "\n% Generated with genpro.\n"))
 
 (define (build-main-file meta-info)
@@ -351,13 +379,15 @@ None.
 "
   (string-append
    "% This is main.tex\n"
-   "\\documentclass[12pt, american]{article}\n"
+   "\\documentclass[12pt, american]{report}\n"
    "\\input{meta}\n"
    "\\input{preamble}\n"
    "\\begin{document}\n"
+   "\\pagenumbering{arabic}\n"
    "\\setlength{\\headheight}{14.49998pt}\n"
    "\\addtolength{\\topmargin}{-2.49998pt}\n"
    "\\input{title-page}\n"
+   "\\newpage\n"
    "\\section*{\\localtitle{}}\n"
    "\\input{content}\n"
    "\\newpage\n"
@@ -394,19 +424,107 @@ Impurities
 None.
 "
   (string-append
-   "\\begin{titlepage}\n"
-   "  \\begin{center}\n"
-   "    \\vspace*{5cm}\n"
-   "    \\textbf{\\localtitle}\\\\\n"
-   "    \\vspace{\\baselineskip}\n"
-   "    \\localauthor\\\\\n"
-   "    \\localschool\\\\\n"
-   "    \\localsection\\\\\n"
-   "    \\localprofessor\\\\\n"
-   "    \\localduedate\n"
-   "  \\end{center}\n"
-   "\\end{titlepage}\n"
-   "\\setcounter{page}{2}"))
+   "\\begin{center}\n"
+   "  \\vspace*{5cm}\n"
+   "  \\textbf{\\localtitle}\\\\\n"
+   "  \\vspace{\\baselineskip}\n"
+   "  \\localauthor\\\\\n"
+   "  \\localschool\\\\\n"
+   "  \\localsection\\\\\n"
+   "  \\localprofessor\\\\\n"
+   "  \\localduedate\n"
+   "\\end{center}\n"))
+(define* (build-java-file meta-info #:optional (java-file-string genpro-java-file))
+  "Dumps my standard, blank Implementation.java out as a <string>.
+
+This is a CALCULATION.
+
+Arguments
+=========
+
+META-INFO <hash-table>: A 8 element data structure with the following keys:
+
+                        'bibliography <string>
+                        'project <string>
+                        'author <string>
+                        'school <string>
+                        'section <string>
+                        'professor <string>
+                        'date <srfi-19 date>
+                        'annotated-bibliography <bool>
+
+Returns
+=======
+
+A <string> representing the contents of Implementation.java.
+
+Impurities
+==========
+
+None.
+"
+  java-file-string)
+(define* (build-java-package-info-file meta-info #:optional (java-file-string
+                                                             genpro-java-pkginfo))
+  "Dumps my standard, blank Implementation.java out as a <string>.
+
+This is a CALCULATION.
+
+Arguments
+=========
+
+META-INFO <hash-table>: A 8 element data structure with the following keys:
+
+                        'bibliography <string>
+                        'project <string>
+                        'author <string>
+                        'school <string>
+                        'section <string>
+                        'professor <string>
+                        'date <srfi-19 date>
+                        'annotated-bibliography <bool>
+
+Returns
+=======
+
+A <string> representing the contents of Implementation.java.
+
+Impurities
+==========
+
+None.
+"
+  java-file-string)
+(define (build-metapost-file meta-info)
+  "Dumps my standard figure.mp out as a <string>.
+
+This is a CALCULATION.
+
+Arguments
+=========
+
+META-INFO <hash-table>: A 8 element data structure with the following keys:
+
+                        'bibliography <string>
+                        'project <string>
+                        'author <string>
+                        'school <string>
+                        'section <string>
+                        'professor <string>
+                        'date <srfi-19 date>
+                        'annotated-bibliography <bool>
+
+Returns
+=======
+
+A <string> representing the contents of figure.mp.
+
+Impurities
+==========
+
+None.
+"
+  genpro-metapost-file)
 
 (define (make-file meta-info file-name string-function)
   "Creates a file based on supplied arguments. Pre-existing files will be 
@@ -480,25 +598,33 @@ Creates the following files, symlinks, and directories, overwriting them if they
 exist:
 
 ./src/
-./out/
 ./src/main.tex
 ./src/meta.tex
 ./src/preamble.tex
 ./src/title-page.tex
 ./content.tex
 ./src/content.tex => ../content.tex
-./src/.metainfo -> ../.metainfo"
+./src/.metadata -> ../.metadata
+./src/assignment/
+./src/assignment/Implementation.java
+./src/figure.mp"
   (let ((name (build-file-name meta-info)))
     (mkdir "./src")
-    (mkdir "./out")
     (make-file meta-info "./src/main.tex" build-main-file)
     (make-file meta-info "./src/meta.tex" build-meta-file)
     (make-file meta-info "./src/preamble.tex" build-preamble-file)
     (make-file meta-info "./src/title-page.tex" build-title-file)
     (system "touch content.tex")
-    (symlink "../.metainfo" "./src/.metainfo")
+    (symlink "../.metadata" "./src/.metadata")
     (symlink "../content.tex" "./src/content.tex")
     (chdir "src/")
+    (mkdir "./assignment")
+    (make-file meta-info "./assignment/Implementation.java"
+               build-java-file)
+    (make-file meta-info "./assignment/package-info.java"
+               build-java-package-info-file)
+    (make-file meta-info "./figure.mp"
+               build-metapost-file)
     (symlink "./main.tex" (string-append "./" name ".tex"))
     (run-lualatex name)
     (system (string-append "lwarpmk html"))
@@ -536,8 +662,54 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed.
   (system (string-append "lualatex --output-format pdf --jobname="
                          name
                          " --shell-escape main.tex")))
+(define (compile-java-component name)
+  (if (file-exists? "./assignment/Implementation.java")
+      (begin
+        (display "Compiling the Java Component…\n")
+        (system "javadoc -cp . assignment")
+        (system "javac assignment/*.java")
+        (system (string-append "jar -v -c -f "
+                               name
+                               ".jar -e assignment.Implementation "
+                               "assignment/")))
+      (display (string-append "Java Compilation Requested, but no "
+                              "file found…\nSkipping…\n"))))
 
-(define (compile-project meta-info)
+(define (compile-metapost-component)
+  (if (file-exists? "figure.mp")
+      (begin
+        (display "Compiling the Metapost Component…\n")
+        (system "mpost figure.mp"))
+      (display (string-append "Metapost Compilation Requested, but no "
+               "file found…\nSkipping…\n"))))
+
+(define (compile-lualatex-setup name)
+  (system (string-append "lwarpmk clean"))
+  (system (string-append "lwarpmk cleanlimages"))
+  (run-lualatex name)
+  (system (string-append "lwarpmk again"))
+  (system (string-append "lwarpmk html"))
+  )
+
+(define (compile-biber-component name)
+  (system (string-append "biber " name))
+  (system (string-append "biber " name "_html")))
+
+(define (compile-pdf-component name)
+  (run-lualatex name))
+
+(define (compile-html-component)
+  (system (string-append "lwarpmk again"))
+  (system (string-append "lwarpmk html"))
+  (system (string-append "lwarpmk limages")))
+
+
+(define* (compile-project meta-info
+                          #:optional
+                          (pdf #t)
+                          (html #t)
+                          (java #t)
+                          (metapost #t))
   "Compiles the LaTeX project in the ./src/ directory, assuming the 
 \"main.tex\" file exists.
 
@@ -556,6 +728,10 @@ META-INFO <hash-table>: A 8 element data structure with the following keys:
                         'professor <string>
                         'date <srfi-19 date>
                         'annotated-bibliography <bool>
+PDF <boolean>: Does the user want PDF Compilation?
+HTML <boolean>: Does the user want HTML Compilation?
+JAVA <boolean>: Does the user want JAVA Compilation?
+METAPOST <boolean>: Does the user want METAPOST Compilation?
 
 Returns
 =======
@@ -578,15 +754,179 @@ lwarpmk
 Which creates a large number of intermediary files, but ideally creates NAME.pdf
 and NAME_html.html from main.tex.
 "
-  (chdir "src")
   (let ((name (build-file-name meta-info)))
-    (run-lualatex name)
-    (system (string-append "lwarpmk again"))
-    (system (string-append "lwarpmk html"))
-    (system (string-append "biber " name))
-    (system (string-append "biber " name "_html"))
-    (run-lualatex name)
-    (run-lualatex name)
-    (system (string-append "lwarpmk again"))
-    (system (string-append "lwarpmk html")))
-  (chdir ".."))
+    (chdir "src")
+    (if java
+        (compile-java-component name))
+    (if metapost
+        (compile-metapost-component))
+    (if (or pdf html)
+        (lambda _
+          (compile-lualatex-setup name)
+          (compile-biber-component name)))
+    (if pdf
+        (compile-pdf-component name))
+    (if html
+        (compile-html-component))
+    (chdir "..")))
+
+
+(define genpro-java-file
+  "package assignment;
+import java.util.Scanner;
+import java.lang.StringBuilder;
+import java.lang.RuntimeException;
+/**
+ * <p>A One-Line Description of the Purpose of this Class in Active
+ * Voice.</p>
+ *
+ * <p>A Longer Description of the thought process behind this code.</p>
+ *
+ */
+public class Implementation {
+    // Personal Exception Type for bad Strings gained from User Input.
+    /**
+     * <p>An exception for when user input is impermissable.</p>
+     *
+     * <p>Basically a <code>RuntimeException</code>, but named differently
+     * for more readable code.</p>
+     *
+     */
+    private static class InvalidInputException extends RuntimeException {
+        /**
+         * <p>Creates an error specifying invalid input from the user.</p>
+         *
+         * <p>This is a <strong>CALCULATION</strong>.
+         
+         * <p><em>Impurities:</em> None.</p>
+         * @param errorMessage the message to display to the user.
+         * @param error the actual throwable error object, for root cause
+         * investigation.
+         */
+        private InvalidInputException(String errorMessage, Throwable error) {
+            super(errorMessage, error);
+        }
+    }
+    /**
+     * <p>The message we'll use to indicate that empty input was
+     * received.</p>
+     */
+    private static String emptyInputMessage =
+        \"Please Enter Something, Input Input is not Allowed.\";
+    /**
+     * <p>A pre-built, generic InvalidInputException meant for when empty
+     *  user input is supplied.</p>
+     */
+    private static InvalidInputException emptyInput =
+        new InvalidInputException(emptyInputMessage, null);
+    /**
+     * <p>Gets input from the supplied <code>Scanner</code>, ensuring it is
+     * not empty.</p>
+     *
+     * <p>This is an <strong>ACTION</strong>.
+     *
+     * <p><em>Impurities:</em> IO.</p>
+     *
+     * @param scanner what to use for getting the input.
+     * @return The supplied input, once it is not empty.
+     * @throws InvalidInputException if empty input is supplied.
+     *
+     */
+    private static String getRawInput(Scanner scanner)
+        throws InvalidInputException {
+        String result = \"\";
+        result = scanner.next();
+        if (result.equals(\"\")) {
+            throw emptyInput;
+        }
+        return result;
+    }
+    /**
+     * <p>A pre-defined <code>Scanner</code> object for use in main, which
+     * accepts input up to a newline as <code>next()</code>.</p>
+     */
+    private static Scanner scanner = new Scanner(System.in)
+        .useDelimiter(\"\\n\");
+    /**
+     * <p>A pre-defined <code>StringBuilder</code> object for use in
+     * main.</p>
+     */    
+    private static StringBuilder stringBuilder = new StringBuilder();
+    /**
+     * <p>Runs the Actual Assignment.</p>
+     *
+     * <p>This is an <strong>ACTION</strong>.
+     *
+     * <p><strong>Impurities:</strong> IO.</p>
+     *
+     * @param args arguments from the CLI.
+     */
+    public static void main(String args[]) {
+        stringBuilder.append(getRawInput(scanner));
+        System.out.println(stringBuilder.toString());
+    }
+}\n")
+
+(define genpro-metapost-file
+  "prologues := 3;
+outputtemplate := \"%j-%c.mps\";
+string metauml_defaultFont;
+string metauml_defaultFontOblique;
+string metauml_defaultFontBold;
+string metauml_defaultFontBoldOblique;
+metauml_defaultFont := \"texnansi-qtmr\";
+metauml_defaultFontOblique  := \"texnansi-qtmri\";
+metauml_defaultFontBold  := \"texnansi-qtmb\";
+metauml_defaultFontBoldOblique  := \"texnansi-qtmbi\";
+input metauml;
+def U primary s = if string s: decode(s) fi enddef;
+vardef decode(expr given) = 
+    save a, i, s, out; string s, out; numeric a, i;
+    out = \"\"; i=0;
+    forever:
+        s := substring (i, incr i) of given; 
+        a := ASCII s;
+        if a < 128: 
+        elseif a = 194: 
+            s := substring (i, incr i) of given;
+        elseif a = 195: 
+            s := char (64 + ASCII substring (i, incr i) of given);
+        else: 
+            s := \"?\";
+        fi
+        out := out & s;
+        exitif i >= length given;
+    endfor
+    out
+enddef;
+beginfig(1);
+  Activity.A(U\"«Create» <>\");
+  drawObjects(A);
+endfig;
+end.
+")
+
+(define genpro-java-pkginfo
+  "/**
+ * This package is meant to implement Assignment 00 of CSC00.
+ *
+ * <p>The original Assignment Given was:</p>
+ *
+ * <pre>Your first assignment is to get to know the team of learners with
+ * whom you will be working. Please introduce yourself in this discussion
+ * forum. Focus your introduction on areas you feel are relevant to your work
+ * in the course but, give your introduction a personal touch as well.
+ *
+ * Also, share your location, your career aspirations, and any personal
+ * experiences or knowledge that relates to this course. You may also post a
+ * picture of yourself.
+ *
+ * What experience and interest do you have in computer programming? How
+ * might the knowledge and skills associated with this course support your
+ * career goals or life aspirations?</pre>
+ *
+ * @since 15.0
+ * @author yewscion
+ * @version 1.0
+ */
+package assignment;")
