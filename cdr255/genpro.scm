@@ -391,7 +391,8 @@ None.
    "\\section*{\\localtitle{}}\n"
    "\\input{content}\n"
    "\\newpage\n"
-   "\\printbibliography\n"
+   "\\section*{References}\n"
+   "\\printbibliography[heading=none]\n"
    "\\end{document}"))
 
 (define (build-title-file meta-info)
