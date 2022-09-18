@@ -99,7 +99,7 @@ None.
                                   (eq? #\] x)
                                   (eq? #\} x)
                                   (eq? #\= x))
-                                  #\_)
+                                 #\_)
                                 ((eq? #\space x)
                                  #\-)
                                 (else x))) string))
@@ -130,22 +130,22 @@ None.
    (sanitize-string (string-append
                      (date->string
                       (cdr (hashq-get-handle meta-info 'date)) "~1")
-                  "."
-                  (car (string-split
-                        (cdr (hashq-get-handle meta-info 'section)) #\:))
-                  "."
-                  (cdr (hashq-get-handle meta-info 'project))
-                  (if (cdr (hashq-get-handle meta-info 'annotated-bibliography))
-                      (string-append "-annotated-bibliography")
-                      "")))))
+                     "."
+                     (car (string-split
+                           (cdr (hashq-get-handle meta-info 'section)) #\:))
+                     "."
+                     (cdr (hashq-get-handle meta-info 'project))
+                     (if (cdr (hashq-get-handle meta-info 'annotated-bibliography))
+                         (string-append "-annotated-bibliography")
+                         "")))))
 
 (define (build-meta-file-content bibliography
-                        title
-                        author
-                        school
-                        section
-                        professor
-                        due-date)
+                                 title
+                                 author
+                                 school
+                                 section
+                                 professor
+                                 due-date)
   "Builds the actual content of the meta.tex file for a latex project.
 
 This is a CALCULATION.
@@ -620,6 +620,9 @@ exist:
     (symlink "../content.tex" "./src/content.tex")
     (chdir "src/")
     (mkdir "./assignment")
+    (system (string-append "touch "
+                           name
+                           ".zip"))
     (make-file meta-info "./assignment/Implementation.java"
                build-java-file)
     (make-file meta-info "./assignment/package-info.java"
@@ -667,12 +670,16 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed.
   (if (file-exists? "./assignment/Implementation.java")
       (begin
         (display "Compiling the Java Component…\n")
-        (system "javadoc -cp . assignment")
+        (chdir "doc/")
+        (system "javadoc -cp .. assignment")
+        (chdir "..")
         (system "javac assignment/*.java")
         (system (string-append "jar -v -c -f "
                                name
                                ".jar -e assignment.Implementation "
-                               "assignment/")))
+                               "assignment/"))
+        (display (generate-java-zipfile-command name))
+        (system (generate-java-zipfile-command name)))
       (display (string-append "Java Compilation Requested, but no "
                               "file found…\nSkipping…\n"))))
 
@@ -682,15 +689,14 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed.
         (display "Compiling the Metapost Component…\n")
         (system "mpost figure.mp"))
       (display (string-append "Metapost Compilation Requested, but no "
-               "file found…\nSkipping…\n"))))
+                              "file found…\nSkipping…\n"))))
 
 (define (compile-lualatex-setup name)
   (system (string-append "lwarpmk clean"))
   (system (string-append "lwarpmk cleanlimages"))
   (run-lualatex name)
   (system (string-append "lwarpmk again"))
-  (system (string-append "lwarpmk html"))
-  )
+  (system (string-append "lwarpmk html")))
 
 (define (compile-biber-component name)
   (system (string-append "biber " name))
@@ -836,9 +842,15 @@ public class Implementation {
     private static String getRawInput(Scanner scanner)
         throws InvalidInputException {
         String result = \"\";
-        result = scanner.next();
-        if (result.equals(\"\")) {
-            throw emptyInput;
+        while (result == \"\") {
+           try {
+                result = scanner.next();
+                if (result.equals(\"\")) {
+                    throw emptyInput;
+                }
+            } catch (InvalidInputException e) {
+                System.out.println(\"ERROR: \" + e.getMessage());
+            }
         }
         return result;
     }
@@ -931,3 +943,33 @@ end.
  * @version 1.0
  */
 package assignment;")
+
+(define (generate-java-zipfile-command name)
+  (let ((zipcmd " zip -9 -r -v ")
+        (files (string-append " assignment/*.java "
+                              name
+                              ".jar doc/ "))
+        (tmpdir (string-append " " name ".java/ "))
+        (zipname (string-append " " name ".zip "))
+        (wipname (string-append name "-wip.zip ")))
+    
+    (string-append
+     zipcmd
+     wipname
+     files
+     "&& mkdir -pv"
+     tmpdir
+     "&& cd"
+     tmpdir
+     "&& unzip ../"
+     wipname
+     "&& cd .. && rm"
+     zipname
+     "&&"
+     zipcmd
+     zipname
+     tmpdir
+     "&& rm -rf "
+     wipname
+     tmpdir)))
+
