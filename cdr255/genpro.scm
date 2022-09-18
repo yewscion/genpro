@@ -2,9 +2,13 @@
   :use-module (ice-9 ftw)           ; For Filesystem Access.
   :use-module (ice-9 textual-ports) ; For Writing to Files.
   :use-module (srfi srfi-19)        ; For Dates.
+  :use-module (cdr255 userlib)      ; Utility Functions.
   :export (make-project
            compile-project
-           hash-meta-info))
+           hash-meta-info
+           clean-project
+           create-metadata-file
+           create-projectile-file))
 
 (define (hash-meta-info bib
                         pro
@@ -620,13 +624,14 @@ exist:
     (symlink "../content.tex" "./src/content.tex")
     (chdir "src/")
     (mkdir "./assignment")
-    (system (string-append "touch "
-                           name
-                           ".zip"))
     (make-file meta-info "./assignment/Implementation.java"
                build-java-file)
     (make-file meta-info "./assignment/package-info.java"
                build-java-package-info-file)
+    (mkdir "doc/")
+    (system (string-append "touch "
+                           name
+                           ".java.zip"))
     (make-file meta-info "./figure.mp"
                build-metapost-file)
     (symlink "./main.tex" (string-append "./" name ".tex"))
@@ -667,6 +672,21 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed.
                          name
                          " --shell-escape main.tex")))
 (define (compile-java-component name)
+"Compile the Java component of the project.
+
+This is an ACTION.
+
+Arguments
+=========
+NAME <string>: The name of the project.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+Runs system commands that change various files."  
   (if (file-exists? "./assignment/Implementation.java")
       (begin
         (display "Compiling the Java Component…\n")
@@ -684,6 +704,21 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed.
                               "file found…\nSkipping…\n"))))
 
 (define (compile-metapost-component)
+"Compile the Metapost component of the project.
+
+This is an ACTION.
+
+Arguments
+=========
+None.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+Runs system commands that change various files."
   (if (file-exists? "figure.mp")
       (begin
         (display "Compiling the Metapost Component…\n")
@@ -692,6 +727,22 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed.
                               "file found…\nSkipping…\n"))))
 
 (define (compile-lualatex-setup name)
+  "Clears old temporary files and does an initial compile of the PDF and HTML
+components of the project.
+
+This is an ACTION.
+
+Arguments
+=========
+NAME <string>: The name of the project.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+Runs system commands that change various files."  
   (system (string-append "lwarpmk clean"))
   (system (string-append "lwarpmk cleanlimages"))
   (run-lualatex name)
@@ -699,13 +750,58 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed.
   (system (string-append "lwarpmk html")))
 
 (define (compile-biber-component name)
+"Compile the Biber (references) component of the project.
+
+This is an ACTION.
+
+Arguments
+=========
+NAME <string>: The name of the project.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+Runs system commands that change various files."  
   (system (string-append "biber " name))
   (system (string-append "biber " name "_html")))
 
 (define (compile-pdf-component name)
+"Compile the PDF component of the project.
+
+This is an ACTION.
+
+Arguments
+=========
+NAME <string>: The name of the project.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+Runs system commands that change various files."
   (run-lualatex name))
 
 (define (compile-html-component)
+"Compile the HTML component of the project, including images.
+
+This is an ACTION.
+
+Arguments
+=========
+None.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+Runs system commands that change various files."
   (system (string-append "lwarpmk again"))
   (system (string-append "lwarpmk html"))
   (system (string-append "lwarpmk limages")))
@@ -945,12 +1041,28 @@ end.
 package assignment;")
 
 (define (generate-java-zipfile-command name)
+"Generates a shell command for creating a zipfile of the java component of a project.
+
+This is a CALCULATION.
+
+Arguments
+=========
+NAME <string>: The name of the project.
+
+Returns
+=======
+A <string> that can be used to generate a distributable zipfile of the java
+component of a project.
+
+Impurities
+==========
+None."
   (let ((zipcmd " zip -9 -r -v ")
         (files (string-append " assignment/*.java "
                               name
                               ".jar doc/ "))
         (tmpdir (string-append " " name ".java/ "))
-        (zipname (string-append " " name ".zip "))
+        (zipname (string-append " " name ".java.zip "))
         (wipname (string-append name "-wip.zip ")))
     
     (string-append
@@ -973,3 +1085,126 @@ package assignment;")
      wipname
      tmpdir)))
 
+(define default-metadata-contents
+  (string-append
+   ";;; -*- scheme -*-\n"
+   ";;; This is the metadata file for genpro projects.\n"
+   ";;;\n"
+   ";;; Replace the default values with the ones appropriate for Your\n"
+   ";;; project.\n"
+   "(define project-metadata-file-info\n"
+   "'((title \"Project Title\")\n"
+   "  (author \"Christopher Rodriguez\")\n"
+   "  (bibliography \"~/Documents/biblio/main.bib\")\n"
+   "  (school \"Colorado State University Global\")\n"
+   "  (section \"Some Class: Some Title of Class\")\n"
+   "  (professor \"Dr. Some Professor\")\n"
+   "  (date \""
+   (date->string (current-date) "~1")
+   "\")\n"
+   "  (annotated-bibliography? #false)))\n"))
+
+(define (create-metadata-file)
+  "Create the default .metadata file for a new project.
+
+This is an ACTION.
+
+Arguments
+=========
+None.
+
+Returns
+=======
+Unspecified.
+
+Impurities
+==========
+I/O, creates file on local filesystem."
+  (dump-string-to-file ".metadata" default-metadata-contents)
+  (display
+   (string-append
+    "Created the .metadata file with defaults.\n\nPlease"
+    " edit those and then run the script again.\n")))
+
+(define (create-projectile-file)
+"Create the default .projectile file for a new project.
+
+Arguments
+=========
+None.
+
+Returns
+=======
+Unspecified.
+
+Impurities
+==========
+I/O, creates file on local filesystem."
+  (dump-string-to-file ".projectile" ";;; Generated with Genpro.")
+  (display
+   (string-append
+    "Created a .projectile file, for use with projectile in GNU Emacs.\n\n"
+    "Projectile is Ready to Go.\n")))
+
+(define (clean-project metainfo)
+"Recreate a clean version of a project, preserving commonly edited files.
+
+This is an ACTION.
+
+Arguments
+=========
+META-INFO <hash-table>: A 8 element data structure with the following keys:
+
+                        'bibliography <string>
+                        'project <string>
+                        'author <string>
+                        'school <string>
+                        'section <string>
+                        'professor <string>
+                        'date <srfi-19 date>
+                        'annotated-bibliography <bool>
+
+Returns
+=======
+Unspecified.
+
+Impurities
+==========
+I/O, File Deletion and Creation, Relies On and Changes System State."
+  
+  (if (and (file-exists? "content.tex")
+           (file-exists? ".metadata"))
+      (let ((content (call-with-input-file "content.tex" get-string-all))
+            (metadata (call-with-input-file ".metadata" get-string-all))
+            (java (if (file-exists? "src/assignment/Implementation.java")
+                      (call-with-input-file
+                          "src/assignment/Implementation.java"
+                        get-string-all)
+                      #f))
+            (pkginfo (if (file-exists? "src/assignment/package-info.java")
+                         (call-with-input-file
+                             "src/assignment/package-info.java"
+                           get-string-all)
+                         #f))
+            (metapost (if (file-exists? "src/figure.mp")
+                          (call-with-input-file
+                              "src/figure.mp"
+                            get-string-all)
+                          #f)))
+        (system "rm -rfv *")
+        (dump-string-to-file ".metadata" metadata)
+        (make-project metainfo)
+        (dump-string-to-file "content.tex" content)
+        (if java
+            (dump-string-to-file "src/assignment/Implementation.java"
+                          java))
+        (if pkginfo
+            (dump-string-to-file "src/assignment/package-info.java"
+                          pkginfo))
+        (if metapost
+            (dump-string-to-file "src/figure.mp"
+                          metapost))
+        (compile-project metainfo)
+        (display "Genpro Project Cleaned and Rebuild Complete.\n"))
+      (display (string-append "This doesn't seem like a Genpro project…\n"
+                              "Not cleaning anything.\n"))))
