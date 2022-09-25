@@ -689,20 +689,20 @@ Impurities
 Runs system commands that change various files."  
   (if (file-exists? "./assignment/Implementation.java")
       (begin
+        (system "rm -rfv assignment/*.redacted.*")
         (display "Compiling the Java Component…\n")
         (chdir "doc/")
         (system "javadoc -cp .. assignment")
         (chdir "..")
         (system "javac assignment/*.java")
+        (compile-java-redact-javadoc "assignment/Implementation.java")
         (system (string-append "jar -v -c -f "
                                name
                                ".jar -e assignment.Implementation "
                                "assignment/"))
-        (display (generate-java-zipfile-command name))
         (system (generate-java-zipfile-command name)))
       (display (string-append "Java Compilation Requested, but no "
                               "file found…\nSkipping…\n"))))
-
 (define (compile-metapost-component)
 "Compile the Metapost component of the project.
 
@@ -1208,3 +1208,28 @@ I/O, File Deletion and Creation, Relies On and Changes System State."
         (display "Genpro Project Cleaned and Rebuild Complete.\n"))
       (display (string-append "This doesn't seem like a Genpro project…\n"
                               "Not cleaning anything.\n"))))
+(define (compile-java-redact-javadoc filename)
+"Remove any and all JavaDoc comments from the file at FILENAME.
+
+This is an ACTION.
+
+Arguments
+=========
+FILENAME<string>: The name (and possibly path) of the file to alter.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+File I/O."
+  (let ((result (add-section-to-filename "redacted" filename))
+        (contents (get-file-as-string filename)))
+    (if (not contents)
+        (display (string-append "Could not modify "
+                                filename
+                                "; are You sure it exists?"))
+        (dump-string-to-file
+         result
+         (remove-c-multiline-comments-from-string contents)))))
