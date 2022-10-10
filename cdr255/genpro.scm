@@ -692,7 +692,7 @@ Runs system commands that change various files."
         (system "rm -rfv assignment/*.redacted.*")
         (display "Compiling the Java Component…\n")
         (chdir "doc/")
-        (system "javadoc -cp .. assignment")
+        (system "javadoc -private -cp .. assignment ")
         (chdir "..")
         (system "javac assignment/*.java")
         (compile-java-redact-javadoc "assignment/Implementation.java")
