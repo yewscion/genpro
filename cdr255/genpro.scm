@@ -8,7 +8,9 @@
            hash-meta-info
            clean-project
            create-metadata-file
-           create-projectile-file))
+           create-projectile-file
+           build-file-name
+           run-java-jarfile))
 
 (define (hash-meta-info bib
                         pro
@@ -1047,7 +1049,8 @@ This is a CALCULATION.
 
 Arguments
 =========
-NAME <string>: The name of the project.
+NAME<string>: A <string> of the format \"date.section.project-name\",
+with only the part of the section before the colon included.
 
 Returns
 =======
@@ -1233,3 +1236,36 @@ File I/O."
         (dump-string-to-file
          result
          (remove-c-multiline-comments-from-string contents)))))
+
+(define (run-java-jarfile meta-info)
+ "Execute the Runnable Jarfile created by this project.
+
+This is an ACTION.
+
+Arguments
+=========
+META-INFO <hash-table>: A Seven-Parameter Hash table with the keys 
+                        'date <srfi-19 date>, 'section <string>, 
+                        'annotated-bibliography, and 'project <string>.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+Runs an external tool on files on disk, I/O."
+ (let ((project-name (build-file-name meta-info)))
+   (display (string-append "Running src/"
+                           project-name
+                           ".jar…\n"))
+   (if (file-exists? (string-append "src/"
+                                    project-name
+                                    ".jar"))
+       (system (string-append "java -jar src/"
+                              project-name
+                              ".jar"))
+       (display (string-append "Please clean project: \"./src/"
+                               project-name
+                               ".jar\" is missing.\n")))))
+  

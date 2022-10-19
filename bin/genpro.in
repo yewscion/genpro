@@ -16,6 +16,7 @@
     (html (single-char #\w) (value #f))
     (clean (single-char #\c) (value #f))
     (java (single-char #\j) (value #f))
+    (run (single-char #\r) (value #f))
     (metapost (single-char #\m) (value #f))
     (no-projectile (single-char #\P) (value #f))
     (no-metadata (single-char #\N) (value #f))
@@ -28,6 +29,7 @@
   (let* ((options (getopt-long args option-spec))
          (version (option-ref options 'version #f))
          (generate (option-ref options 'generate #f))
+         (run (option-ref options 'run #f))
          (publish (option-ref options 'publish #f))
          (clean (option-ref options 'clean #f))
          (pdf (and (option-ref options 'pdf #f)
@@ -53,23 +55,26 @@
            (eval-string (call-with-input-file ".metadata"
                           (lambda (port)
                             (get-string-all port))))
-           (let ((meta-info
-                  (hash-meta-info (cadr (assoc 'bibliography
-                                               project-metadata-file-info))
-                                  (cadr (assoc 'title
-                                               project-metadata-file-info))
-                                  (cadr (assoc 'author
-                                               project-metadata-file-info))
-                                  (cadr (assoc 'school
-                                               project-metadata-file-info))
-                                  (cadr (assoc 'section
-                                               project-metadata-file-info))
-                                  (cadr (assoc 'professor
-                                               project-metadata-file-info))
-                                  (cadr (assoc 'date
-                                               project-metadata-file-info))
-                                  (cadr (assoc 'annotated-bibliography?
-                                               project-metadata-file-info)))))
+           (let* ((meta-info
+                  (hash-meta-info
+                   (cadr (assoc 'bibliography
+                                project-metadata-file-info))
+                   (cadr (assoc 'title
+                                project-metadata-file-info))
+                   (cadr (assoc 'author
+                                project-metadata-file-info))
+                   (cadr (assoc 'school
+                                project-metadata-file-info))
+                   (cadr (assoc 'section
+                                project-metadata-file-info))
+                   (cadr (assoc 'professor
+                                project-metadata-file-info))
+                   (cadr (assoc 'date
+                                project-metadata-file-info))
+                   (cadr (assoc 'annotated-bibliography?
+                                project-metadata-file-info))))
+                 (project-name
+                  (build-file-name meta-info)))
              (cond (clean (clean-project meta-info))
                    (generate (if (not (file-exists? "src/"))
                                  (make-project meta-info)
@@ -84,6 +89,18 @@
                                 (compile-project meta-info)
                                 (compile-project meta-info
                                                  pdf html java metapost)))
+                   (run (cond (java
+                               (run-java-jarfile meta-info))
+                              ((file-exists? (string-append
+                                              "src/"
+                                              project-name
+                                              ".jar"))
+                               (run-java-jarfile meta-info))
+                              (else
+                               (display
+                                (string-append "I don't know what You want "
+                                               "to run… Check the source "
+                                               "directory?\n")))))
                    (else (display-help))))))))
 (define (display-help)
   (display
@@ -102,6 +119,9 @@
     "  -h, --help:          Display this help message.\n"
     "  -p, --publish:       Publish the project (run lualatex,\n"
     "                         lwarpmk, and biber on src/main.tex)\n"
+    "  -r, --run:           Run the program written alongside this\n"
+    "                         project. For multi-language projects,\n"
+    "                         specify the entrypoint language below.\n"
     "  -v, --version:       Display just the version string.\n\n"
     
     "Publish Options (capitals for the [no-] options):\n\n"
