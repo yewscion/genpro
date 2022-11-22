@@ -814,7 +814,8 @@ Runs system commands that change various files."
                           (pdf #t)
                           (html #t)
                           (java #t)
-                          (metapost #t))
+                          (metapost #t)
+                          (text #t))
   "Compiles the LaTeX project in the ./src/ directory, assuming the 
 \"main.tex\" file exists.
 
@@ -873,6 +874,8 @@ and NAME_html.html from main.tex.
         (compile-pdf-component name))
     (if html
         (compile-html-component))
+    (if text
+        (compile-text-component name))
     (chdir "..")))
 
 
@@ -1268,4 +1271,27 @@ Runs an external tool on files on disk, I/O."
        (display (string-append "Please clean project: \"./src/"
                                project-name
                                ".jar\" is missing.\n")))))
-  
+(define (compile-text-component filename)
+  "Dumps a text-mode representation of the HTML version of the project to
+disk.
+
+This is an ACTION.
+
+Arguments
+=========
+FILENAME<string>: The name (and possibly path) of the HTML file to use as a
+base.
+
+Returns
+=======
+Undefined.
+
+Impurities
+==========
+Runs an external tool on files on disk, I/O."
+
+  (system (string-append "lynx --dump "
+                         filename
+                         ".html > "
+                         filename
+                         ".txt")))
