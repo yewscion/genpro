@@ -81,6 +81,7 @@
                  texlive-listings
                  texlive-lm
                  texlive-luaotfload
+                 texlive-mflogo
                  texlive-svn-prov
                  texlive-tex-gyre
                  texlive-tracklang

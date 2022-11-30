@@ -346,6 +346,7 @@ None.
    "\\mplibtextextlabel{enable}\n"
    "\\everymplib{input metauml;}\n"
    "\\mplibforcehmode\n"
+   "\\usepackage{mflogo}\n"
    "\\usepackage{csquotes}\n"
    "\\renewcommand\\labelitemi{\\bullet}\n"
    "\\renewcommand\\labelitemii{\\cdot}\n"
