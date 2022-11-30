@@ -892,6 +892,16 @@ import java.lang.RuntimeException;
  *
  */
 public class Implementation {
+    /**
+     * <p>Default, empty constructor.</p>
+     *
+     * <p>This is a <strong>CALCULATION</strong>.
+     *
+     * <p><strong>Impurities:</strong> None.</p>
+     *
+     */
+    Implementation() {
+    }
     // Personal Exception Type for bad Strings gained from User Input.
     /**
      * <p>An exception for when user input is impermissable.</p>
