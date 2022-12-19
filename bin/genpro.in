@@ -60,25 +60,29 @@
                           (lambda (port)
                             (get-string-all port))))
            (let* ((meta-info
-                  (hash-meta-info
-                   (cadr (assoc 'bibliography
-                                project-metadata-file-info))
-                   (cadr (assoc 'title
-                                project-metadata-file-info))
-                   (cadr (assoc 'author
-                                project-metadata-file-info))
-                   (cadr (assoc 'school
-                                project-metadata-file-info))
-                   (cadr (assoc 'section
-                                project-metadata-file-info))
-                   (cadr (assoc 'professor
-                                project-metadata-file-info))
-                   (cadr (assoc 'date
-                                project-metadata-file-info))
-                   (cadr (assoc 'annotated-bibliography?
-                                project-metadata-file-info))))
-                 (project-name
-                  (build-file-name meta-info)))
+                   (hash-meta-info
+                    (cadr (assoc 'bibliography
+                                 project-metadata-file-info))
+                    (cadr (assoc 'title
+                                 project-metadata-file-info))
+                    (cadr (assoc 'author
+                                 project-metadata-file-info))
+                    (cadr (assoc 'school
+                                 project-metadata-file-info))
+                    (cadr (assoc 'section
+                                 project-metadata-file-info))
+                    (cadr (assoc 'professor
+                                 project-metadata-file-info))
+                    (cadr (assoc 'date
+                                 project-metadata-file-info))
+                    (cadr (assoc 'annotated-bibliography?
+                                 project-metadata-file-info))
+                    (cadr (assoc 'java-project?
+                                 project-metadata-file-info))
+                    (cadr (assoc 'java-local-libraries
+                                 project-metadata-file-info))))
+                  (project-name
+                   (build-file-name meta-info)))
              (cond (clean (clean-project meta-info))
                    (generate (if (not (file-exists? "src/"))
                                  (make-project meta-info)

@@ -19,8 +19,10 @@
                         sec
                         prf
                         dat
-                        ann)
-  "Takes the project's metadata and turns it into a seven-element hash table.
+                        ann
+                        jav
+                        jll)
+  "Takes the project's metadata and turns it into a ten-element hash table.
 
 This is a CALCULATION.
 
@@ -41,7 +43,12 @@ PRF <string>: Professor's Name (if Applicable).
 
 DAT <string>: Canonical date of the paper in YYYY-MM-DD format (ISO8601 brief).
 
-ANN <bool>:   Are we making an annotated bibliography? 
+ANN <bool>:   Are we making an annotated bibliography?
+
+JAV <bool>:   Are we including a java component?
+
+JLL <<list> of <strings>>: A list of filenames/paths to include as libraries,
+                           under the /lib folder of the project.
 
 Returns
 =======
@@ -56,13 +63,15 @@ An 8 Parameter <hash-table> with the following keys:
 'professor <string>, from PRF.
 'date <srfi-19 date>, from DAT. Time set to all zeros, offset to local timezone.
 'annotated-bibliography <bool>, from ANN.
+'java-project <bool>, from JAV.
+'java-local-libraries <<list> of <strings>, from JLL.
 
 Impurities
 ==========
 
 None.
 "
-  (let ((table (make-hash-table 8)))
+  (let ((table (make-hash-table 10)))
     (hashq-create-handle! table 'bibliography bib)
     (hashq-create-handle! table 'project pro)
     (hashq-create-handle! table 'author aut)
@@ -71,6 +80,8 @@ None.
     (hashq-create-handle! table 'professor prf)
     (hashq-create-handle! table 'date (string->date dat "~Y-~m-~d"))
     (hashq-create-handle! table 'annotated-bibliography ann)
+    (hashq-create-handle! table 'java-project? jav)
+    (hashq-create-handle! table 'java-local-libraries jll)
     table))
 
 (define (sanitize-string string)
@@ -117,7 +128,7 @@ This is a CALCULATION.
 Arguments
 =========
 
-META-INFO <hash-table>: A Seven-Parameter Hash table with the keys 
+META-INFO <hash-table>: A Ten-Parameter Hash table with the keys 
                         'date <srfi-19 date>, 'section <string>, 
                         'annotated-bibliography, and 'project <string>.
 
@@ -616,7 +627,8 @@ exist:
 ./src/assignment/
 ./src/assignment/Implementation.java
 ./src/figure.mp"
-  (let ((name (build-file-name meta-info)))
+  (let ((name (build-file-name meta-info))
+        (java-component (cdr (hashq-get-handle meta-info 'java-project?))))
     (mkdir "./src")
     (make-file meta-info "./src/main.tex" build-main-file)
     (make-file meta-info "./src/meta.tex" build-meta-file)
@@ -626,15 +638,17 @@ exist:
     (symlink "../.metadata" "./src/.metadata")
     (symlink "../content.tex" "./src/content.tex")
     (chdir "src/")
-    (mkdir "./assignment")
-    (make-file meta-info "./assignment/Implementation.java"
-               build-java-file)
-    (make-file meta-info "./assignment/package-info.java"
-               build-java-package-info-file)
-    (mkdir "doc/")
-    (system (string-append "touch "
-                           name
-                           ".java.zip"))
+    (if java-component
+        (begin
+          (mkdir "./assignment")
+          (make-file meta-info "./assignment/Implementation.java"
+                     build-java-file)
+          (make-file meta-info "./assignment/package-info.java"
+                     build-java-package-info-file)
+          (mkdir "doc/")
+          (system (string-append "touch "
+                                 name
+                                 ".java.zip"))))
     (make-file meta-info "./figure.mp"
                build-metapost-file)
     (symlink "./main.tex" (string-append "./" name ".tex"))
@@ -674,7 +688,7 @@ UNSAFE if contents of \"main.tex\" are unknown: arbitrary code can be executed.
   (system (string-append "lualatex --output-format pdf --jobname="
                          name
                          " --shell-escape main.tex")))
-(define (compile-java-component name)
+(define (compile-java-component name meta-info)
 "Compile the Java component of the project.
 
 This is an ACTION.
@@ -690,22 +704,38 @@ Undefined.
 Impurities
 ==========
 Runs system commands that change various files."  
-  (if (file-exists? "./assignment/Implementation.java")
-      (begin
+(if (and (file-exists? "./assignment/Implementation.java")
+         (cdr (hashq-get-handle meta-info 'java-project?)))
+    (let* ((list-of-libs (hashq-get-handle meta-info
+                                           'java-local-libraries))
+           (project-classpath
+            (generate-classpath-includes list-of-libs))
+           (javadoc-classpath
+            (string-append
+             "..:"
+             project-classpath)))
         (system "rm -rfv assignment/*.redacted.*")
         (display "Compiling the Java Component…\n")
         (chdir "doc/")
-        (system "javadoc -private -cp .. assignment ")
+        (system
+         (string-append
+          "javadoc -private -cp "
+          javadoc-classpath
+          " assignment"))
         (chdir "..")
-        (system "javac assignment/*.java")
-        (compile-java-redact-javadoc "assignment/Implementation.java")
+        (system (string-append
+                 "javac -cp "
+                 project-classpath
+                 " assignment/*.java"))
         (system (string-append "jar -v -c -f "
                                name
                                ".jar -e assignment.Implementation "
                                "assignment/"))
-        (system (generate-java-zipfile-command name)))
+        (compile-java-redact-javadoc "assignment/Implementation.java")
+        (system (generate-java-zipfile-command name list-of-libs)))
       (display (string-append "Java Compilation Requested, but no "
-                              "file found…\nSkipping…\n"))))
+                              "file found or .metadata says it shouldn't"
+                              " be…\nSkipping…\n"))))
 (define (compile-metapost-component)
 "Compile the Metapost component of the project.
 
@@ -861,10 +891,12 @@ lwarpmk
 Which creates a large number of intermediary files, but ideally creates NAME.pdf
 and NAME_html.html from main.tex.
 "
-  (let ((name (build-file-name meta-info)))
+  (let ((name (build-file-name meta-info))
+        (list-of-libs (cdr (hashq-get-handle meta-info 'java-local-libs))))
     (chdir "src")
-    (if java
-        (compile-java-component name))
+    (if (and java
+             (cdr (hashq-get-handle meta-info 'java-project?)))
+        (compile-java-component name meta-info))
     (if metapost
         (compile-metapost-component))
     (if (or pdf html)
@@ -1056,7 +1088,7 @@ end.
  */
 package assignment;")
 
-(define (generate-java-zipfile-command name)
+(define (generate-java-zipfile-command name list-of-libs)
 "Generates a shell command for creating a zipfile of the java component of a project.
 
 This is a CALCULATION.
@@ -1077,7 +1109,15 @@ None."
   (let ((zipcmd " zip -9 -r -v ")
         (files (string-append " assignment/*.java "
                               name
-                              ".jar doc/ "))
+                              ".jar doc/ "
+                              (string-join
+                               (map (lambda (x)
+                                      (string-append
+                                       "../lib/"
+                                       x))
+                                    list-of-libs)
+                               " "
+                               'infix)))
         (tmpdir (string-append " " name ".java/ "))
         (zipname (string-append " " name ".java.zip "))
         (wipname (string-append name "-wip.zip ")))
@@ -1119,7 +1159,9 @@ None."
    "  (date \""
    (date->string (current-date) "~1")
    "\")\n"
-   "  (annotated-bibliography? #false)))\n"))
+   "  (annotated-bibliography? #false)\n"
+   "  (java-project #true)\n"
+   "  (java-local-libraries '())))\n"))
 
 (define (create-metadata-file)
   "Create the default .metadata file for a new project.
@@ -1258,7 +1300,7 @@ This is an ACTION.
 
 Arguments
 =========
-META-INFO <hash-table>: A Seven-Parameter Hash table with the keys 
+META-INFO <hash-table>: A Ten-Parameter Hash table with the keys 
                         'date <srfi-19 date>, 'section <string>, 
                         'annotated-bibliography, and 'project <string>.
 
@@ -1269,19 +1311,25 @@ Undefined.
 Impurities
 ==========
 Runs an external tool on files on disk, I/O."
- (let ((project-name (build-file-name meta-info)))
+ (let ((project-name (build-file-name meta-info))
+       (classpath (generate-classpath-includes
+
+                   (hashq-get-handle meta-info 'java-local-libraries))))
    (display (string-append "Running src/"
                            project-name
-                           ".jar…\n"))
+                           ".jar with included libraries…\n"))
    (if (file-exists? (string-append "src/"
                                     project-name
                                     ".jar"))
-       (system (string-append "java -jar src/"
+       (system (string-append "java -cp "
+                              classpath
+                              " -jar src/"
                               project-name
                               ".jar"))
        (display (string-append "Please clean project: \"./src/"
                                project-name
                                ".jar\" is missing.\n")))))
+
 (define (compile-text-component filename)
   "Dumps a text-mode representation of the HTML version of the project to
 disk.
@@ -1306,3 +1354,40 @@ Runs an external tool on files on disk, I/O."
                          ".html > "
                          filename
                          ".txt")))
+
+(define (generate-classpath-includes list-of-libs)
+  "Generates the argument for the javadoc cp flag.
+
+This is a CALCULATION.
+
+Arguments
+=========
+
+LIST-OF-LIBS <<list> of <strings>>: A list of files to include, which reside
+in the ../../lib directory.
+
+Returns
+=======
+
+A <string> meant to be used as an argument to the -cp flag of javadoc.
+
+Impurities
+==========
+None."
+  (string-append
+   "..:"
+   (string-join
+   (map
+   (lambda (x)
+     (string-append
+      "../../lib/"
+      x))
+   list-of-libs)
+   ":"
+   'infix)))
+
+(define (shell-output-to-string command)
+  (let* ((port (open-input-pipe command))
+         (str (get-string-all port)))
+    (close-pipe port)
+    (string-trim-both str)))
