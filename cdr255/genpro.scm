@@ -3,6 +3,7 @@
   :use-module (ice-9 textual-ports) ; For Writing to Files.
   :use-module (srfi srfi-19)        ; For Dates.
   :use-module (cdr255 userlib)      ; Utility Functions.
+  :use-module (ice-9 popen)         ; Pipes
   :export (make-project
            compile-project
            hash-meta-info
@@ -309,7 +310,13 @@ None.
    "\\usepackage{indentfirst}\n"
    "\\usepackage{fontspec}\n"
    "\\setmainfont{TeXGyreTermes}\n"
-   "\\appto{\\bibsetup}{\\raggedright}\n"
+   "\\newfontfamily{\\freemono}{FreeMono.otf}[Path = "
+   (shell-output-to-string
+    "fc-list | grep FreeMono.otf | sed 's/:.*//g;s/\\/[A-z.]*$/\\//;1q'")
+   "]\n\\newfontfamily{\\unifont}{unifont.ttf}[Path = "
+   (shell-output-to-string
+    "fc-list | grep unifont.ttf | sed 's/:.*//g;s/\\/[A-z.]*$/\\//;1q'")
+   "]\n\\appto{\\bibsetup}{\\raggedright}\n"
    "\\bibliography{\\localbibliography}\n"
    "\\DeclareLanguageMapping{american}{american-apa}\n"
    "\\setlength{\\parindent}{4em}\n"
