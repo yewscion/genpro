@@ -899,7 +899,7 @@ Which creates a large number of intermediary files, but ideally creates NAME.pdf
 and NAME_html.html from main.tex.
 "
   (let ((name (build-file-name meta-info))
-        (list-of-libs (cdr (hashq-get-handle meta-info 'java-local-libs))))
+        (list-of-libs (cdr (hashq-get-handle meta-info 'java-local-libraries))))
     (chdir "src")
     (if (and java
              (cdr (hashq-get-handle meta-info 'java-project?)))
@@ -1167,7 +1167,7 @@ None."
    (date->string (current-date) "~1")
    "\")\n"
    "  (annotated-bibliography? #false)\n"
-   "  (java-project #true)\n"
+   "  (java-project? #true)\n"
    "  (java-local-libraries '())))\n"))
 
 (define (create-metadata-file)
@@ -1392,9 +1392,3 @@ None."
    list-of-libs)
    ":"
    'infix)))
-
-(define (shell-output-to-string command)
-  (let* ((port (open-input-pipe command))
-         (str (get-string-all port)))
-    (close-pipe port)
-    (string-trim-both str)))
