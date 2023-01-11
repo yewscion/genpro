@@ -713,10 +713,12 @@ Impurities
 Runs system commands that change various files."  
 (if (and (file-exists? "./assignment/Implementation.java")
          (cdr (hashq-get-handle meta-info 'java-project?)))
-    (let* ((list-of-libs (hashq-get-handle meta-info
-                                           'java-local-libraries))
+    (let* ((list-of-libs (caddr (hashq-get-handle meta-info
+                                                  'java-local-libraries)))
            (project-classpath
-            (generate-classpath-includes list-of-libs))
+            (if (eq? '() list-of-libs)
+                ""
+                (generate-classpath-includes list-of-libs)))
            (javadoc-classpath
             (string-append
              "..:"
@@ -899,7 +901,7 @@ Which creates a large number of intermediary files, but ideally creates NAME.pdf
 and NAME_html.html from main.tex.
 "
   (let ((name (build-file-name meta-info))
-        (list-of-libs (cdr (hashq-get-handle meta-info 'java-local-libraries))))
+        (list-of-libs (caddr (hashq-get-handle meta-info 'java-local-libraries))))
     (chdir "src")
     (if (and java
              (cdr (hashq-get-handle meta-info 'java-project?)))
@@ -1117,14 +1119,16 @@ None."
         (files (string-append " assignment/*.java "
                               name
                               ".jar doc/ "
-                              (string-join
-                               (map (lambda (x)
-                                      (string-append
-                                       "../lib/"
-                                       x))
-                                    list-of-libs)
-                               " "
-                               'infix)))
+                              (if (not (eq? '() list-of-libs))
+                                  (string-join
+                                   (map (lambda (x)
+                                          (string-append
+                                           "../lib/"
+                                           x))
+                                        list-of-libs)
+                                   " "
+                                   'infix)
+                                  "")))
         (tmpdir (string-append " " name ".java/ "))
         (zipname (string-append " " name ".java.zip "))
         (wipname (string-append name "-wip.zip ")))
@@ -1320,8 +1324,7 @@ Impurities
 Runs an external tool on files on disk, I/O."
  (let ((project-name (build-file-name meta-info))
        (classpath (generate-classpath-includes
-
-                   (hashq-get-handle meta-info 'java-local-libraries))))
+                   (caddr (hashq-get-handle meta-info 'java-local-libraries)))))
    (display (string-append "Running src/"
                            project-name
                            ".jar with included libraries…\n"))
@@ -1381,14 +1384,16 @@ A <string> meant to be used as an argument to the -cp flag of javadoc.
 Impurities
 ==========
 None."
-  (string-append
-   "..:"
-   (string-join
-   (map
-   (lambda (x)
-     (string-append
-      "../../lib/"
-      x))
-   list-of-libs)
-   ":"
-   'infix)))
+  (if (> (length list-of-libs) 0)
+      (string-append
+       "..:"
+       (string-join
+        (map
+         (lambda (x)
+           (string-append
+            "../../lib/"
+            x))
+         list-of-libs)
+        ":"
+        'infix))
+      ""))
