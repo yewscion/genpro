@@ -717,7 +717,7 @@ Runs system commands that change various files."
                                                   'java-local-libraries)))
            (project-classpath
             (if (eq? '() list-of-libs)
-                ""
+                "."
                 (generate-classpath-includes list-of-libs)))
            (javadoc-classpath
             (string-append
@@ -1396,4 +1396,4 @@ None."
          list-of-libs)
         ":"
         'infix))
-      ""))
+      "."))
