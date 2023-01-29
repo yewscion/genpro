@@ -1,11 +1,13 @@
 (use-modules
  (guix packages)
  (cdr255 tex)
+ (cdr255 yewscion)
  (gnu packages pkg-config)
  (gnu packages autotools)
  (gnu packages guile)
  (gnu packages pdf)
  (gnu packages tex)
+ (gnu packages texinfo)
  (gnu packages python-xyz)
  (guix download)
  (guix build-system gnu)
@@ -15,14 +17,16 @@
  (guix gexp))
 (package
  (name "genpro")
- (version "0.1.1")
- (source (local-file "./genpro-0.1.0.tar.bz2"))
+ (version "0.5.0")
+ (source (local-file "./genpro-0.5.0.tar.bz2"))
  (build-system gnu-build-system)
  (arguments
   `(#:tests? #f))
  (propagated-inputs (list
                      guile-3.0
-                     texlive-base))
+                     texlive-base
+                     guile-cdr255
+                     texinfo))
  (native-inputs (list
                  pkg-config
                  guile-3.0
