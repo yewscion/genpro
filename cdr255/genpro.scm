@@ -748,7 +748,8 @@ exist:
 ./src/figure.mp"
   (let ((name (build-file-name meta-info))
         (java-component (cdr (hashq-get-handle meta-info 'java-project?))))
-    (mkdir "./src")
+    (if (not (file-exists? "./src"))
+        (mkdir "./src"))
     (make-file meta-info "./src/main.tex" build-main-file)
     (make-file meta-info "./src/meta.tex" build-meta-file)
     (make-file meta-info "./src/preamble.tex" build-preamble-file)
