@@ -764,18 +764,19 @@ exist:
     (symlink "../figures.tex" "./src/figures.tex")
     (chdir "src/")
     (if java-component
-        (if (not (file-exists? "./assignment"))
-            (begin
-              (mkdir "./assignment")
-              (make-file meta-info "./assignment/Implementation.java"
-                         build-java-file)
-              (make-file meta-info "./assignment/package-info.java"
-                         build-java-package-info-file)))
-        (if (not (file-exists? "./doc"))
-            (mkdir ".doc/"))
-        (system (string-append "touch "
-                               name
-                               ".java.zip")))
+        (begin
+          (if (not (file-exists? "./assignment"))
+              (begin
+                (mkdir "./assignment")
+                (make-file meta-info "./assignment/Implementation.java"
+                           build-java-file)
+                (make-file meta-info "./assignment/package-info.java"
+                           build-java-package-info-file)))
+          (if (not (file-exists? "./doc"))
+              (mkdir ".doc/"))
+          (system (string-append "touch "
+                                 name
+                                 ".java.zip"))))
     (make-file meta-info "./figure.mp"
                build-metapost-file)
     (symlink "./main.tex" (string-append "./" name ".tex"))
