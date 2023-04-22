@@ -763,15 +763,16 @@ exist:
     (symlink "../content.tex" "./src/content.tex")
     (symlink "../figures.tex" "./src/figures.tex")
     (chdir "src/")
-    (if (not (file-exists? "./assignment"))
-        (if java-component
+    (if java-component
+        (if (not (file-exists? "./assignment"))
             (begin
-              (mkdir "./assignment"))
-            (make-file meta-info "./assignment/Implementation.java"
-                       build-java-file)
-            (make-file meta-info "./assignment/package-info.java"
-                       build-java-package-info-file)
-            (mkdir "doc/"))
+              (mkdir "./assignment")
+              (make-file meta-info "./assignment/Implementation.java"
+                         build-java-file)
+              (make-file meta-info "./assignment/package-info.java"
+                         build-java-package-info-file)))
+        (if (not (file-exists? "./doc"))
+            (mkdir ".doc/"))
         (system (string-append "touch "
                                name
                                ".java.zip")))
