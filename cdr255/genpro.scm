@@ -279,7 +279,7 @@ Impurities
 None.
 "
   (string-append
-   "\\usepackage[mathjax]{lwarp}\n"
+   "\\usepackage{lwarp}\n"
    "\\CSSFilename{https://cdr255.com/css/lwarp-cdr255.css}\n"
    "\\usepackage{geometry}\n"
    "\\geometry{\n"
@@ -306,7 +306,7 @@ None.
        (string-append "annotation=true,")
        (string-append "annotation=false,"))
    "loadfiles=true]{biblatex}\n"
-   "\\usepackage[doublespacing]{setspace}\n"
+   "\\usepackage[]{setspace}\n"
    "\\usepackage{indentfirst}\n"
    "\\usepackage{fontspec}\n"
    "\\setmainfont{TeXGyreTermes}\n"
@@ -329,15 +329,8 @@ None.
    "  {\\normalfont\\normalsize\\itshape}{\\thesubsubsection.}{1em}{}\n"
    "\\usepackage{graphicx}\n"
    "\\graphicspath{ {./images/} }\n"
-   "\\usepackage[nomarkers]{endfloat}\n"
-   "\\usepackage[html]{xcolor}\n"
-   "\\definecolor{color-link}{HTML}{03872d}\n"
-   "\\definecolor{color-file}{HTML}{032d87}\n"
-   "\\definecolor{color-url}{HTML}{032d87}\n"
-   "\\definecolor{color-cite}{HTML}{2d0387}\n"
-   "\\definecolor{color-anchor}{HTML}{87032d}\n"
-   "\\definecolor{color-menu}{HTML}{03872d}\n"
-   "\\definecolor{color-run}{HTML}{87032d}\n"
+   "\\usepackage{caption}\n"
+   "\\input{colors}\n"
    "\\usepackage{hyperref}\n"
    "\\hypersetup{colorlinks  = true, % Swap these two if You \n"
    "            %hidelinks   = false,  % Don't want links to be obvious.\n"
@@ -356,8 +349,7 @@ None.
    "}\n"
    "\\usepackage[noabbrev]{cleveref}\n"
    "\\usepackage{fancyvrb}\n"
-   "\\usepackage{color}\n"
-   "\\usepackage{listings}\n"
+   "\\input{listings}\n"
    "\\usepackage{minted}\n"
    "\\usepackage{datetime2}\n"
    "\\usepackage{luamplib}\n"
@@ -371,7 +363,123 @@ None.
    "\\renewcommand\\labelitemiii{\\circ}\n"
    "\\AtBeginEnvironment{appendices}{\\crefalias{section}{appendix}}\n"
    "\\newcommand{\\hlabel}{\\phantomsection\\label}\n"
+   "\\newcommand{\\noteheader}{ \\\\ \\frenchspacing{}\\textit{Note.}\\nonfrenchspacing{}\\doublespacing{} }\n"
+   "\\newcommand{\\figuretitle}[1]{\\caption[]{ \\\\~\\\\ \\textit{#1}}}\n\n"
+   "\\doublespacing\n"
+   "\\DeclareCaptionLabelSeparator*{spaced}{\\\\[2ex]}\n"
+   "\\captionsetup[table]{labelsep=none,labelfont=bf,justification=raggedright,\n"
+   "  singlelinecheck=false}\n"
+   "\\captionsetup[figure]{labelsep=none,labelfont=bf,justification=raggedright,\n"
+   "  singlelinecheck=false}\n"
+
    "\n% Generated with genpro.\n"))
+
+(define (build-listings-file meta-info)
+  "Dumps my standard listings.tex out as a <string>."
+  (string-append
+   "\\usepackage[procnames]{listings}\n"
+   "\n"
+   "\\makeatletter\n"
+   "\\lst@InputCatcodes\n"
+   "\\def\\lst@DefEC{%\n"
+   " \\lst@CCECUse \\lst@ProcessLetter\n"
+   "  ^^80^^81^^82^^83^^84^^85^^86^^87^^88^^89^^8a^^8b^^8c^^8d^^8e^^8f%\n"
+   "  ^^90^^91^^92^^93^^94^^95^^96^^97^^98^^99^^9a^^9b^^9c^^9d^^9e^^9f%\n"
+   "  ^^a0^^a1^^a2^^a3^^a4^^a5^^a6^^a7^^a8^^a9^^aa^^ab^^ac^^ad^^ae^^af%\n"
+   "  ^^b0^^b1^^b2^^b3^^b4^^b5^^b6^^b7^^b8^^b9^^ba^^bb^^bc^^bd^^be^^bf%\n"
+   "  ^^c0^^c1^^c2^^c3^^c4^^c5^^c6^^c7^^c8^^c9^^ca^^cb^^cc^^cd^^ce^^cf%\n"
+   "  ^^d0^^d1^^d2^^d3^^d4^^d5^^d6^^d7^^d8^^d9^^da^^db^^dc^^dd^^de^^df%\n"
+   "  ^^e0^^e1^^e2^^e3^^e4^^e5^^e6^^e7^^e8^^e9^^ea^^eb^^ec^^ed^^ee^^ef%\n"
+   "  ^^f0^^f1^^f2^^f3^^f4^^f5^^f6^^f7^^f8^^f9^^fa^^fb^^fc^^fd^^fe^^ff%\n"
+   "  ^^^^20ac^^^^0153^^^^0152%\n"
+   "  ^^^^20a7^^^^2190^^^^2191^^^^2192^^^^2193^^^^2206^^^^2207^^^^220a%\n"
+   "  ^^^^2218^^^^2228^^^^2229^^^^222a^^^^2235^^^^223c^^^^2260^^^^2261%\n"
+   "  ^^^^2262^^^^2264^^^^2265^^^^2282^^^^2283^^^^2296^^^^22a2^^^^22a3%\n"
+   "  ^^^^22a4^^^^22a5^^^^22c4^^^^2308^^^^230a^^^^2336^^^^2337^^^^2339%\n"
+   "  ^^^^233b^^^^233d^^^^233f^^^^2340^^^^2342^^^^2347^^^^2348^^^^2349%\n"
+   "  ^^^^234b^^^^234e^^^^2350^^^^2352^^^^2355^^^^2357^^^^2359^^^^235d%\n"
+   "  ^^^^235e^^^^235f^^^^2361^^^^2362^^^^2363^^^^2364^^^^2365^^^^2368%\n"
+   "  ^^^^236a^^^^236b^^^^236c^^^^2371^^^^2372^^^^2373^^^^2374^^^^2375%\n"
+   "  ^^^^2377^^^^2378^^^^237a^^^^2395^^^^25af^^^^25ca^^^^25cb%\n"
+   "  ^^00}\n"
+   "\\lst@RestoreCatcodes\n"
+   "\\makeatother\n"
+   "\n"
+   "\\lstdefinelanguage{apl}\n"
+   "{\n"
+   "extendedchars=true,\n"
+   "sensitive=True,\n"
+   "breakatwhitespace=false,\n"
+   "otherkeywords={},\n"
+   "morekeywords= [2]{', (, ), +, \\,, -, ., /, :, ;, <, =, >, ?, [, ], \n"
+   "\\\\, _, ¨, ¯, ×, ÷, ←, ↑, →, ↓, ∆, ∇, ∘, ∣, ∧, ∨, \n"
+   "∩, ∪, ∼, ≠, ≤, ≥, ≬, ⊂, ⊃, ⌈, ⌊, ⊤, ⊥, ⋆, ⌶, ⌷, \n"
+   "⌸, ⌹, ⌺, ⌻, ⌼, ⌽, ⌾, ⌿, ⍀, ⍁, ⍂, ⍃, ⍄, ⍅, ⍆, ⍇, \n"
+   "⍈, ⍉, ⍊, ⍋, ⍌, ⍍, ⍎, ⍏, ⍐, ⍑, ⍒, ⍓, ⍔, ⍕, ⍖, ⍗, \n"
+   "⍘, ⍙, ⍚, ⍛, ⍜, ⍞, ⍟, ⍠, ⍡, ⍢, ⍣, ⍤, ⍥, ⍦, ⍧, \n"
+   "⍨, ⍩, ⍪, ⍫, ⍬, ⍭, ⍮, ⍯, ⍰, ⍱, ⍲, ⍳, ⍴, ⍵, ⍶, ⍷, \n"
+   "⍸, ⍹, ⍺, ⎕, ○, *},\n"
+   "alsoletter={/,-,*,|,\\\\,\\,},\n"
+   "morecomment=[l]{⍝},\n"
+   "morecomment=[l]{\\#},\n"
+   "morestring=[b]\",\n"
+   "morestring=[b]',\n"
+   "moreprocnamekeys={∇}\n"
+   "}[keywords, comments, strings, procnames]\n"
+   "\n"
+   "\\lstset{%\n"
+   "  basicstyle=\\freemono\\small,\n"
+   "  keywordstyle=[2]\\color{code-keyword},\n"
+   "  procnamestyle=\\color{code-variable},\n"
+   "  % identifierstyle=,\n"
+   "  commentstyle=\\slshape\\color{code-comment}, % no slanted shape in APL385\n"
+   "  stringstyle=\\ttfamily\\color{code-string},\n"
+   "  showstringspaces=false,\n"
+   "  % frame=single,\n"
+   "  % framesep=1pt,\n"
+   "  % framerule=0.8pt,\n"
+   "  breaklines=true,      % break long code lines\n"
+   "  breakindent=0pt\n"
+   "}\n"))
+
+(define (build-colors-file meta-info)
+  ""
+  (string-append
+   " \\usepackage[html]{xcolor}\n"
+   "% CDR Colors\n"
+   "\\definecolor{cdr-black}{HTML}{2d3743}\n"
+   "\\definecolor{cdr-cyan}{HTML}{34cae2}\n"
+   "\\definecolor{cdr-orange}{HTML}{e67128}\n"
+   "\\definecolor{cdr-green}{HTML}{338f86}\n"
+   "\\definecolor{cdr-magenta}{HTML}{ee7ae7}\n"
+   "\\definecolor{cdr-red}{HTML}{ff4242}\n"
+   "\\definecolor{cdr-white}{HTML}{e1e1e0}\n"
+   "\\definecolor{cdr-yellow}{HTML}{ffad29}\n"
+   "\n"
+   "% HrefColors\n"
+   "\\definecolor{href-link}{HTML}{03872d}\n"
+   "\\definecolor{href-file}{HTML}{032d87}\n"
+   "\\definecolor{href-url}{HTML}{032d87}\n"
+   "\\definecolor{href-cite}{HTML}{2d0387}\n"
+   "\\definecolor{href-anchor}{HTML}{87032d}\n"
+   "\\definecolor{href-menu}{HTML}{03872d}\n"
+   "\\definecolor{href-run}{HTML}{87032d}\n"
+   "\n"
+   "% CodeColors\n"
+   "\n"
+   "% Pygments Xcode Theme:\n"
+   "% =====================\n"
+   "% Keywords A90D91\n"
+   "% Comments 177500\n"
+   "% Variable 3F6E75\n"
+   "% String C41A16\n"
+   "% Constant 1C01CE\n"
+   "\\definecolor{code-comment}{HTML}{177500}\n"
+   "\\definecolor{code-keyword}{HTML}{a90d91}\n"
+   "\\definecolor{code-variable}{HTML}{3f6e75}\n"
+   "\\definecolor{code-string}{HTML}{c41a16}\n"
+   "\\definecolor{code-constant}{HTML}{1c01ce}\n"
+   "\n"))
 
 (define (build-main-file meta-info)
   "Dumps my standard main.tex out as a <string>.
@@ -414,10 +522,14 @@ None.
    "\\input{title-page}\n"
    "\\newpage\n"
    "\\section*{\\localtitle{}}\n"
+   "% For /just/ figures, comment out the following five lines --\n"
    "\\input{content}\n"
    "\\newpage\n"
    "\\section*{References}\n"
    "\\printbibliography[heading=none]\n"
+   "\\newpage\n"
+   "% -----------------------------------------------------------\n"
+   "\\input{figures}\n"
    "\\end{document}"))
 
 (define (build-title-file meta-info)
@@ -641,9 +753,14 @@ exist:
     (make-file meta-info "./src/meta.tex" build-meta-file)
     (make-file meta-info "./src/preamble.tex" build-preamble-file)
     (make-file meta-info "./src/title-page.tex" build-title-file)
+    (make-file meta-info "./src/listings.tex" build-listings-file)
+    (make-file meta-info "./src/colors.tex" build-colors-file)
     (system "touch content.tex")
+    (system "touch figures.tex")
+    (system "touch .assignment")
     (symlink "../.metadata" "./src/.metadata")
     (symlink "../content.tex" "./src/content.tex")
+    (symlink "../figures.tex" "./src/figures.tex")
     (chdir "src/")
     (if java-component
         (begin

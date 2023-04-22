@@ -10,6 +10,10 @@ Copyright © (2022) Christopher Rodriguez <yewscion@gmail.com>
 Please send guile cdr255 bug reports to
 [yewscion@gmail.com](mailto:yewscion@gmail.com).
 
+* 0.6.0
+Undergraduate Semifinal Version.
+
+Minor Fixes; APA7 Figures and Tables; Listings and Colors, esp. for APL.
 * 0.5.0
 Added Java Component.
 
