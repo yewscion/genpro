@@ -1361,40 +1361,24 @@ I/O, File Deletion and Creation, Relies On and Changes System State."
   
   (if (and (file-exists? "content.tex")
            (file-exists? ".metadata"))
-      (let ((content (call-with-input-file "content.tex" get-string-all))
-            (metadata (call-with-input-file ".metadata" get-string-all))
-            (java (if (file-exists? "src/assignment/Implementation.java")
-                      (call-with-input-file
-                          "src/assignment/Implementation.java"
-                        get-string-all)
-                      #f))
-            (pkginfo (if (file-exists? "src/assignment/package-info.java")
-                         (call-with-input-file
-                             "src/assignment/package-info.java"
-                           get-string-all)
-                         #f))
-            (metapost (if (file-exists? "src/figure.mp")
-                          (call-with-input-file
-                              "src/figure.mp"
-                            get-string-all)
-                          #f)))
-        (system "rm -rfv *")
-        (dump-string-to-file ".metadata" metadata)
+      (let ((content (slurp-file-as-string "content.tex"))
+            (figures (slurp-file-as-string "figures.tex"))
+            (metadata (slurp-file-as-string ".metadata"))
+            (assignment (slurp-file-as-string ".assignment"))
+            (projectile (slurp-file-as-string ".projectile"))
+            (metapost (slurp-file-as-string "src/figure.mp")))
+        (system "find . -maxdepth 2 -not -path \"*assignment*\" -exec rm -fv {} \\;")
+        (dump-string-as-file-if-bound metadata ".metadata")
+        (dump-string-as-file-if-bound assignment ".assignment")
+        (dump-string-as-file-if-bound projectile ".projectile")
         (make-project metainfo)
-        (dump-string-to-file "content.tex" content)
-        (if java
-            (dump-string-to-file "src/assignment/Implementation.java"
-                          java))
-        (if pkginfo
-            (dump-string-to-file "src/assignment/package-info.java"
-                          pkginfo))
-        (if metapost
-            (dump-string-to-file "src/figure.mp"
-                          metapost))
-        (compile-project metainfo)
-        (display "Genpro Project Cleaned and Rebuild Complete.\n"))
-      (display (string-append "This doesn't seem like a Genpro project…\n"
-                              "Not cleaning anything.\n"))))
+        (dump-string-as-file-if-bound content "content.tex")
+        (dump-string-as-file-if-bound figures "figures.tex")
+        (dump-string-as-file-if-bound metapost "src/figure.mp"))
+      (compile-project metainfo)
+      (display "Genpro Project Cleaned and Rebuild Complete.\n"))
+  (display (string-append "This doesn't seem like a Genpro project…\n"
+                          "Not cleaning anything.\n")))
 (define (compile-java-redact-javadoc filename)
 "Remove any and all JavaDoc comments from the file at FILENAME.
 
@@ -1514,3 +1498,55 @@ None."
         ":"
         'infix))
       "."))
+
+(define (slurp-file-as-string file)
+  "If FILE refers to an existing file, dump its contents as a <string>.
+
+This is an ACTION.
+
+Arguments
+=========
+
+FILE <string>: The filename in question.
+
+Returns
+=======
+
+If the file exists, the contents thereof as a <string>. If not, <false>.
+
+Impurities
+==========
+File I/O, relies on filesystem state.
+"
+  (if (file-exists? file)
+                      (call-with-input-file
+                          file
+                        get-string-all)
+                      #f))
+
+(define (dump-string-as-file-if-bound string file)
+  "If STRING is not <false>, dump its value to FILE.
+
+This is an ACTION.
+
+Arguments
+=========
+
+STRING <string>: The string we are trying to dump to disk.
+
+FILE <string>: The file name we will dump STRING to, if it exists.
+
+Returns
+=======
+
+<undefined>
+
+
+Impurities
+==========
+Solely used for Side Effects; File I/O.
+"
+  (if string
+      (dump-string-to-file file
+                           string)))
+        
