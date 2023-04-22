@@ -1374,11 +1374,11 @@ I/O, File Deletion and Creation, Relies On and Changes System State."
         (make-project metainfo)
         (dump-string-as-file-if-bound content "content.tex")
         (dump-string-as-file-if-bound figures "figures.tex")
-        (dump-string-as-file-if-bound metapost "src/figure.mp"))
-      (compile-project metainfo)
-      (display "Genpro Project Cleaned and Rebuild Complete.\n"))
+        (dump-string-as-file-if-bound metapost "src/figure.mp")
+        (compile-project metainfo)
+        (display "Genpro Project Cleaned and Rebuild Complete.\n"))
   (display (string-append "This doesn't seem like a Genpro project…\n"
-                          "Not cleaning anything.\n")))
+                          "Not cleaning anything.\n"))))
 (define (compile-java-redact-javadoc filename)
 "Remove any and all JavaDoc comments from the file at FILENAME.
 
