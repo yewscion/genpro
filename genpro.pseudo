@@ -344,3 +344,40 @@ begin [BuildColorsFileContent].
 
 "
 end [BuildColorsFileContent].
+
+begin [BuildMainFileContent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Result be a string.
+
+      append "% This is main.tex
+\documentclass[12pt, american]{report}
+\input{meta}
+\input{preamble}
+\begin{document}
+\pagenumbering{arabic}
+\setlength{\headheight}{14.49998pt}
+\addtolength{\topmargin}{-2.49998pt}
+\input{title-page}
+\newpage
+\section*{\localtitle{}}
+" to Result.
+     if Info -> Content then
+        append "\input{content}
+\newpage
+" to Result.
+     end if.
+     if Info -> References then
+        append "\section*{References}
+\printbibliography[heading=none]
+\newpage
+" to Result.
+     end if.
+     if Info -> Figures then
+        append "\input{figures}" to Result.
+     end if.
+     append "\end{document}" to Result.
+
+     return Result.
+end [BuildMainFileContent].
