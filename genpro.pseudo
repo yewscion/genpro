@@ -1,4 +1,4 @@
-let [Project Information] be a hashmap with 25 fields:
+let ProjectInformation be a record with 25 fields:
     AnnotatedBibliography → a boolean. ; Flag for creating an annotated
                                        ; bibliography.
     Apl → a boolean. ; Flag for creating GNU APL Code scaffolding and
@@ -44,3 +44,25 @@ let [Project Information] be a hashmap with 25 fields:
     Section → a string. ; The class or laboratory.
     Zig → a boolean. ; Flag for creating Zig Code scaffolding and output.
 end let.
+
+begin [BuildFileName].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Result be a string.
+      let SectionCode be the first result of calling [SplitString]
+          on Info -> Section and ":".
+      append Info -> Date to Result.
+      append "." to Result.
+      append SectionCode to Result.
+      append "." to Result.
+      append Info -> Project to Result.
+      if Info -> AnnotatedBibliography then:
+         append "-annotated-bibliography" to Result.
+      end if.
+
+      return the result of calling [DowncaseString]
+             on the result of calling [SanitizeString]
+             on Result.
+end [BuildFileName].
+
