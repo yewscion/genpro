@@ -50,7 +50,7 @@ begin [BuildFileName].
       expecting a ProjectInformation record.
 
       let Result be a string.
-      let SectionCode be the first result of calling [SplitString]
+      let SectionCode be the pick 0 of the result of calling [SplitString]
           on Info -> Section and ":".
       append Info -> Date to Result.
       append "." to Result.
@@ -66,3 +66,17 @@ begin [BuildFileName].
              on Result.
 end [BuildFileName].
 
+begin [BuildLatexCommand].
+      expect CommandName and Value as arguments,
+      expecting a string and a string.
+
+      let Result be a string.
+      append "\newcommand{\\" to Result.
+      append CommandName to Result.
+      append "}{\\string" to Result.
+      append Value to Result.
+      append "}" to Result.
+      append newline to Result.
+
+      return Result.
+end [BuildLatexCommand].
