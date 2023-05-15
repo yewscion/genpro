@@ -112,7 +112,7 @@ begin [BuildMetaFileContent].
       append "% Genpro version 1." to Result.
 
       return Result.
-end [BuildMetaFileContent].end [BuildMetaFileContent].
+end [BuildMetaFileContent].
 
 begin [BuildPreambleFileContent].
       expect Info as an argument,
@@ -381,3 +381,20 @@ begin [BuildMainFileContent].
 
      return Result.
 end [BuildMainFileContent].
+
+begin [BuildTitleFileContent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      return "\begin{center}
+  \vspace*{5cm}
+  \textbf{\localtitle}\\
+  \vspace{\baselineskip}
+  \localauthor\\
+  \localschool\\
+  \localsection\\
+  \localprofessor\\
+  \localduedate
+\end{center}
+".
+end [BuildTitleFileContent].
