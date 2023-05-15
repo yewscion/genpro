@@ -80,3 +80,36 @@ begin [BuildLatexCommand].
 
       return Result.
 end [BuildLatexCommand].
+
+begin [BuildMetaFileContent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Result be a string.
+      append the result of calling [BuildLatexCommand]
+             on "localbibliography" and Info -> Bibliography
+             to Result.
+      append the result of calling [BuildLatexCommand]
+             on "localtitle" and Info -> Project
+             to Result.
+      append the result of calling [BuildLatexCommand]
+             on "localauthor" and Info -> Author
+             to Result.
+      append the result of calling [BuildLatexCommand]
+             on "localschool" and Info -> Institution
+             to Result.
+      append the result of calling [BuildLatexCommand]
+             on "localsection" and Info -> Section
+             to Result.
+      append the result of calling [BuildLatexCommand]
+             on "localprofessor" and Info -> Authority
+             to Result.
+      append the result of calling [BuildLatexCommand]
+             on "localduedate" and Info -> Date
+             to Result.
+
+      append newline to Result.
+      append "% Genpro version 1." to Result.
+
+      return Result.
+end [BuildMetaFileContent].
