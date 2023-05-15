@@ -1,0 +1,46 @@
+let [Project Information] be a hashmap with 25 fields:
+    AnnotatedBibliography → a boolean. ; Flag for creating an annotated
+                                       ; bibliography.
+    Apl → a boolean. ; Flag for creating GNU APL Code scaffolding and
+                     ; output.
+    Author → a string. ; The user's full name.
+    Authority → a string. ; The professor, tech lead, or advisor.
+    Bibliography → a string. ; The biblatex file to reference.
+    CitationStyle → a string. ; The citation style to use, for
+                              ; future-proofing against non-APA7
+                              ; requirements.
+    Content → a boolean. ; Flag for whether the content.tex file should be
+                         ; included in the final project's compilation.
+    Cpp → a boolean. ; Flag for creating C++ Code scaffolding and output.
+    Date → a datetime. ; The due date or publishing date.
+    Figures → a boolean. ; Flag for whether the figures.tex file should be
+                         ; included in the final compilation.
+    Gemini → a boolean. ; Flag for creating the Gemtext output for the
+                        ; project.
+    Guile → a boolean. ; Flag for creating GNU Guile Code scaffolding and
+                       ; output.
+    HTML → a boolean. ; Flag for creating the HTML Output.
+    Institution → a string. ; The school or supporting body.
+    Java → a boolean. ; Flag for creating Java Code scaffolding and
+                      ; output.
+    JavaLocalLibraries → a list of strings. ; Directories or filenames to
+                                            ; include as libraries, under
+                                            ; the /lib directory of the
+                                            ; project.
+    LocalBib → a boolean. ; Flag for creating a project-local copy of all
+                          ; references used.
+    Metapost → a boolean. ; Flag for creating and compiling the Metapost
+                          ; Component.
+    OCaml → a boolean. ; Flag for creating OCaml Code scaffolding and
+                       ; output.
+    Project → a string. ; The project title.
+    Prolog → a boolean. ; Flag for creating Prolog Code scaffolding and
+                        ; output.
+    References → a boolean. ; Flag for whether the references section
+                            ; should be included in the final projects
+                            ; compilation.
+    SQL → a boolean. ; Flag for creating an SQL script to store this
+                     ; project in a Postgres Database.
+    Section → a string. ; The class or laboratory.
+    Zig → a boolean. ; Flag for creating Zig Code scaffolding and output.
+end let.
