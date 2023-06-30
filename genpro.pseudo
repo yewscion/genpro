@@ -45,6 +45,24 @@ let ProjectInformation be a record with 25 fields:
     Zig → a boolean. ; Flag for creating Zig Code scaffolding and output.
 end let.
 
+let MetainfoTemplate be the string:
+";;; -*- scheme -*-
+;;; This is the metadata file for genpro projects.
+;;;
+;;; Replace the default values with the ones appropriate for Your
+;;; project.
+(define project-metadata-file-info
+'((title \"Project Title\")
+  (author \"Christopher Rodriguez\")
+  (bibliography \"~/Documents/biblio/main.bib\")
+  (school \"Colorado State University Global\")
+  (section \"Some Class: Some Title of Class\")
+  (professor \"Dr. Some Professor\")
+  (annotated-bibliography? #false)
+  (java-project? #true)
+  (java-local-libraries '())\n".
+end let.
+
 let PreambleTemplatePrefix be the string:
 "\usepackage{lwarp}
 \CSSFilename{https://cdr255.com/css/lwarp-cdr255.css}
@@ -607,12 +625,12 @@ begin [BuildTitleFileContent].
       return TitleTemplate as a string.
 end [BuildTitleFileContent].
 
-begin [BuildJavaFile].
+begin [BuildJavaFileContent].
       expect Info as an argument,
       expecting a ProjectInformation record.
 
       return JavaTemplate as a string.
-end [BuildJavaFile].
+end [BuildJavaFileContent].
 
 begin [FindFontCommand].
       expect FontName as an argument,
@@ -626,3 +644,107 @@ begin [FindFontCommand].
 
       return Result.
 end [FindFontCommand].
+
+begin [BuildJavaPkginfoFileContent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      return JavaPkginfoTemplate as a string.
+end [BuildJavaPkginfoFileContent].
+
+begin [BuildMetapostFileContent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      return MetapostTemplate as a string.
+end [BuildMetapostFileContent].
+
+begin [DumpToFile].
+      expect Info, FileName, and BuildProcedure as arguments,
+      expecting a ProjectInformation record, a string, and
+                a {ProjectInformation record → string} procedure.
+
+      let OutputFile be the file at FileName.
+      let Contents be the result of calling BuildProcedure on Info.
+
+      dump Contents to OutputFile.
+end [DumpToFile].
+
+begin [MakeProject].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let ProjectName be the result of calling [BuildFileName] on Info.
+      let Java? be equal to Info -> Java?.
+      let MainFileName be the result of appending the strings
+                                        "./src/", ProjectName, and ".tex".
+      let PDFFileName be the result of appending the strings
+                                        "./", ProjectName, and ".pdf".
+      let HTMLFileName be the result of appending the strings
+                                        "./", ProjectName, and ".html".
+      let PDFLinkName be the result of appending the strings
+                                        "./src/", ProjectName, and ".html".
+      let HTMLLinkName be the result of appending the strings
+                                        "./src/", ProjectName, and ".html".
+      
+                                        
+      if "./src/" is not a directory, create "./src/" as a directory.
+      call DumpToFile on Info, "./src/main.tex", and [BuildMainFileContent].
+      call DumpToFile on Info, "./src/meta.tex", and [BuildMetaFileContent].
+      call DumpToFile on Info, "./src/preamble.tex", and [BuildPreambleContent].
+      call DumpToFile on Info, "./src/title-page.tex", and [BuildTitlePageContent].
+      call DumpToFile on Info, "./src/listings.tex", and [BuildListingsContent].
+      call DumpToFile on Info, "./src/colors.tex", and [BuildColorsContent].
+      call DumpToFile on Info, "./src/figure.mp", and [BuildMetapostContent].
+      if Java? then:
+         call [CreateJavaFiles] on Info.
+      end if.
+
+      create "content.tex" as a file.
+      create "figures.tex" as a file.
+      create ".assignment" as a file.
+      create "./src/.metadata" as a symlink to "./.metadata".
+      create "./src/content.tex" as a symlink to "./content.tex".
+      create "./src/figures.tex" as a symlink to "./figures.tex".
+      create "./src/main.tex" as a symlink to MainFileName.
+
+      call [Chdir] on "src/"
+      call [RunLuaLatex] on Name.
+      system call "lwarpmk html".
+      call [MoveFile] on PDFFilename and "../".
+      call [MoveFile] on HTMLFilename and "../".
+      call [Chdir] on "../".
+
+      create PDFLinkName as a symlink to PDFFileName.
+      create HTMLLinkName as a symlink to HTMLFileName.
+
+end [MakeProject].
+
+begin [BuildMetadataFileContent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Result be a string.
+      append MetadataTemplate to Result.
+      append "  (date \"" to Result.
+      append the date to Result.
+      append "\")\n" to Result.
+      
+      return Result as a string.
+end [BuildMetadataFileContent].
+
+begin [BuildProjectileFileContent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      return ";;; Generated with Genpro v2.".
+end [BuildProjectileFileContent].
+
+begin [InitializeProject].
+      call [DumpToFile] on nothing, ".metadata", and [BuildMetadataFileContent].
+      call [DumpToFile] on nothing, ".projectile", and [BuildProjectileFileContent].
+
+      display "Created the .metadata and .projectile files with defaults.".
+      newline.
+      display "Please edit those and run this script again.".
+end [InitializeProject].
