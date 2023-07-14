@@ -1,0 +1,85 @@
+#|
+This program is a part of @PACKAGE_STRING@.
+
+@LICENSE@
+
+Bug Reports: @PACKAGE_BUGREPORT@
+Homepage: @PACKAGE_URL@
+Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
+|#
+(define-module (cdr255 genpro)
+  :use-module (ice-9 ftw)           ; For Filesystem Access.
+  :use-module (ice-9 textual-ports) ; For Writing to Files.
+  :use-module (srfi srfi-19)        ; For Dates.
+  :use-module (cdr255 userlib)      ; Utility Functions.
+  :use-module (ice-9 popen)         ; Pipes
+  :use-module (srfi srfi-9)
+  :use-module (cdr255 genpro-templates)
+  :export (make-project
+           compile-project
+           hash-meta-info
+           clean-project
+           create-metadata-file
+           create-projectile-file
+           build-file-name
+           run-java-jarfile))
+
+(define-record-type <project-information>
+  (make-project-information annotated-bibliography?
+                            apl?
+                            author
+                            authority
+                            bibliography
+                            citation-style
+                            content?
+                            c?
+                            cpp?
+                            date
+                            figures?
+                            gemini?
+                            guile?
+                            html?
+                            institution
+                            java?
+                            java-local-libraries
+                            local-bibliography?
+                            metapost?
+                            ocaml?
+                            project-title
+                            prolog?
+                            references?
+                            sql?
+                            section
+                            zig?)
+  project-information?
+ (annotated-bibliography? project-annotated-bibliography?)
+ (apl? project-apl?)
+ (author project-author)
+ (authority project-authority)
+ (bibliography project-bibliography)
+ (citation-style project-citation-style)
+ (content? project-content?)
+ (c? project-c?)
+ (cpp? project-cpp?)
+ (date project-date)
+ (figures? project-figures?)
+ (gemini? project-gemini?)
+ (guile? project-guile?)
+ (html? project-html?)
+ (institution project-institution)
+ (java? project-java?)
+ (java-local-libraries project-java-local-libraries)
+ (local-bibliography? project-local-bibliography?)
+ (metapost? project-metapost?)
+ (ocaml? project-ocaml?)
+ (project-title project-project-title)
+ (prolog? project-prolog?)
+ (references? project-references?)
+ (sql? project-sql?)
+ (section project-section)
+ (zig? project-zig?))
+
+
+;; Local Variables:
+;; mode: scheme
+;; End:

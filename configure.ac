@@ -1,6 +1,6 @@
 dnl Process this file with autoconf
 AC_INIT([genpro],
-        [0.5.0],
+        [1.0.0],
         [yewscion@gmail.com],
         [genpro],
         [https://cdr255.com/projects/genpro/])
@@ -51,5 +51,7 @@ AC_PROG_MKDIR_P
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([pre-inst-env], [chmod +x pre-inst-env])
 AC_CONFIG_FILES([bin/genpro],[chmod +x bin/genpro])
+AC_CONFIG_FILES([cdr255/genpro.scm])
+AC_CONFIG_FILES([cdr255/genpro-templates.scm])
 AC_CONFIG_FILES([doc/version.texi])
 AC_OUTPUT

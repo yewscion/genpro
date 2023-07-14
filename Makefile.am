@@ -63,7 +63,9 @@ EXTRA_DIST =  LICENSE \
               doc/fdl-1.3.texi \
 	      bootstrap \
               configure.ac \
-              Makefile.am
+              Makefile.am \
+	      cdr255/genpro.scm.in \
+	      cdr255/genpro-templates.scm.in
 
 ## Cleaning Up
 
@@ -85,7 +87,8 @@ CLEANFILES =					\
 
 
 ## Define Guile files
-GUILESOURCES = $(srcdir)/cdr255/genpro.scm
+GUILESOURCES = $(builddir)/cdr255/genpro.scm \
+	       $(builddir)/cdr255/genpro-templates.scm
 
 ## Don't Distribute, Don't Install
 nodist_noinst_SCRIPTS = pre-inst-env

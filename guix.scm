@@ -5,6 +5,7 @@
  (gnu packages pkg-config)
  (gnu packages autotools)
  (gnu packages guile)
+ (gnu packages guile-xyz)
  (gnu packages pdf)
  (gnu packages tex)
  (gnu packages texinfo)
@@ -17,8 +18,8 @@
  (guix gexp))
 (package
  (name "genpro")
- (version "0.5.0")
- (source (local-file "./genpro-0.5.0.tar.bz2"))
+ (version "1.0.0")
+ (source (local-file "./genpro-1.0.0.tar.bz2"))
  (build-system gnu-build-system)
  (arguments
   `(#:tests? #f))
@@ -26,6 +27,7 @@
                      guile-3.0
                      texlive-base
                      guile-cdr255
+                     guile-raw-strings
                      texinfo))
  (native-inputs (list
                  pkg-config
@@ -43,11 +45,11 @@
                  texlive-dvips
                  texlive-etoolbox
                  texlive-fontspec
-                 texlive-generic-etexcmds
-                 texlive-generic-gettitlestring
+                 texlive-etexcmds
+                 texlive-gettitlestring
                  texlive-generic-ifptex
-                 texlive-generic-iftex
-                 texlive-generic-xstring
+                 texlive-iftex
+                 texlive-xstring
                  texlive-ifmtarg
                  texlive-kpathsea
                  texlive-latex-catchfile
@@ -58,25 +60,25 @@
                  texlive-latex-endfloat
                  texlive-latex-environ
                  texlive-latex-everyhook
-                 texlive-latex-fancyhdr
-                 texlive-latex-fancyvrb
+                 texlive-fancyhdr
+                 texlive-fancyvrb
                  texlive-latex-float
                  texlive-latex-framed
                  texlive-latex-fvextra
                  texlive-latex-geometry
                  texlive-latex-ifplatform
-                 texlive-latex-kvoptions
-                 texlive-latex-letltxmacro
+                 texlive-kvoptions
+                 texlive-letltxmacro
                  texlive-latex-lineno
                  texlive-latex-lwarp
                  texlive-latex-minted
                  texlive-latex-newfloat
                  texlive-latex-newunicodechar
-                 texlive-latex-pdftexcmds
+                 texlive-pdftexcmds
                  texlive-latex-printlen
-                 texlive-latex-refcount
+                 texlive-refcount
                  texlive-latex-setspace
-                 texlive-latex-titlesec
+                 texlive-titlesec
                  texlive-latex-trimspaces
                  texlive-latex-upquote
                  texlive-latex-xkeyval

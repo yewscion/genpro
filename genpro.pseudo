@@ -226,7 +226,7 @@ moreprocnamekeys={∇}
 end let.
 
 let ColorsTemplate be the string:
-" \usepackage[html]{xcolor}
+"\usepackage[html]{xcolor}
 % CDR Colors
 \definecolor{cdr-black}{HTML}{2d3743}
 \definecolor{cdr-cyan}{HTML}{34cae2}
@@ -748,3 +748,4 @@ begin [InitializeProject].
       newline.
       display "Please edit those and run this script again.".
 end [InitializeProject].
+
