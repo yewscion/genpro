@@ -15,6 +15,8 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
   :use-module (ice-9 popen)         ; Pipes
   :use-module (srfi srfi-9)
   :use-module (cdr255 genpro-templates)
+  :use-module (ice-9 i18n)
+  :use-module (ice-9 exceptions)
   :export (make-project
            compile-project
            hash-meta-info
@@ -22,7 +24,41 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
            create-metadata-file
            create-projectile-file
            build-file-name
-           run-java-jarfile))
+           run-java-jarfile
+           build-preamble-file-content
+           build-listings-file-content
+           make-project-information
+           project-information?
+           project-annotated-bibliography?
+           project-apl?
+           project-author
+           project-authority
+           project-bibliography
+           project-citation-style
+           project-content?
+           project-c?
+           project-cpp?
+           project-date
+           project-figures?
+           project-font-code
+           project-font-main
+           project-gemini?
+           project-genpro-version
+           project-guile?
+           project-html?
+           project-institution
+           project-java?
+           project-java-local-libraries
+           project-local-bibliography?
+           project-metapost?
+           project-ocaml?
+           project-project-title
+           project-prolog?
+           project-references?
+           project-sql?
+           project-section
+           project-zig?
+           ))
 
 (define-record-type <project-information>
   (make-project-information annotated-bibliography?
@@ -36,7 +72,10 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                             cpp?
                             date
                             figures?
+                            font-code
+                            font-main
                             gemini?
+                            genpro-version
                             guile?
                             html?
                             institution
@@ -63,7 +102,10 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
  (cpp? project-cpp?)
  (date project-date)
  (figures? project-figures?)
+ (font-code project-font-code)
+ (font-main project-font-main)
  (gemini? project-gemini?)
+ (genpro-version project-genpro-version)
  (guile? project-guile?)
  (html? project-html?)
  (institution project-institution)
@@ -79,7 +121,229 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
  (section project-section)
  (zig? project-zig?))
 
+(define (build-project-file-suffix info comment-prefix)
+  (string-append comment-prefix
+                 " Genpro Version "
+                 (project-genpro-version info)))
+
+(define (build-date-string info)
+  (date->string (project-date info) "~1"))
+
+(define (parse-date-string str)
+  (string->date str "~Y-~m-~d"))
+
+(define (build-section-code info)
+  (car (string-split (project-section info) #\:)))
+
+(define (build-section-title info)
+  (cadr (string-split (project-section info) #\:)))
+
+(define (build-file-name date category title)
+  (string-locale-downcase
+   (string-join
+    (list date
+          category
+          title)
+    "."
+    'infix)))
+
+(define (build-latex-command command-name value)
+  (string-append "\\newcommand{\\"
+                 command-name
+                 "}{\\string"
+                 value
+                 "}"))
+
+(define (build-project-name info)
+  (let ((section-code (build-section-code info))
+        (date (build-date-string info))
+        (title (project-project-title info))
+        (annotate? (project-annotated-bibliography? info)))
+    (string-append
+     (build-file-name date section-code title)
+     (if annotate?
+         "-annotated-bibliography"
+         ""))))
+
+(define (build-project-file-header info file comment-prefix)
+  (string-append comment-prefix " This is "
+                 file
+                 ",\n"
+                 comment-prefix " a part of "
+                 (build-project-name info) "."))
+                  
+(define (build-meta-file-content info)
+  (let ((pre (build-project-file-header info "meta.tex" "%"))
+        (bibliography (project-bibliography info))
+        (title (project-project-title info))
+        (author (project-author info))
+        (institution (project-institution info))
+        (section (project-section info))
+        (authority (project-authority info))
+        (date (date->string (project-date info) "~1"))
+        (suf (build-project-file-suffix info "%")))
+    (string-join
+     (list
+      pre
+      (build-latex-command "localbibliography" bibliography)
+      (build-latex-command "localtitle" title)
+      (build-latex-command "localauthor" author)
+      (build-latex-command "localschool" institution)
+      (build-latex-command "localsection" section)
+      (build-latex-command "localprofessor" authority)
+      (build-latex-command "localduedate" date)
+      suf)
+     "\n"
+     'infix)))
+
+(define (build-latex-citation-style info)
+  (cond ((eq? (project-citation-style info)
+               'apa7)
+         "apa,")
+        (else
+         "apa,")))
+
+(define (build-latex-annotated-bib info)
+  (if (project-annotated-bibliography? info)
+                           "annotation=true,"
+                           "annotation=false,"))
+
+(define (build-file-not-found-exception file)
+  (make-exception-with-message (string-append
+                                "Could not find "
+                                file
+                                "!")))
+(define (find-font-file-on-system font-file-name)
+  (shell-output-to-string
+                   (string-append
+                    "fc-list | grep "
+                    font-file-name
+                    " | sed 's/:.*//g;s/\\/[A-z.]*$/\\//;1q'")))
+
+(define-syntax find-file-using-proc
+  (syntax-rules ()
+    ((find-file-using-proc proc arg fail exec)
+     (begin
+       (guard (ex
+               ((exception-with-message? ex)
+                (display (string-append "Error opening file: "
+                                        (exception-message ex)
+                                        "\n"))
+                ""))
+         (let ((result (proc arg)))
+           (if (string=? fail result)
+               (raise-continuable
+                (exec arg))
+               result)))))))
+(define-syntax wrap-file-string
+  (syntax-rules ()
+    ((wrap-file-string info filename comment-prefix file-string)
+     (string-join
+      (list
+       (build-project-file-header info filename comment-prefix)
+       file-string
+       (build-project-file-suffix info comment-prefix))
+      "\n"
+      'infix))))
+      
+     
+(define (find-font-file font-file-name)
+  (find-file-using-proc find-font-file-on-system
+                        font-file-name
+                        ""
+                        build-file-not-found-exception))
+
+(define (build-preamble-file-font-section info)
+  (let* ((main-font-file (project-font-main info))
+         (code-font-file (project-font-code info))
+         (main-font-path (find-font-file main-font-file))
+         (code-font-path (find-font-file code-font-file)))
+    (string-append
+     "\\newfontfamily{\\fontmain}{"
+     main-font-file
+     "}[Path = "
+     main-font-path
+     "]\n\\newfontfamily{\\fontcode}{"
+     code-font-file
+     "}[Path = "
+     code-font-path
+     "]")))
+
+(define (build-preamble-file-content info)
+  (let ((pre (build-project-file-header info "preamble.tex" "%"))
+        (citation-style (build-latex-citation-style info))
+        (annotated-bib (build-latex-annotated-bib info))
+        (font-section (build-preamble-file-font-section info))
+        (suf (build-project-file-suffix info "%")))
+    (string-join (list  pre
+                        +preamble-template-prefix+
+                        citation-style
+                        annotated-bib
+                        +preamble-template-infix+
+                        font-section
+                        +preamble-template-postfix+
+                        suf)
+                 "\n"
+                 'infix)))
+
+(define (build-listings-file-content info)
+  (wrap-file-string info "listings.tex" "%" +listings-template+))
+
+(define (build-colors-file-content info)
+  (wrap-file-string info "colors.tex" "%" +colors-template+))
+
+(define (build-title-file-content info)
+  (wrap-file-string info "title.tex" "%" +title-template+))
+
+(define (build-java-file-content info)
+  (wrap-file-string info "/assignment/Implementation.java" "//"
+                    +java-template+))
+
+(define (build-java-package-info-file-content info)
+  (wrap-file-string info "/assignment/package-info.java" "//"
+                    +java-package-info-template+))
+
+(define (build-metapost-file-content info)
+  (wrap-file-string info "metapost.mp" "%" +metapost-template+))
+
+(define (build-projectile-file-content info)
+  (build-project-file-suffix info ";;;"))
+
 
 ;; Local Variables:
 ;; mode: scheme
 ;; End:
+
+;; Test Data:
+;; (define @PACKAGE_VERSION@ "1.0.0")
+(make-project-information #t
+                          #f
+                          "Christopher Rodriguez"
+                          "Dr. Some Professor"
+                          "$HOME/Documents/biblio/main.bib"
+                          'apa
+                          #t
+                          #f
+                          #f
+                          (make-date 0 0 0 0 14 07 2023 (* -4 60 60))
+                          #t
+                          "unifont.otf"
+                          "texgyretermes-regular.otf"
+                          #f
+                          "1.0.0"
+                          #f
+                          #t
+                          "Colorado State University Global"
+                          #f
+                          #f
+                          #f
+                          #t
+                          #f
+                          "Testing"
+                          #f
+                          #t
+                          #f
+                          "23FA-CSC415-1: Working out How to Do This"
+                          #f)
+
+         
