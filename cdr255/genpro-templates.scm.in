@@ -9,25 +9,25 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 |#
 (define-module (cdr255 genpro-templates)
   :use-module (raw-strings)
-  :export (metainfo-template
-           project-metadata-file-info
-           preamble-template-prefix
-           preamble-template-infix
-           preamble-template-postfix
-           listings-template
-           colors-template
-           main-template-prefix
-           title-template
-           java-template
-           metapost-template
-           java-package-info-template))
+  :export (+metainfo-template+
+           +project-metadata-file-info+
+           +preamble-template-prefix+
+           +preamble-template-infix+
+           +preamble-template-postfix+
+           +listings-template+
+           +colors-template+
+           +main-template-prefix+
+           +title-template+
+           +java-template+
+           +metapost-template+
+           +java-package-info-template+))
 
-  (define metainfo-template #R…(;;; -*- scheme -*-
+(define +metainfo-template+ #R…(;;; -*- scheme -*-
 ;;; This is the metadata file for genpro projects.
 ;;;
 ;;; Replace the default values with the ones appropriate for Your
 ;;; project.
-(define project-metadata-file-info
+(define +project-metadata-file-info+
 '((title "Project Title")
   (author "Christopher Rodriguez")
   (bibliography "~/Documents/biblio/main.bib")
@@ -39,7 +39,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
   (java-local-libraries '())
   )…)
 
-(define preamble-template-prefix #R…(\usepackage{lwarp}
+(define +preamble-template-prefix+ #R…(\usepackage{lwarp}
 \CSSFilename{https://cdr255.com/css/lwarp-cdr255.css}
 \usepackage{geometry}
 \geometry{
@@ -63,15 +63,14 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 \usepackage[backend=biber,style=)…
 )
 
-(define preamble-template-infix #R…(loadfiles=true]{biblatex}
+(define +preamble-template-infix+ #R…(loadfiles=true]{biblatex}
 \usepackage[]{setspace}
 \usepackage{indentfirst}
 \usepackage{fontspec}
-\setmainfont{TeXGyreTermes}.
-)…
+\setmainfont{TeXGyreTermes})…
 )
 
-(define preamble-template-postfix #R…(\appto{\bibsetup}{\raggedright}
+(define +preamble-template-postfix+ #R…(\appto{\bibsetup}{\raggedright}
 \bibliography{\localbibliography}
 \DeclareLanguageMapping{american}{american-apa}
 \setlength{\parindent}{4em}
@@ -125,11 +124,9 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 \captionsetup[table]{labelsep=none,labelfont=bf,justification=raggedright,
  singlelinecheck=false}
 \captionsetup[figure]{labelsep=none,labelfont=bf,justification=raggedright,
- singlelinecheck=false}
-
-% Genpro version 2.)…
+ singlelinecheck=false})…
 )
-(define listings-template #R…(\usepackage[procnames]{listings}
+(define +listings-template+ #R…(\usepackage[procnames]{listings}
 
 \makeatletter
 \lst@InputCatcodes
@@ -196,7 +193,7 @@ moreprocnamekeys={∇}
 )…
 )
 
-(define colors-template #R…(\usepackage[html]{xcolor}
+(define +colors-template+ #R…(\usepackage[html]{xcolor}
 % CDR Colors
 \definecolor{cdr-black}{HTML}{2d3743}
 \definecolor{cdr-cyan}{HTML}{34cae2}
@@ -235,7 +232,7 @@ moreprocnamekeys={∇}
 )
 
 
-(define main-template-prefix #R…(% This is main.tex
+(define +main-template-prefix+ #R…(% This is main.tex
 \documentclass[12pt, american]{report}
 \input{meta}
 \input{preamble}
@@ -249,7 +246,7 @@ moreprocnamekeys={∇}
 )…
 )
 
-(define title-template #R…(\begin{center}
+(define +title-template+ #R…(\begin{center}
   \vspace*{5cm}
   \textbf{\localtitle}\\
   \vspace{\baselineskip}
@@ -262,7 +259,7 @@ moreprocnamekeys={∇}
 )…
 )
 
-(define java-template #R…(package assignment;
+(define +java-template+ #R…(package assignment;
 import java.util.Scanner;
 import java.lang.StringBuilder;
 import java.lang.RuntimeException;
@@ -375,7 +372,7 @@ public class Implementation {
 )…
 )
 
-(define metapost-template #R…(prologues := 3;
+(define +metapost-template+ #R…(prologues := 3;
 outputtemplate := "%j-%c.mps";
 string metauml_defaultFont;
 string metauml_defaultFontOblique;
@@ -414,7 +411,7 @@ end.
 )…
 )
 
-(define java-package-info-template #R…(/**
+(define +java-package-info-template+ #R…(/**
  * This package is meant to implement Assignment 00 of CSC00.
  *
  * <p>The original Assignment Given was:</p>
