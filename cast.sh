@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -o errexit nounset pipefail
 if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
 cd "$(dirname "$0")"
@@ -24,7 +24,7 @@ fi
 # guix shell -f guix.scm bash coreutils guile --rebuild-cache --pure -v4 -- guile
 #
 # For guile scripts using my userlib:
-guix shell -f guix.scm bash coreutils guile guile-cdr255 --rebuild-cache --pure -v4
+guix shell -f guix.scm bash coreutils guile guile-cdr255 rlwrap --rebuild-cache --pure -v4
 #
 # Default:
 #guix shell -f guix.scm bash coreutils --rebuild-cache --pure -v4
