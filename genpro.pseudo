@@ -329,7 +329,7 @@ public class Implementation {
          * <p>Creates an error specifying invalid input from the user.</p>
          *
          * <p>This is a <strong>CALCULATION</strong>.
-         
+
          * <p><em>Impurities:</em> None.</p>
          * @param errorMessage the message to display to the user.
          * @param error the actual throwable error object, for root cause
@@ -388,7 +388,7 @@ public class Implementation {
     /**
      * <p>A pre-defined <code>StringBuilder</code> object for use in
      * main.</p>
-     */    
+     */
     private static StringBuilder stringBuilder = new StringBuilder();
     /**
      * <p>Runs the Actual Assignment.</p>
@@ -420,18 +420,18 @@ metauml_defaultFontBold  := \"texnansi-qtmb\";
 metauml_defaultFontBoldOblique  := \"texnansi-qtmbi\";
 input metauml;
 def U primary s = if string s: decode(s) fi enddef;
-vardef decode(expr given) = 
+vardef decode(expr given) =
     save a, i, s, out; string s, out; numeric a, i;
     out = \"\"; i=0;
     forever:
-        s := substring (i, incr i) of given; 
+        s := substring (i, incr i) of given;
         a := ASCII s;
-        if a < 128: 
-        elseif a = 194: 
+        if a < 128:
+        elseif a = 194:
             s := substring (i, incr i) of given;
-        elseif a = 195: 
+        elseif a = 195:
             s := char (64 + ASCII substring (i, incr i) of given);
-        else: 
+        else:
             s := \"?\";
         fi
         out := out & s;
@@ -480,13 +480,13 @@ begin [BuildFileName].
       let Result be a string.
       let SectionCode be the pick 0 of the result of calling [SplitString]
           on Info -> Section and ":".
-      append Info -> Date to Result.
-      append "." to Result.
-      append SectionCode to Result.
-      append "." to Result.
-      append Info -> Project to Result.
+      append Info -> Date
+      append "."
+      append SectionCode
+      append "."
+      append Info -> Project
       if Info -> AnnotatedBibliography then:
-         append "-annotated-bibliography" to Result.
+         append "-annotated-bibliography"
       end if.
 
       return the result of calling [DowncaseString]
@@ -499,12 +499,12 @@ begin [BuildLatexCommand].
       expecting a string and a string.
 
       let Result be a string.
-      append "\newcommand{\\" to Result.
-      append CommandName to Result.
-      append "}{\\string" to Result.
-      append Value to Result.
-      append "}" to Result.
-      append newline to Result.
+      append "\newcommand{\\"
+      append CommandName
+      append "}{\\string"
+      append Value
+      append "}"
+      append newline
 
       return Result.
 end [BuildLatexCommand].
@@ -516,28 +516,28 @@ begin [BuildMetaFileContent].
       let Result be a string.
       append the result of calling [BuildLatexCommand]
              on "localbibliography" and Info -> Bibliography
-             to Result.
+
       append the result of calling [BuildLatexCommand]
              on "localtitle" and Info -> Project
-             to Result.
+
       append the result of calling [BuildLatexCommand]
              on "localauthor" and Info -> Author
-             to Result.
+
       append the result of calling [BuildLatexCommand]
              on "localschool" and Info -> Institution
-             to Result.
+
       append the result of calling [BuildLatexCommand]
              on "localsection" and Info -> Section
-             to Result.
+
       append the result of calling [BuildLatexCommand]
              on "localprofessor" and Info -> Authority
-             to Result.
+
       append the result of calling [BuildLatexCommand]
              on "localduedate" and Info -> Date
-             to Result.
 
-      append newline to Result.
-      append "% Genpro version 1." to Result.
+
+      append newline
+      append "% Genpro version 1."
 
       return Result.
 end [BuildMetaFileContent].
@@ -548,33 +548,33 @@ begin [BuildPreambleFileContent].
 
       let Result be a string.
 
-      append PreambleTemplatePrefix to Result.
+      append PreambleTemplatePrefix
       if Info -> CitationStyle is "APA7" then
-         append "apa," to Result.
+         append "apa,"
       else
-         append "apa," to Result. ;; Same either way for now, default for
+         append "apa,"  ;; Same either way for now, default for
                                   ;; future use.
       end if.
       if Info -> AnnotatedBibliography then
-         append "annotation=true," to Result.
+         append "annotation=true,"
       else
-         append "annotation=false," to Result.
+         append "annotation=false,"
       end if.
-      append PreambleTemplateInfix to Result.
-      append "\newfontfamily{\freemono}{FreeMono.otf}[Path = " to Result.
+      append PreambleTemplateInfix
+      append "\newfontfamily{\freemono}{FreeMono.otf}[Path = "
       append the result of calling [ShellCommandToString]
              on the result of calling [FindFontCommand]
                            on "FreeMono.otf"
-             to Result.
+
       append "]
-      \newfontfamily{\unifont}{unifont.ttf}[Path = \"" to Result.
+      \newfontfamily{\unifont}{unifont.ttf}[Path = \""
       append the result of calling [ShellCommandToString]
              on the result of calling [FindFontCommand]
                            on "unifont.ttf"
-             to Result.
+
       append "]
-"to Result.
-      append  PreambleTemplatePostfix to Result.
+"
+      append  PreambleTemplatePostfix
    return Result.
 end [BuildPreambleFileContent].
 
@@ -598,22 +598,22 @@ begin [BuildMainFileContent].
 
       let Result be a string.
 
-      append MainTemplatePrefix to Result.
+      append MainTemplatePrefix
       if Info -> Content then
          append "\input{content}
 \newpage
-" to Result.
+"
       end if.
       if Info -> References then
          append "\section*{References}
 \printbibliography[heading=none]
 \newpage
-" to Result.
+"
       end if.
       if Info -> Figures then
-         append "\input{figures}" to Result.
+         append "\input{figures}"
       end if.
-      append "\end{document}" to Result.
+      append "\end{document}"
 
      return Result.
 end [BuildMainFileContent].
@@ -638,9 +638,9 @@ begin [FindFontCommand].
 
       let Result be a string.
 
-      append "fc-list | grep " to Result.
-      append FontName to Result.
-      append " | sed 's/:.*//g;s/\/[A-z.]*$/\//;1q'" to Result.
+      append "fc-list | grep "
+      append FontName
+      append " | sed 's/:.*//g;s/\/[A-z.]*$/\//;1q'"
 
       return Result.
 end [FindFontCommand].
@@ -686,8 +686,8 @@ begin [MakeProject].
                                         "./src/", ProjectName, and ".html".
       let HTMLLinkName be the result of appending the strings
                                         "./src/", ProjectName, and ".html".
-      
-                                        
+
+
       if "./src/" is not a directory, create "./src/" as a directory.
       call DumpToFile on Info, "./src/main.tex", and [BuildMainFileContent].
       call DumpToFile on Info, "./src/meta.tex", and [BuildMetaFileContent].
@@ -725,11 +725,11 @@ begin [BuildMetadataFileContent].
       expecting a ProjectInformation record.
 
       let Result be a string.
-      append MetadataTemplate to Result.
-      append "  (date \"" to Result.
-      append the date to Result.
-      append "\")\n" to Result.
-      
+      append MetadataTemplate
+      append "  (date \""
+      append the date
+      append "\")\n"
+
       return Result as a string.
 end [BuildMetadataFileContent].
 
@@ -749,3 +749,165 @@ begin [InitializeProject].
       display "Please edit those and run this script again.".
 end [InitializeProject].
 
+begin [BuildLualatexCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Name be equal to Info → ProjectTitle.
+      let Result be a string.
+
+      append "lualatex --output-format pdf --jobname="
+      append Name
+      append " --shell-escape main.tex"
+
+      return Result.
+end [BuildLualatexCommand].
+
+begin [ShowLualatexCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildLualatexCommand], and Info.
+end [ShowLualatexCommand].
+
+begin [RunLualatexCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildLualatexCommand], and Info.
+end [RunLualatexCommand].
+
+begin [BuildLynxCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Name be equal to Info → ProjectTitle.
+      let Result be a string.
+
+      append "lynx --dump "
+      append Name
+      append ".html > "
+      append Name
+      append ".txt"
+
+      return Result.
+end [BuildLynxCommand].
+
+begin [ShowLynxCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildLynxCommand], and Info.
+end [ShowLynxCommand].
+
+begin [RunLynxCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildLynxCommand], and Info.
+end [RunLynxCommand].
+
+begin [DumpStringToFileIfBound].
+      expect String and File as arguments,
+      expecting a string and a string.
+
+      if String is not null:
+         call [DumpStringToFile] on File and String.
+      end if.
+end [DumpStringToFileIfBound].
+
+begin [BuildJavaClasspathIncludes].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Libs be a list of strings equal to Info → JavaLocalLibraries.
+      let Result be a string.
+
+      if the tally of Libs is greater than 0:
+        map append "../../lib/" to item over Libs.
+        let Result be the result of joining over Libs with ":" infixed.
+      else:
+        let Result be ".".
+
+      return Result.
+end [BuildJavaClasspathIncludes].
+
+begin [BuildJavaZipfileCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let ZipPrefix be " zip -9 -r -v ".
+      let Name be equal to Info → ProjectTitle.
+      let Files be the result of calling [BuildJavaZipfileFiles] on Info.
+      let TmpDir be a string.
+      let ZipName be a string.
+      let WipName be a string.
+      let Result be a string.
+
+      append " ", Name, and ".java/ " to TmpDir.
+      append " ", Name, and ".java.zip " to ZipName.
+      append Name and "-wip.zip " to WipName.
+
+      let Result be equal to joining over this with " && " infixed:
+          append ZipPrefix, WipName, and Files.
+          append " mkdir -pv " and TmpDir.
+          append " cd " and TmpDir.
+          append " unzip ../" and Wipname.
+          append " cd .. ".
+          append " rm " and ZipName.
+          append ZipPrefix, ZipName, and TmpDir.
+          append " rm -rf ", WipName, and TmpDir.
+      end let.
+
+      return Result.
+end [BuildJavaZipfileCommand]
+
+begin [BuildJavaZipfileFiles].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Libs be a list of strings equal to Info → JavaLocalLibraries.
+      let Result be a string.
+
+      append " assignment/*.java " to Result.
+      append Info → ProjectTitle to Result.
+      append ".jar doc/ " to Result.
+      if the tally of Libs is greater than 0:
+        map append "../lib/" to item over Libs.
+        append the result of joining over Libs with " " infixed to Result.
+      end if.
+
+      return Result.
+end [BuildJavaZipfileFiles].
+
+begin [BuildRunJarfileCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Name be equal to Info → ProjectTitle.
+      let Classpath be the result of
+          calling [BuildJavaClasspathIncludes] on Info.
+      let JarfileName be the result of appending "src/", Name, and ".jar".
+      let Result be a string.
+
+      append "java -cp " to Result.
+      append Classpath to Result.
+      append " -jar " to Result.
+      append JarfileName to Result.
+
+      return Result.
+end [BuildRunJarfileCommand].
+
+begin [ShowRunJarfileCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildRunJarfileCommand], and Info.
+end [ShowRunJarfileCommand].
+
+begin [RunRunJarfileCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildRunJarfileCommand], and Info.
+end [RunRunJarfileCommand].
