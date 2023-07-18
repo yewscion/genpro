@@ -262,7 +262,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
         (institution (project-institution info))
         (section (project-section info))
         (authority (project-authority info))
-        (date (date->string (project-date info) "~1"))
+        (date (build-date-string info))
         (suf (build-project-file-suffix info "%")))
     (string-join
      (list
