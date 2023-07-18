@@ -9,8 +9,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 |#
 (define-module (cdr255 genpro-templates)
   :use-module (raw-strings)
-  :export (+metainfo-template+
-           +project-metadata-file-info+
+  :export (+genpro-metadata-template+
            +preamble-template-prefix+
            +preamble-template-infix+
            +preamble-template-postfix+
@@ -20,24 +19,61 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
            +title-template+
            +java-template+
            +metapost-template+
-           +java-package-info-template+))
+           +java-package-info-template+
+           +apl-file-template+
+           +c-makefile-template+
+           +c-file-template+
+           +cpp-makefile-template+
+           +cpp-file-template+
+           +guile-file-template+
+           +ocaml-file-template+
+           +prolog-file-template+
+           +zig-file-template+))
 
-(define +metainfo-template+ #R…(;;; -*- scheme -*-
+(define +genpro-metadata-template+ #R…(;;; -*- scheme -*-
+;;;
 ;;; This is the metadata file for genpro projects.
 ;;;
 ;;; Replace the default values with the ones appropriate for Your
 ;;; project.
-(define +project-metadata-file-info+
-'((title "Project Title")
-  (author "Christopher Rodriguez")
-  (bibliography "~/Documents/biblio/main.bib")
-  (school "Colorado State University Global")
-  (section "Some Class: Some Title of Class")
-  (professor "Dr. Some Professor")
-  (annotated-bibliography? #false)
-  (java-project? #true)
-  (java-local-libraries '())
-  )…)
+(define genpro-metadata
+  (build-genpro-metadata
+   #:annotated-bibliography? #false
+   #:apl? #false
+   #:author "Christopher Rodriguez"
+   #:authority "Dr. Some Professor"
+   #:bibliography "~/Documents/biblio/main.bib"
+   #:citation-style 'apa7
+   #:content? #true
+   #:c? #false
+   #:cpp? #false
+   #:date (date->string (current-date) "~1") ;; Replace with "YYYY-MM-DD"
+   #:figures? #true
+   #:font-code "unifont.otf"
+   #:font-main "texgyretermes-regular.otf"
+   #:gemini? #false
+   #:genpro-version "1.0.0"
+   #:guile? #false
+   #:html? #true
+   #:institution "Colorado State University Global"
+   #:java? #false
+   #:java-local-libraries '()
+   #:local-bibliography? #false
+   #:metapost? #true
+   #:ocaml? #false
+   #:pdf? #true
+   #:project-title "Title of Paper"
+   #:prolog? #false
+   #:references? #true
+   #:sql? #false
+   #:section "23FA-XXX000-1: The Title of the Class"
+   #:text? #true
+   #:zig? #false))
+
+;; Local Variables:
+;; mode: scheme
+;; mode: scheme
+;; End:)…)
 
 (define +preamble-template-prefix+ #R…(\usepackage{lwarp}
 \CSSFilename{https://cdr255.com/css/lwarp-cdr255.css}
@@ -437,6 +473,22 @@ package assignment;
 )…
 )
 
-;; Local Variables:
-;; mode: scheme
-;; End:
+(define +apl-file-template+ #R…(
+)…)
+(define +c-makefile-template+ #R…(
+)…)
+(define +c-file-template+ #R…(
+)…)
+(define +cpp-makefile-template+ #R…(
+)…)
+(define +cpp-file-template+ #R…(
+)…)
+(define +guile-file-template+ #R…(
+)…)
+(define +ocaml-file-template+ #R…(
+)…)
+(define +prolog-file-template+ #R…(
+)…)
+(define +zig-file-template+ #R…(
+)…)
+
