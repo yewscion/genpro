@@ -8,6 +8,8 @@
  (gnu packages guile-xyz)
  (gnu packages pdf)
  (gnu packages tex)
+ (gnu packages base)
+ (gnu packages fontutils)
  (gnu packages texinfo)
  (gnu packages python-xyz)
  (guix download)
@@ -28,13 +30,19 @@
                      texlive-base
                      guile-cdr255
                      guile-raw-strings
+                     texlive-latex-lwarp
+                     texlive-metapost
+                     texlive-generic-ifptex
+                     sed
+                     grep
+                     fontconfig
+                     biber
                      texinfo))
  (native-inputs (list
                  pkg-config
                  guile-3.0
                  autoconf
                  automake
-                 biber
                  python-pygments
                  texlive-base
                  texlive-biblatex
