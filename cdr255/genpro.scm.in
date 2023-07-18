@@ -17,18 +17,15 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
   :use-module (cdr255 genpro-templates)
   :use-module (ice-9 i18n)
   :use-module (ice-9 exceptions)
-  :export (make-project
+  :use-module (cdr255 combinators)
+  :use-module (system base compile)
+  :export (initialize-project
+           build-genpro-metadata
+           make-project
            compile-project
-           hash-meta-info
+           run-run-jarfile-command
            clean-project
-           create-metadata-file
-           create-projectile-file
-           build-file-name
-           run-java-jarfile
-           build-preamble-file-content
-           build-listings-file-content
-           make-project-information
-           project-information?
+           build-project-name
            project-annotated-bibliography?
            project-apl?
            project-author
