@@ -396,6 +396,551 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 (define (build-projectile-file-content info)
   (build-project-file-suffix info ";;;"))
 
+(define (build-genpro-metadata-file-content info)
+  (wrap-file-string info ".genpro-metadata" ";;;"
+                    +genpro-metadata-template+))
+
+(define (build-main-file-content info)
+  (let ((content (if (project-content? info)
+                     "\\input{content}\n\\newpage"
+                     ""))
+        (references (if (project-references? info)
+                        (string-append
+                         "\\section*{References}\n"
+                         "\\printbibliography[heading=none]\n"
+                         "\\newpage")
+                        ""))
+        (figures (if (project-figures? info)
+                     "\\input{figures}"
+                     "")))
+    (string-join (list
+                  +main-template-prefix+
+                  content
+                  references
+                  figures
+                  "\\end{document}")
+                 "\n"
+                 'infix)))
+
+(define (build-apl-file-content info)
+  (wrap-file-string info "Implementation.apl" "⍝" +apl-file-template+))
+
+(define (build-c-makefile-content info)
+  (wrap-file-string info "Makefile.C" "#" +c-makefile-template+))
+
+(define (build-c-file-content info)
+  (wrap-file-string info "Implementation.c" "//" +c-file-template+))
+
+(define (build-cpp-makefile-content info)
+  (wrap-file-string info "Makefile.CPP" "#" +cpp-makefile-template+))
+
+(define (build-cpp-file-content info)
+  (wrap-file-string info "Implementation.cpp" "//" +cpp-file-template+))
+
+(define (build-guile-file-content info)
+  (wrap-file-string info "Implementation.scm" ";;;"
+                    +guile-file-template+))
+
+(define (build-ocaml-file-content info)
+  +ocaml-file-template+)
+
+(define (build-prolog-file-content info)
+  (wrap-file-string info "Implementation.pl" "%" +prolog-file-template+))
+
+(define (build-zig-file-content info)
+  (wrap-file-string info "Implementation.zig" "//" +zig-file-template+))
+
+(define (initialize-project info)
+  (dump-string-to-file ".genpro-metadata"
+                       (build-genpro-metadata-file-content info))
+  (dump-string-to-file ".projectile"
+                       (build-projectile-file-content info))
+  (dump-string-to-file ".assignment"
+                       ""))
+
+(define (build-lualatex-command info)
+  (string-append
+   "lualatex --output-format pdf --jobname="
+   (build-project-name info)
+   " --shell-escape main.tex"))
+
+(define (show-lualatex-command info)
+  ((bluebird display build-lualatex-command) info))
+
+(define (run-lualatex-command info)
+  ((bluebird system build-lualatex-command) info))
+
+(define (build-lynx-command info)
+  (let ((project-name (build-project-name info)))
+    (string-append
+     "lynx --dump "
+     project-name
+     ".html > "
+     project-name
+     ".txt")))
+
+(define (show-lynx-command info)
+  ((bluebird display build-lynx-command) info))
+
+(define (run-lynx-command info)
+  ((bluebird system build-lynx-command) info))
+
+(define (build-java-classpath-includes info)
+  (let ((libs (project-java-local-libraries info)))
+    (if (> (length libs) 0)
+        (string-join
+         (map (lambda (x)
+                (string-append "../../lib/"
+                               x))
+              libs)
+         ":"
+         'infix)
+        ".")))
+
+(define (build-java-zip-files info)
+  (let ((libs (project-java-local-libraries info)))
+    (string-join (list
+                  " assignment/*.java"
+                  (string-append (build-project-name info)
+                                 ".jar")
+                  "doc/"
+                  (if (> (length libs) 0)
+                      (string-join
+                       (map
+                        (lambda (x)
+                          (string-append "../lib/" x))
+                        libs)
+                       " "
+                       'infix)
+                      ""))
+                 " "
+                 'infix)))
+
+(define (build-java-zipfile-command info)
+  (let* ((zip-prefix " zip -9 -r -v ")
+         (name (build-project-name info))
+         (files (build-java-zip-files info))
+         (tmp-dir (string-append " " name ".java/ "))
+         (zip-name (string-append " " name ".java.zip"))
+         (wip-name (string-append name "-wip.zip")))
+    (string-join (list
+                  (string-append zip-prefix wip-name files)
+                  (string-append " mkdir -pv " tmp-dir)
+                  (string-append " cd " tmp-dir)
+                  (string-append " unzip ../" wip-name)
+                  " cd .. "
+                  (string-append " rm " zip-name)
+                  (string-append zip-prefix zip-name tmp-dir)
+                  (string-append " rm -rf " wip-name tmp-dir))
+                 " && "
+                 'infix)))
+
+(define (show-java-zipfile-command info)
+  ((bluebird display build-java-zipfile-command) info))
+
+(define (run-java-zipfile-command info)
+  ((bluebird system build-java-zipfile-command) info))
+
+(define (build-run-jarfile-command info)
+  (let* ((name (build-project-name info))
+         (classpath (build-java-classpath-includes info))
+         (jarfile-name (string-append "src/" name ".jar")))
+    (string-join (list
+                  "java -cp"
+                  classpath
+                  "-jar"
+                  jarfile-name)
+                 " "
+                 'infix)))
+
+(define (show-run-jarfile-command info)
+  ((bluebird display build-run-jarfile-command) info))
+
+(define (run-run-jarfile-command info)
+  ((bluebird system build-run-jarfile-command) info))
+
+(define (build-javadoc-command info)
+  (let ((classpath (string-append
+                    "..:"
+                    (build-java-classpath-includes info))))
+    (string-join (list
+                  "javadoc -private -cp"
+                  classpath
+                  "assignment")
+                 " "
+                 'infix)))
+
+(define (show-javadoc-command info)
+  ((bluebird display build-javadoc-command) info))
+
+(define (run-javadoc-command info)
+  ((bluebird system build-javadoc-command) info))
+
+(define (build-javac-command info)
+  (let ((classpath (build-java-classpath-includes info)))
+    (string-join (list "javac -cp"
+                       classpath
+                       "assignment/*.java")
+                 " "
+                 'infix)))
+
+(define (show-javac-command info)
+  ((bluebird display build-javac-command) info))
+
+(define (run-javac-command info)
+  ((bluebird system build-javac-command) info))
+
+(define (build-make-jar-command info)
+  (string-append "jar -v -c -f "
+                 (build-project-name info)
+                 ".jar -e assignment.Implementation assignment/"))
+
+(define (show-make-jar-command info)
+  ((bluebird display build-make-jar-command) info))
+
+(define (run-make-jar-command info)
+  ((bluebird system build-make-jar-command) info))
+
+(define (build-local-bibliography-command info)
+  (let ((name (build-project-name info)))
+    (string-append "bibexport -o "
+                   name
+                   ".bib "
+                   name)))
+
+(define (show-local-bibliography-command info)
+  ((bluebird display build-local-bibliography-command) info))
+
+(define (run-local-bibliography-command info)
+  ((bluebird system build-local-bibliography-command) info))
+
+(define (compile-local-bibliography-component info)
+  (run-local-bibliography-command info))
+
+(define (build-javafile-redacted-filename filename)
+  (add-section-to-filename "redacted" filename))
+
+(define (compile-javafile-redacted-version filename)
+  (if (not (file-exists? filename))
+      (build-file-not-found-exception filename)
+      (dump-string-to-file
+       (build-javafile-redacted-filename filename)
+       (get-file-as-string filename))))
+
+(define (compile-java-component info)
+  (if (and (project-java? info)
+           (file-exists? "assignment/Implementation.java"))
+      (system "rm -rf assignment/*.redacted.*")
+      (let ((list-of-javafiles (find-all-files-with-suffix "assignment/"
+                                                           "java")))
+        (system "cd doc/")
+        (run-javadoc-command info)
+        (system "cd ../")
+        (run-javac-command info)
+        (run-make-jar-command info)
+        (for-each (lambda (x)
+                    (compile-javafile-redacted-version x))
+                  list-of-javafiles)
+        (run-java-zipfile-command info))))
+
+(define (find-all-files-with-suffix directory suffix)
+  (scandir directory
+           (lambda (x)
+             (pattern-in-suffix? x suffix (+ 1 (string-length suffix))))))
+
+(define (pattern-in-suffix? item pattern suffix)
+  (if (and (>= (string-length item) (string-length pattern))
+           (>= (string-length item) suffix))
+      (string-contains item pattern (- (string-length item) suffix))
+      #f))
+
+(define (compile-metapost-component info)
+  (if (file-exists? "metapost.mp")
+      (system "mpost metapost.mp")
+      (build-file-not-found-exception "metapost.mp")))
+
+(define (compile-text-component info)
+  (let ((file (string-append (build-project-name info) ".html")))
+    (if (file-exists? file)
+        (run-lynx-command info))))
+
+(define (build-biber-pdf-command info)
+  (string-append "biber " (build-project-name info)))
+
+(define (show-biber-pdf-command info)
+  ((bluebird display build-biber-pdf-command) info))
+
+(define (run-biber-pdf-command info)
+  ((bluebird system build-biber-pdf-command) info))
+
+(define (build-biber-html-command info)
+  (string-append "biber " (build-project-name info) "_html"))
+
+(define (show-biber-html-command info)
+  ((bluebird display build-biber-html-command) info))
+
+(define (run-biber-html-command info)
+  ((bluebird system build-biber-html-command) info))
+
+(define (compile-biber-component info)
+  (run-biber-pdf-command info)
+  (run-biber-html-command info))
+
+(define (build-lwarpmk-command command)
+  (string-append "lwarpmk " command))
+
+(define (build-lwarpmk-trigger-command)
+  (build-lwarpmk-command "again"))
+
+(define (show-lwarpmk-trigger-command)
+  ((bluebird display build-lwarpmk-trigger-command)))
+
+(define (run-lwarpmk-trigger-command)
+  ((bluebird system build-lwarpmk-trigger-command)))
+
+(define (build-lwarpmk-clean-command)
+  (build-lwarpmk-command "clean"))
+
+(define (show-lwarpmk-clean-command)
+  ((bluebird display build-lwarpmk-clean-command)))
+
+(define (run-lwarpmk-clean-command)
+  ((bluebird system build-lwarpmk-clean-command)))
+
+(define (build-lwarpmk-pdf-command)
+  (build-lwarpmk-command "print"))
+
+(define (show-lwarpmk-pdf-command)
+  ((bluebird display build-lwarpmk-pdf-command)))
+
+(define (run-lwarpmk-pdf-command)
+  ((bluebird system build-lwarpmk-pdf-command)))
+
+(define (build-lwarpmk-html-command)
+  (build-lwarpmk-command "html"))
+
+(define (show-lwarpmk-html-command)
+  ((bluebird display build-lwarpmk-html-command)))
+
+(define (run-lwarpmk-html-command)
+  ((bluebird system build-lwarpmk-html-command)))
+
+(define (build-lwarpmk-images-command)
+  (build-lwarpmk-command "limages"))
+
+(define (show-lwarpmk-images-command)
+  ((bluebird display build-lwarpmk-images-command)))
+
+(define (run-lwarpmk-images-command)
+  ((bluebird system build-lwarpmk-images-command)))
+
+(define (build-lwarpmk-cleanimages-command)
+  (build-lwarpmk-command "cleanlimages"))
+
+(define (show-lwarpmk-cleanimages-command)
+  ((bluebird display build-lwarpmk-cleanimages-command)))
+
+(define (run-lwarpmk-cleanimages-command)
+  ((bluebird system build-lwarpmk-cleanimages-command)))
+
+(define (compile-html-component info)
+  (run-lwarpmk-trigger-command)
+  (compile-images)
+  (run-lwarpmk-html-command)
+  (compile-images))
+
+(define (compile-pdf-component info)
+  (run-lwarpmk-trigger-command)
+  (compile-images)
+  (run-lwarpmk-pdf-command))
+
+(define (compile-images)
+  (run-lwarpmk-cleanimages-command)
+  (run-lwarpmk-images-command))
+
+(define (compile-c-component info)
+  (chdir "./assignment/")
+  (system "make -f Makefile.C")
+  (chdir "../"))
+
+(define (compile-cpp-component info)
+  (chdir "./assignment/")
+  (system "make -f Makefile.CPP")
+  (chdir "../"))
+
+(define (compile-guile-component info)
+  (chdir "./assignment/")
+  (map compile-file (find-all-files-with-suffix "." "scm"))
+  (chdir "../"))
+
+(define (compile-prolog-component info)
+  (chdir "./assignment/")
+  (system (string-append "swipl --goal=main --stand_alone=true "
+                         "-o prolog-implementation -c Implementation.pl"))
+  (chdir ".."))
+
+(define (compile-apl-component info)
+  (chdir "./assignment/")
+  (system "apl --script -f Implementation.apl")
+  (chdir "../"))
+
+(define (compile-ocaml-component info)
+  (chdir "./assignment/")
+  (system "ocamlopt -o ocaml-implementation Implementation.ml")
+  (chdir "../"))
+
+(define (compile-zig-component info)
+  (chdir "./assignment/")
+  (system "zig build-exe Implementation.zig")
+  (chdir "../"))
+
+(define (compile-gemini-component info)
+  (display "Gemini Not Implemented Yet!"))
+
+(define (compile-sql-component info)
+  (display "SQL Not Implemented Yet!"))
+
+(define (slurp-file-if-exists filename)
+  (if (file-exists? filename)
+      (get-file-as-string filename)
+      #f))
+
+(define (move-file old-file new-file)
+  (copy-file old-file new-file)
+  (delete-file old-file))
+
+(define (clean-project info)
+  (if (and (file-exists? "content.tex")
+           (file-exists? ".genpro-metadata"))
+      (let ((content (get-file-as-string "content.tex"))
+            (metadata (get-file-as-string "figures.tex"))
+            (figures (slurp-file-if-exists "figures.tex"))
+            (assignment (slurp-file-if-exists ".assignment"))
+            (projectile (slurp-file-if-exists ".projectile"))
+            (metapost (slurp-file-if-exists "./src/metapost.mp")))
+        (system +clean-files-command+)
+        (dump-string-to-file-if-bound ".genpro-metadata" metadata)
+        (dump-string-to-file-if-bound ".projectile" projectile)
+        (dump-string-to-file-if-bound ".assignment" assignment)
+        (make-project info)
+        (dump-string-to-file-if-bound "content.tex" content)
+        (dump-string-to-file-if-bound "figures.tex" figures)
+        (dump-string-to-file-if-bound "./src/metapost.mp" metapost)
+        (compile-project info))))
+
+(define (make-project info)
+  (let* ((project-name (build-project-name info))
+         (pdf-file-name (string-append "./" project-name ".pdf"))
+         (html-file-name (string-append "./" project-name ".html"))
+         (pdf-link-name (string-append "./src/" project-name ".pdf"))
+         (html-link-name (string-append "./src/" project-name ".html")))
+    (mkdir "./src/")
+    (mkdir "./src/assignment/")
+    (dump-string-to-file "./src/main.tex"
+                         (build-main-file-content info))
+    (dump-string-to-file "./src/meta.tex"
+                         (build-meta-file-content info))
+    (dump-string-to-file "./src/preamble.tex"
+                         (build-preamble-file-content info))
+    (dump-string-to-file "./src/title-page.tex"
+                         (build-title-file-content info))
+    (dump-string-to-file "./src/listings.tex"
+                         (build-listings-file-content info))
+    (dump-string-to-file "./src/colors.tex"
+                         (build-colors-file-content info))
+    (if (project-metapost? info)
+        (dump-string-to-file "./src/metapost.mp"
+                             (build-metapost-file-content info)))
+    (if (project-apl? info)
+        (dump-string-to-file "./src/assignment/Implementation.apl"
+                             (build-apl-file-content info)))
+    (if (project-c? info)
+        (begin
+          (dump-string-to-file "./src/assignment/Makefile.C"
+                               (build-c-makefile-content info))
+          (dump-string-to-file "./src/assignment/Implementation.c"
+                               (build-c-file-content info))))
+    (if (project-cpp? info)
+        (begin
+          (dump-string-to-file "./src/assignment/Makefile.CPP"
+                               (build-cpp-makefile-content info))
+          (dump-string-to-file "./src/assignment/Implementation.cpp"
+                               (build-cpp-file-content info))))
+    (if (project-guile? info)
+        (dump-string-to-file "./src/assignment/Implementation.scm"
+                             (build-guile-file-content info)))
+    (if (project-java? info)
+        (begin
+          (dump-string-to-file "./src/assignment/Implementation.java"
+                               (build-java-file-content info))
+          (dump-string-to-file "./src/assignment/package-info.java"
+                               (build-java-package-info-file-content
+                                info))))
+    (if (project-ocaml? info)
+        (dump-string-to-file "./src/assignment/Implementation.ml"
+                             (build-ocaml-file-content info)))
+    (if (project-prolog? info)
+        (dump-string-to-file "./src/assignment/Implementation.pl"
+                             (build-prolog-file-content info)))
+    (if (project-zig? info)
+        (dump-string-to-file "./src/assignment/Implementation.zig"
+                             (build-zig-file-content info)))
+    ;;
+    (dump-string-to-file "content.tex"
+                         "")
+    (dump-string-to-file "figures.tex"
+                         "")
+    (symlink "./.genpro-metadata"
+             "./src/.genpro-metadata")
+    (symlink "./content.tex"
+             "./src/content.tex")
+    (symlink "./figures.tex"
+             "./src/figures.tex")
+;;
+    (chdir "./src/")
+    (run-lualatex-command info)
+    (run-lwarpmk-html-command)
+    (move-file pdf-file-name (string-append "../" pdf-file-name))
+    (move-file html-file-name (string-append "../" html-file-name))
+    (symlink pdf-file-name pdf-link-name)
+    (symlink html-file-name html-link-name)))
+
+(define (compile-project info)
+  (chdir "./src/")
+  ;;
+  (if (project-apl? info)
+      (compile-apl-component info))
+  (if (project-c? info)
+      (compile-c-component info))
+  (if (project-cpp? info)
+      (compile-cpp-component info))
+  (if (project-guile? info)
+      (compile-guile-component info))
+  (if (project-java? info)
+      (compile-java-component info))
+  (if (project-ocaml? info)
+      (compile-ocaml-component info))
+  (if (project-prolog? info)
+      (compile-prolog-component info))
+  (if (project-zig? info)
+      (compile-zig-component info))
+  ;;
+  (if (project-metapost? info)
+      (compile-metapost-component info))
+  (if (project-pdf? info)
+      (compile-pdf-component info))
+  (if (project-html? info)
+      (compile-html-component info))
+  (if (project-local-bibliography? info)
+      (compile-local-bibliography-component info))
+  (if (project-text? info)
+      (compile-text-component info))
+  (if (project-gemini? info)
+      (compile-gemini-component info))
+  (if (project-sql? info)
+      (compile-sql-component info))
+  ;;
+  (chdir "../"))
 
 ;; Local Variables:
 ;; mode: scheme
