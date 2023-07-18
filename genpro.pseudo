@@ -1,4 +1,4 @@
-let ProjectInformation be a record with 25 fields:
+let ProjectInformation be a record with 26 fields:
     AnnotatedBibliography → a boolean. ; Flag for creating an annotated
                                        ; bibliography.
     Apl → a boolean. ; Flag for creating GNU APL Code scaffolding and
@@ -11,12 +11,18 @@ let ProjectInformation be a record with 25 fields:
                               ; requirements.
     Content → a boolean. ; Flag for whether the content.tex file should be
                          ; included in the final project's compilation.
+    C → a boolean. ; Flag for creating C Code scaffolding and output.
     Cpp → a boolean. ; Flag for creating C++ Code scaffolding and output.
     Date → a datetime. ; The due date or publishing date.
     Figures → a boolean. ; Flag for whether the figures.tex file should be
                          ; included in the final compilation.
+    FontCode → a string. ; The filename of the font to use for code
+                         ; listings.
+    FontMain → a string. ; The filename of the font to use for prose.
     Gemini → a boolean. ; Flag for creating the Gemtext output for the
                         ; project.
+    GenproVersion → a string. ; The version of genpro this metadata
+                              ; expects.
     Guile → a boolean. ; Flag for creating GNU Guile Code scaffolding and
                        ; output.
     HTML → a boolean. ; Flag for creating the HTML Output.
@@ -33,7 +39,7 @@ let ProjectInformation be a record with 25 fields:
                           ; Component.
     OCaml → a boolean. ; Flag for creating OCaml Code scaffolding and
                        ; output.
-    Project → a string. ; The project title.
+    ProjectTitle → a string. ; The project title.
     Prolog → a boolean. ; Flag for creating Prolog Code scaffolding and
                         ; output.
     References → a boolean. ; Flag for whether the references section
@@ -42,25 +48,59 @@ let ProjectInformation be a record with 25 fields:
     SQL → a boolean. ; Flag for creating an SQL script to store this
                      ; project in a Postgres Database.
     Section → a string. ; The class or laboratory.
+    Text → a boolean. ; Flag for creating the plaintext output for the
+                      ; project.
     Zig → a boolean. ; Flag for creating Zig Code scaffolding and output.
+end let.
+
+let CleanFilesCommand be the string:
+"find . -maxdepth 2 -not -path *assignment* -not -path ./lib/* -not -path ./lib -not -path ./src -exec rm -fv {} \;".
 end let.
 
 let MetainfoTemplate be the string:
 ";;; -*- scheme -*-
+;;;
 ;;; This is the metadata file for genpro projects.
 ;;;
 ;;; Replace the default values with the ones appropriate for Your
 ;;; project.
-(define project-metadata-file-info
-'((title \"Project Title\")
-  (author \"Christopher Rodriguez\")
-  (bibliography \"~/Documents/biblio/main.bib\")
-  (school \"Colorado State University Global\")
-  (section \"Some Class: Some Title of Class\")
-  (professor \"Dr. Some Professor\")
-  (annotated-bibliography? #false)
-  (java-project? #true)
-  (java-local-libraries '())\n".
+(define genpro-metadata
+  (build-genpro-metadata
+   #:annotated-bibliography? #false
+   #:apl? #false
+   #:author "Christopher Rodriguez"
+   #:authority "Dr. Some Professor"
+   #:bibliography "~/Documents/biblio/main.bib"
+   #:citation-style 'apa7
+   #:content? #true
+   #:c? #false
+   #:cpp? #false
+   #:date (date->string (current-date))
+   #:figures? #true
+   #:font-code "unifont.otf"
+   #:font-main "texgyretermes-regular.otf"
+   #:gemini? #false
+   #:genpro-version "1.0.0"
+   #:guile? #false
+   #:html? #true
+   #:institution "Colorado State University Global"
+   #:java? #false
+   #:java-local-libraries '()
+   #:local-bibliography? #false
+   #:metapost? #true
+   #:ocaml? #false
+   #:project-title "Title of Paper"
+   #:prolog? #false
+   #:references? #true
+   #:sql? #false
+   #:section "23FA-XXX000-1: The Title of the Class"
+   #:text? #true
+   #:zig? #false))
+
+;; Local Variables:
+;; mode: scheme
+;; mode: scheme
+;; End:".
 end let.
 
 let PreambleTemplatePrefix be the string:
@@ -676,26 +716,33 @@ begin [MakeProject].
 
       let ProjectName be the result of calling [BuildFileName] on Info.
       let Java? be equal to Info -> Java?.
-      let MainFileName be the result of appending the strings
-                                        "./src/", ProjectName, and ".tex".
       let PDFFileName be the result of appending the strings
                                         "./", ProjectName, and ".pdf".
       let HTMLFileName be the result of appending the strings
                                         "./", ProjectName, and ".html".
       let PDFLinkName be the result of appending the strings
-                                        "./src/", ProjectName, and ".html".
+                                        "./src/", ProjectName,
+                                        and ".html".
       let HTMLLinkName be the result of appending the strings
-                                        "./src/", ProjectName, and ".html".
+                                        "./src/", ProjectName,
+                                        and ".html".
 
 
       if "./src/" is not a directory, create "./src/" as a directory.
-      call DumpToFile on Info, "./src/main.tex", and [BuildMainFileContent].
-      call DumpToFile on Info, "./src/meta.tex", and [BuildMetaFileContent].
-      call DumpToFile on Info, "./src/preamble.tex", and [BuildPreambleContent].
-      call DumpToFile on Info, "./src/title-page.tex", and [BuildTitlePageContent].
-      call DumpToFile on Info, "./src/listings.tex", and [BuildListingsContent].
-      call DumpToFile on Info, "./src/colors.tex", and [BuildColorsContent].
-      call DumpToFile on Info, "./src/figure.mp", and [BuildMetapostContent].
+      call DumpToFile on Info, "./src/main.tex",
+                      and [BuildMainFileContent].
+      call DumpToFile on Info, "./src/meta.tex",
+                      and [BuildMetaFileContent].
+      call DumpToFile on Info, "./src/preamble.tex",
+                      and [BuildPreambleContent].
+      call DumpToFile on Info, "./src/title-page.tex",
+                      and [BuildTitlePageContent].
+      call DumpToFile on Info, "./src/listings.tex",
+                      and [BuildListingsContent].
+      call DumpToFile on Info, "./src/colors.tex",
+                      and [BuildColorsContent].
+      call DumpToFile on Info, "./src/metapost.mp",
+                      and [BuildMetapostContent].
       if Java? then:
          call [CreateJavaFiles] on Info.
       end if.
@@ -703,10 +750,9 @@ begin [MakeProject].
       create "content.tex" as a file.
       create "figures.tex" as a file.
       create ".assignment" as a file.
-      create "./src/.metadata" as a symlink to "./.metadata".
+      create "./src/.genpro-metadata" as a symlink to "./.genpro-metadata".
       create "./src/content.tex" as a symlink to "./content.tex".
       create "./src/figures.tex" as a symlink to "./figures.tex".
-      create "./src/main.tex" as a symlink to MainFileName.
 
       call [Chdir] on "src/"
       call [RunLuaLatex] on Name.
@@ -741,12 +787,10 @@ begin [BuildProjectileFileContent].
 end [BuildProjectileFileContent].
 
 begin [InitializeProject].
-      call [DumpToFile] on nothing, ".metadata", and [BuildMetadataFileContent].
-      call [DumpToFile] on nothing, ".projectile", and [BuildProjectileFileContent].
-
-      display "Created the .metadata and .projectile files with defaults.".
-      newline.
-      display "Please edit those and run this script again.".
+      call [DumpToFile] on nothing, ".genpro-metadata",
+                        and [BuildMetadataFileContent].
+      call [DumpToFile] on nothing, ".projectile",
+                        and [BuildProjectileFileContent].
 end [InitializeProject].
 
 begin [BuildLualatexCommand].
@@ -880,6 +924,21 @@ begin [BuildJavaZipfileFiles].
       return Result.
 end [BuildJavaZipfileFiles].
 
+begin [ShowJavaZipfileCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildJavaZipfileCommand], and Info.
+end [ShowJavaZipfileCommand].
+
+begin [RunJavaZipfileCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildJavaZipfileCommand], and Info.
+end [RunJavaZipfileCommand].
+
+
 begin [BuildRunJarfileCommand].
       expect Info as an argument,
       expecting a ProjectInformation record.
@@ -911,3 +970,449 @@ begin [RunRunJarfileCommand].
 
       call [Bluebird] on system call, [BuildRunJarfileCommand], and Info.
 end [RunRunJarfileCommand].
+
+begin [BuildJavadocCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Classpath be the result of
+                    joining "..:" and
+                    the result of
+                    calling [BuildJavaClasspathIncludes] on Info.
+      let Result be a string.
+
+      append "javadoc -private -cp " to Result.
+      append Classpath to Result.
+      append " assignment" to Result.
+
+      return Result.
+end [BuildJavadocCommand].
+
+begin [ShowJavadocCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildJavadocCommand], and Info.
+end [ShowJavadocCommand].
+
+begin [RunJavadocCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildJavadocCommand], and Info.
+end [RunJavadocCommand].
+
+begin [BuildJavacCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Classpath be the result of
+                    calling [BuildJavaClasspathIncludes] on Info.
+      let Result be a string.
+
+      append "javac -cp " to Result.
+      append Classpath to Result.
+      append " assignment/*.java" to Result.
+
+      return Result.
+end [BuildJavacCommand].
+
+begin [ShowJavacCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildJavacCommand], and Info.
+end [ShowJavacCommand].
+
+begin [RunJavacCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildJavacCommand], and Info.
+end [RunJavacCommand].
+
+begin [BuildMakeJarCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Result be a string.
+
+      append "jar -v -c -f " to Result.
+      append the result of calling [BuildProjectName] on Info to Result.
+      append ".jar -e assignment.Implementation assignment/" to Result.
+
+      return Result.
+end [BuildMakeJarCommand].
+
+begin [ShowMakeJarCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildMakeJarCommand], and Info.
+end [ShowMakeJarCommand].
+
+begin [RunMakeJarCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildMakeJarCommand], and Info.
+end [RunMakeJarCommand].
+
+begin [BuildJavafileRedactedFilename].
+      expect Filename as an argument,
+      expecting a string.
+
+      call [AddSectionToFileName] on "redacted" and Filename.
+end [BuildJavafileRedactedFilename].
+
+begin [CompileJavafileRedactedVersion].
+      expect Filename as an argument,
+      expecting a string.
+
+      ensure Filename exists as a file.
+
+      let RedactedFilename be the result of
+                           calling [BuildJavafileRedactedFilename]
+                           on Filename.
+      slurp Filename to File.
+      let Result be the result of
+                 calling [RemoveCMultilineCommentsFromString] on File.
+      dump File to RedactedFilename.
+end [CompileJavafileRedactedVersion].
+
+begin [CompileJavaComponent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      ensure Info → Java is true.
+      ensure "assignment/Implementation.java" exists as a file.
+
+      let ListOfJavafiles be the result of find "assignment/*.java".
+
+      system call "rm -rfv assignment/*.redacted.*".
+      system call "cd doc/".
+      call [RunJavadocCommand] on Info.
+      system call "cd ../".
+      call [RunJavacCommand] on Info.
+      call [RunMakeJarCommand] on Info.
+      for each item in ListOfJavafiles:
+          call [CompileJavafileRedactedVersion] on item.
+      end for.
+      call [RunJavaZipfileCommand] on Info.
+end [CompileJavaComponent].
+
+begin [CompileMetapostComponent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      ensure "figure.mp" exists as a file.
+
+      system call "mpost metapost.mp".
+end [CompileMetapostComponent].
+
+begin [CompileTextComponent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      ensure Info → Text is true.
+
+      call [RunLynxCommand].
+end [CompileTextComponent].
+
+begin [BuildBiberPDFCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Result be the result of joining "biber " and
+                    the result of calling [BuildFileName] on Info.
+
+      return Result.
+end [BuildBiberPDFCommand].
+
+begin [ShowBiberPDFCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildBiberPDFCommand], and Info.
+end [ShowBiberPDFCommand].
+
+begin [RunBiberPDFCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildBiberPDFCommand], and Info.
+end [RunBiberPDFCommand].
+
+
+begin [BuildBiberHTMLCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      let Result be the result of joining "biber ",
+                    the result of calling [BuildFileName] on Info,
+                    and "_html".
+
+      return Result.
+end [BuildBiberHTMLCommand].
+
+begin [ShowBiberHTMLCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildBiberHTMLCommand], and Info.
+end [ShowBiberHTMLCommand].
+
+begin [RunBiberHTMLCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildBiberHTMLCommand], and Info.
+end [RunBiberHTMLCommand].
+
+begin [CompileBiberComponent].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [RunBiberPDFCommand] on Info.
+      call [RunBiberHTMLCommand] on Info.
+end [CompileBiberComponent].
+
+begin [BuildLwarpmkCommand].
+      expect Command as an argument,
+      expecting a string.
+
+      let Result be "lwarpmk ".
+
+      append Command to Result.
+
+      return Result.
+end [BuildLwarpmkCommand].
+
+begin [BuildLwarpmkTriggerCommand].
+
+      return the result of calling [BuildLwarpmkCommand] on "again".
+
+end [BuildLwarpmkTriggerCommand].
+
+begin [ShowLwarpmkTriggerCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildLwarpmkTriggerCommand], and Info.
+end [ShowLwarpmkTriggerCommand].
+
+begin [RunLwarpmkTriggerCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildLwarpmkTriggerCommand], and Info.
+end [RunLwarpmkTriggerCommand].
+
+begin [BuildLwarpmkCleanCommand].
+
+      return the result of calling [BuildLwarpmkCommand] on "clean".
+
+end [BuildLwarpmkCleanCommand].
+
+begin [ShowLwarpmkCleanCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildLwarpmkCleanCommand], and Info.
+end [ShowLwarpmkCleanCommand].
+
+begin [RunLwarpmkCleanCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildLwarpmkCleanCommand], and Info.
+end [RunLwarpmkCleanCommand].
+
+begin [BuildLwarpmkPDFCommand].
+
+      return the result of calling [BuildLwarpmkCommand] on "print".
+
+end [BuildLwarpmkPDFCommand].
+
+begin [ShowLwarpmkPDFCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildLwarpmkPDFCommand], and Info.
+end [ShowLwarpmkPDFCommand].
+
+begin [RunLwarpmkPDFCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildLwarpmkPDFCommand], and Info.
+end [RunLwarpmkPDFCommand].
+
+
+begin [BuildLwarpmkHTMLCommand].
+
+      return the result of calling [BuildLwarpmkCommand] on "html".
+
+end [BuildLwarpmkHTMLCommand].
+
+begin [ShowLwarpmkHTMLCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildLwarpmkHTMLCommand], and Info.
+end [ShowLwarpmkHTMLCommand].
+
+begin [RunLwarpmkHTMLCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildLwarpmkHTMLCommand], and Info.
+end [RunLwarpmkHTMLCommand].
+
+begin [BuildLwarpmkImagesCommand].
+
+      return the result of calling [BuildLwarpmkCommand] on "limages".
+
+end [BuildLwarpmkImagesCommand].
+
+begin [ShowLwarpmkImagesCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildLwarpmkImagesCommand], and Info.
+end [ShowLwarpmkImagesCommand].
+
+begin [RunLwarpmkImagesCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildLwarpmkImagesCommand], and Info.
+end [RunLwarpmkImagesCommand].
+
+begin [BuildLwarpmkCleanImagesCommand].
+
+      return the result of calling [BuildLwarpmkCommand]
+                           on "cleanlimages".
+
+end [BuildLwarpmkCleanImagesCommand].
+
+begin [ShowLwarpmkCleanImagesCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on display, [BuildLwarpmkCleanImagesCommand], and Info.
+end [ShowLwarpmkCleanImagesCommand].
+
+begin [RunLwarpmkCleanImagesCommand].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      call [Bluebird] on system call, [BuildLwarpmkCleanImagesCommand], and Info.
+end [RunLwarpmkCleanImagesCommand].
+
+begin [CompileHTMLComponent].
+      call [RunLwarpmkTriggerCommand].
+      call [CompileImages].
+      call [RunLwarpmkHTMLCommand].
+      call [CompileImages].
+end [CompileHTMLComponent].
+
+begin [CompilePDFComponent].
+      call [RunLwarpmkTriggerCommand].
+      call [CompileImages].
+      call [RunLwarpmkPDFCommand].
+end [CompilePDFComponent].
+
+begin [CompileImages].
+      call [RunLwarpmkCleanImagesCommand].
+      call [RunLwarpmkImagesCommand].
+end [CompileImages].
+
+begin [CleanProject].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      ensure "content.tex" exists as a file.
+      ensure ".genpro-metadata" exists as a file.
+
+      slurp "content.tex" as Content.
+      slurp "figures.tex" as Figures.
+      slurp ".genpro-metadata" as Metadata.
+      slurp ".assignment" as Assignment.
+      slurp ".projectile" as Projectile.
+      slurp "./src/metapost.mp" as Metapost.
+     
+      system call CleanFilesCommand.
+            
+      dump Metadata to ".genpro-metadata".
+      dump Projectile to ".projectile".
+      dump Assignment to ".assignment".
+
+      call MakeProject on Info.
+
+      dump Content as "content.tex".
+      dump Figures as "figures.tex".
+      dump Metapost as "./src/metapost.mp".
+
+      call CompileProject on Info.
+end [CleanProject].
+
+begin [CompileProject].
+      expect Info as an argument,
+      expecting a ProjectInformation record.
+
+      system call "cd src/".
+// Programming
+
+      when Info → Apl is true:
+           call [CompileAplComponent] on Info.
+      end when.
+      when Info → C is true:
+           call [CompileCComponent] on Info.
+      end when.
+      when Info → Cpp is true:
+           call [CompileCppComponent] on Info.
+      end when.
+      when Info → Guile is true:
+           call [CompileGuileComponent] on Info.
+      end when.
+      when Info → Java is true:
+           call [CompileJavaComponent] on Info.
+      end when.
+      when Info → OCaml is true:
+           call [CompileOCamlComponent] on Info.
+      end when.
+      when Info → Prolog is true:
+           call [CompilePrologComponent] on Info.
+      end when.
+      when Info → Zig is true:
+           call [CompileZigComponent] on Info.
+      end when.
+
+// Paper Specific
+
+      when Info → Metapost is true:
+           call [CompileMetapostComponent] on Info.
+      end when.
+      when Info → PDF is true:
+           call [CompilePDFComponent] on Info.
+      end when.
+      when Info → HTML is true:
+           call [CompileHTMLComponent] on Info.
+      end when.
+      when Info → LocalBib is true:
+           call [CompileLocalBibComponent] on Info.
+      end when.
+      when Info → Text is true:
+           call [CompileTextComponent] on Info.
+      end when.
+      when Info → Gemini is true:
+           call [CompileGeminiComponent] on Info.
+      end when.
+      when Info → SQL is true:
+           call [CompileSQLComponent] on Info.
+      end when.
+
+      system call "cd ../".
+end [CompileProject].
+
