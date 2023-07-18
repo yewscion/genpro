@@ -52,13 +52,14 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
            project-local-bibliography?
            project-metapost?
            project-ocaml?
+           project-pdf?
            project-project-title
            project-prolog?
            project-references?
            project-sql?
            project-section
-           project-zig?
-           ))
+           project-text?
+           project-zig?))
 
 (define +clean-files-command+
   (string-append
@@ -92,11 +93,13 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                             local-bibliography?
                             metapost?
                             ocaml?
+                            pdf?
                             project-title
                             prolog?
                             references?
                             sql?
                             section
+                            text?
                             zig?)
   project-information?
  (annotated-bibliography? project-annotated-bibliography?)
@@ -122,11 +125,13 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
  (local-bibliography? project-local-bibliography?)
  (metapost? project-metapost?)
  (ocaml? project-ocaml?)
+ (pdf? project-pdf?)
  (project-title project-project-title)
  (prolog? project-prolog?)
  (references? project-references?)
  (sql? project-sql?)
  (section project-section)
+ (text? project-text?)
  (zig? project-zig?))
 
 (define (build-project-file-suffix info comment-prefix)
