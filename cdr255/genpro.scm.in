@@ -250,7 +250,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                  ",\n"
                  comment-prefix " a part of "
                  (build-project-name info) "."))
-                  
+
 (define (build-meta-file-content info)
   (let ((pre (build-project-file-header info "meta.tex" "%"))
         (bibliography (project-bibliography info))
@@ -319,6 +319,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                (raise-continuable
                 (exec arg))
                result)))))))
+
 (define-syntax wrap-file-string
   (syntax-rules ()
     ((wrap-file-string info filename comment-prefix file-string)
@@ -329,8 +330,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
        (build-project-file-suffix info comment-prefix))
       "\n"
       'infix))))
-      
-     
+
 (define (find-font-file font-file-name)
   (find-file-using-proc find-font-file-on-system
                         font-file-name
