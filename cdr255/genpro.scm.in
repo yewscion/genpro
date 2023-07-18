@@ -60,6 +60,14 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
            project-zig?
            ))
 
+(define +clean-files-command+
+  (string-append
+   "find . -maxdepth 2 "
+   "-not -path *assignment* "
+   "-not -path ./lib/* "
+   "-not -path ./lib "
+   "-not -path ./src "
+   "-exec rm -fv {} \\;"))
 (define-record-type <project-information>
   (make-project-information annotated-bibliography?
                             apl?
