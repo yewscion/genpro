@@ -139,13 +139,16 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
   (cadr (string-split (project-section info) #\:)))
 
 (define (build-file-name date category title)
-  (string-locale-downcase
-   (string-join
-    (list date
-          category
-          title)
-    "."
-    'infix)))
+  (sanitize-string
+   '((" " #\-)
+     ("!?@#$%^&*()=+;:><," #\_))
+   (string-locale-downcase
+    (string-join
+     (list date
+           category
+           title)
+     "."
+     'infix))))
 
 (define (build-latex-command command-name value)
   (string-append "\\newcommand{\\"
