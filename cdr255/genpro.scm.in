@@ -213,6 +213,11 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                                 "Could not find "
                                 file
                                 "!")))
+
+(define (dump-string-to-file-if-bound file string)
+  (if string
+      (dump-string-to-file file string)))
+
 (define (find-font-file-on-system font-file-name)
   (shell-output-to-string
                    (string-append
