@@ -134,6 +134,72 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
  (text? project-text?)
  (zig? project-zig?))
 
+(define*
+  (build-genpro-metadata
+   #:key
+   (annotated-bibliography? #false)
+   (apl? #false)
+   (author "Christopher Rodriguez")
+   (authority "Dr. Some Professor")
+   (bibliography "~/Documents/biblio/main.bib")
+   (citation-style 'apa7)
+   (content? #true)
+   (c? #false)
+   (cpp? #false)
+   (date (date->string (current-date) "~1"))
+   (figures? #true)
+   (font-code "unifont.otf")
+   (font-main "texgyretermes-regular.otf")
+   (gemini? #false)
+   (genpro-version "1.0.0")
+   (guile? #false)
+   (html? #true)
+   (institution "Colorado State University Global")
+   (java? #false)
+   (java-local-libraries '())
+   (local-bibliography? #false)
+   (metapost? #true)
+   (ocaml? #false)
+   (pdf? #true)
+   (project-title "Title of Paper")
+   (prolog? #false)
+   (references? #true)
+   (sql? #false)
+   (section "23FA-XXX000-1: The Title of the Class")
+   (text? #true)
+   (zig? #false))
+  (make-project-information annotated-bibliography?
+                            apl?
+                            author
+                            authority
+                            bibliography
+                            citation-style
+                            content?
+                            c?
+                            cpp?
+                            (parse-date-string date)
+                            figures?
+                            font-code
+                            font-main
+                            gemini?
+                            genpro-version
+                            guile?
+                            html?
+                            institution
+                            java?
+                            java-local-libraries
+                            local-bibliography?
+                            metapost?
+                            ocaml?
+                            pdf?
+                            project-title
+                            prolog?
+                            references?
+                            sql?
+                            section
+                            text?
+                            zig?))
+
 (define (build-project-file-suffix info comment-prefix)
   (string-append comment-prefix
                  " Genpro Version "
