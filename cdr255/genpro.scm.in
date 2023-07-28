@@ -302,7 +302,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                    (string-append
                     "fc-list | grep "
                     font-file-name
-                    " | sed 's/:.*//g;s/\\/[A-z.]*$/\\//;1q'")))
+                    " | sed 's/:.*//g;s/\\/[-A-z.]*$/\\//;1q'")))
 
 (define-syntax find-file-using-proc
   (syntax-rules ()
