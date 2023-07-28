@@ -229,9 +229,9 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 (define (build-latex-command command-name value)
   (string-append "\\newcommand{\\"
                  command-name
-                 "}{\\string"
+                 "}{\\string{"
                  value
-                 "}"))
+                 "}}"))
 
 (define (build-project-name info)
   (let ((section-code (build-section-code info))
