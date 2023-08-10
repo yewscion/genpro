@@ -361,7 +361,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
         (suf (build-project-file-suffix info "%")))
     (string-join (list  pre
                         +preamble-template-prefix+
-                        citation-style
+                        (string-append "style=" citation-style)
                         annotated-bib
                         +preamble-template-infix+
                         font-section

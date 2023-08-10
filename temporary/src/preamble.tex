@@ -1,0 +1,89 @@
+% This is preamble.tex,
+% a part of 2023-07-17.23fa-xxx000-1.title-of-paper.
+\usepackage{lwarp}
+\CSSFilename{https://cdr255.com/css/lwarp-cdr255.css}
+\usepackage{geometry}
+\geometry{
+  letterpaper,
+  left=1in,
+  right=1in,
+  top=1in,
+  bottom=1in}
+\usepackage{etoolbox}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{\thepage}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\usepackage[american]{babel}
+\usepackage{xpatch}
+\usepackage[backend=biber,style=
+apa,
+annotation=false,
+loadfiles=true]{biblatex}
+\usepackage[]{setspace}
+\usepackage{indentfirst}
+\usepackage{fontspec}
+\setmainfont{TeXGyreTermes}
+\newfontfamily{\fontmain}{texgyretermes-regular.otf}[Path = /home/ming/.guix-home/profile/share/fonts/opentype/texgyretermes-regular.otf]
+\newfontfamily{\fontcode}{unifont.otf}[Path = /home/ming/.guix-home/profile/share/fonts/opentype/]
+\appto{\bibsetup}{\raggedright}
+\bibliography{\localbibliography}
+\DeclareLanguageMapping{american}{american-apa}
+\setlength{\parindent}{4em}
+\usepackage{titlesec}
+\titleformat{\section}
+ {\centering\normalfont\normalsize\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}
+ {\normalfont\normalsize\itshape}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}
+ {\normalfont\normalsize\itshape}{\thesubsubsection.}{1em}{}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{caption}
+\input{colors}
+\usepackage{hyperref}
+\hypersetup{colorlinks  = true, % Swap these two if You
+          %hidelinks   = false,  % Don't want links to be obvious.
+           linkcolor   = href-link,
+           filecolor   = href-file,
+           urlcolor    = href-url,
+           anchorcolor = href-anchor,
+           citecolor   = href-cite,
+           menucolor   = href-menu,
+           runcolor    = href-run,
+           linktoc     = all,
+           pdftitle    = \localtitle,
+           pdfauthor   = \localauthor,
+          %pdfsubject  = key topic,  % Metadata not supported by
+          %pdfkeywords = key words,  % Genpro yet.
+}
+\usepackage[noabbrev]{cleveref}
+\usepackage{fancyvrb}
+\input{listings}
+\usepackage{minted}
+\usepackage{datetime2}
+\usepackage{luamplib}
+\mplibtextextlabel{enable}
+\everymplib{input metauml;}
+\mplibforcehmode
+\usepackage{mflogo}
+\usepackage{csquotes}
+\renewcommand\labelitemi{\bullet}
+\renewcommand\labelitemii{\cdot}
+\renewcommand\labelitemiii{\circ}
+\AtBeginEnvironment{appendices}{\crefalias{section}{appendix}}
+\newcommand{\hlabel}{\phantomsection\label}
+\newcommand{\noteheader}{ \\ \frenchspacing{}\textit{Note.}\nonfrenchspacing{}\doublespacing{} }
+\newcommand{\figuretitle}[1]{\caption[]{ \\~\\ \textit{#1}}}
+\doublespacing
+\DeclareCaptionLabelSeparator*{spaced}{\\[2ex]}
+\captionsetup[table]{labelsep=none,labelfont=bf,justification=raggedright,
+ singlelinecheck=false}
+\captionsetup[figure]{labelsep=none,labelfont=bf,justification=raggedright,
+ singlelinecheck=false}
+% Genpro Version 1.0.0

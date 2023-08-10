@@ -1,0 +1,168 @@
+#!/usr/bin/env -S guile -e main -s
+-e main -s
+!#
+(use-modules (cdr255 genpro)
+             (ice-9 getopt-long)   ; For CLI Options and Flags.
+             (ice-9 ftw)           ; For Filesystem Access.
+             (ice-9 textual-ports) ; For Writing to Files.
+             (srfi srfi-19))       ; For Dates.
+
+(define option-spec
+  '((version (single-char #\v) (value #f))
+    (help (single-char #\h) (value #f))
+    (generate (single-char #\g) (value #f))
+    (publish (single-char #\p) (value #f))
+    (pdf (single-char #\d) (value #f))
+    (html (single-char #\w) (value #f))
+    (text (single-char #\t) (value #f))
+    (clean (single-char #\c) (value #f))
+    (java (single-char #\j) (value #f))
+    (run (single-char #\r) (value #f))
+    (metapost (single-char #\m) (value #f))
+    (no-projectile (single-char #\P) (value #f))
+    (no-metadata (single-char #\N) (value #f))
+    (no-java (single-char #\J) (value #f))
+    (no-metapost (single-char #\M) (value #f))
+    (no-pdf (single-char #\D) (value #f))
+    (no-text (single-char #\T) (value #f))
+    (no-html (single-char #\W) (value #f))))
+
+(define (main args)
+  (let* ((options (getopt-long args option-spec))
+         (version (option-ref options 'version #f))
+         (generate (option-ref options 'generate #f))
+         (run (option-ref options 'run #f))
+         (publish (option-ref options 'publish #f))
+         (clean (option-ref options 'clean #f))
+         (pdf (and (option-ref options 'pdf #f)
+                   (not (option-ref options 'no-pdf #f))))
+         (html (and (option-ref options 'html #f)
+                    (not (option-ref options 'no-html #f))))
+         (java (and (option-ref options 'java #f)
+                    (not (option-ref options 'no-java #f))))
+         (metapost (and (option-ref options 'metapost #f)
+                        (not (option-ref options 'no-metapost #f))))
+         (text (and (option-ref options 'text #f)
+                    (not (option-ref options 'no-text #f))))
+         (skip-metadata (option-ref options 'no-metadata #f))
+         (skip-projectile (option-ref options 'no-projectile #f))
+         (help (option-ref options 'help #f)))
+    
+    (if (and (not (file-exists? ".projectile")) (not skip-projectile))
+        (create-projectile-file))
+    (cond (help (display-help))
+          (version (display "@PACKAGE_STRING@\n"))
+          ((and (not (file-exists? ".metadata")) (not skip-metadata))
+           (create-metadata-file)
+           (quit))
+          (else
+           (eval-string (call-with-input-file ".metadata"
+                          (lambda (port)
+                            (get-string-all port))))
+           (let* ((meta-info
+                   (hash-meta-info
+                    (cadr (assoc 'bibliography
+                                 project-metadata-file-info))
+                    (cadr (assoc 'title
+                                 project-metadata-file-info))
+                    (cadr (assoc 'author
+                                 project-metadata-file-info))
+                    (cadr (assoc 'school
+                                 project-metadata-file-info))
+                    (cadr (assoc 'section
+                                 project-metadata-file-info))
+                    (cadr (assoc 'professor
+                                 project-metadata-file-info))
+                    (cadr (assoc 'date
+                                 project-metadata-file-info))
+                    (cadr (assoc 'annotated-bibliography?
+                                 project-metadata-file-info))
+                    (cadr (assoc 'java-project?
+                                 project-metadata-file-info))
+                    (cadr (assoc 'java-local-libraries
+                                 project-metadata-file-info))))
+                  (project-name
+                   (build-file-name meta-info)))
+             (cond (clean (clean-project meta-info))
+                   (generate (if (not (file-exists? "src/"))
+                                 (make-project meta-info)
+                                 (display
+                                  (string-append "It looks like this project "
+                                                 "is already generated…\n\n"
+                                                 "Maybe try 'genpro -p'?"))))
+                   (publish (if (not (or pdf
+                                         html
+                                         java
+                                         metapost
+                                         text))
+                                (compile-project meta-info)
+                                (compile-project meta-info
+                                                 pdf html java metapost text)))
+                   (run (cond (java
+                               (run-java-jarfile meta-info))
+                              ((file-exists? (string-append
+                                              "src/"
+                                              project-name
+                                              ".jar"))
+                               (run-java-jarfile meta-info))
+                              (else
+                               (display
+                                (string-append "I don't know what You want "
+                                               "to run… Check the source "
+                                               "directory?\n")))))
+                   (else (display-help))))))))
+(define (display-help)
+  (display
+   (string-append
+    "Usage: genpro [ACTION] [OPTIONS]\n\n"
+
+    "Actions:\n\n"
+
+    "  -c, --clean:         Recreate a clean project environment,\n"
+    "                         preserving content.tex, .metadata,\n"
+    "                         src/assignment/Implementation.java,\n"
+    "                         src/assignment/package-info.java,\n"
+    "                         and src/figure.mp.\n"
+    "  -g, --generate:      Generate a new set of latex files based on\n"
+    "                         the contents of the .metadata file.\n"
+    "  -h, --help:          Display this help message.\n"
+    "  -p, --publish:       Publish the project (run lualatex,\n"
+    "                         lwarpmk, and biber on src/main.tex)\n"
+    "  -r, --run:           Run the program written alongside this\n"
+    "                         project. For multi-language projects,\n"
+    "                         specify the entrypoint language below.\n"
+    "  -v, --version:       Display just the version string.\n\n"
+    
+    "Publish Options (capitals for the [no-] options):\n\n"
+    "  -d, --[no-]pdf:      Control the generation of a PDF\n"
+    "                         document for the project.\n"
+    "  -t, --[no-]text:      Control the generation of a plaintext\n"
+    "                         document for the project.\n"
+    "  -j, --[no-]java:     Control the compilation of the java\n"
+    "                         component of the project.\n"
+    "  -m, --[no-]metapost: Control the compilation of the metapost\n"
+    "                         component of the project.\n\n"
+    "  -w, --[no-]html:     Control the generation of an HTML\n"
+    "                         document for the project.\n"
+    "General Options (default to on):\n\n"
+    "  -N, --no-metadata:   Skip making a .metadata file if it doesn't\n"
+    "                         already exist.\n"
+    "  -P, --no-projectile: Skip making a .projectile file on\n"
+    "                         generate.\n\n"
+    
+    "This program is a part of @PACKAGE_STRING@\n"
+    "@LICENSE@"
+    "Please report bugs to @PACKAGE_BUGREPORT@\n"
+    "and see @PACKAGE_URL@\n"
+    "for the latest version.\n\n"
+
+    "This program is entirely written in GNU Guile Scheme,\n"
+    "and You are welcome to change it how You see fit.\n\n"
+    
+    "Guile Online Help: <https://www.gnu.org/software/guile/>\n"
+    "Local Online Help: 'info genpro'\n")))
+
+;; Local Variables:
+;; mode: scheme
+;; coding: utf-8-unix
+;; End:

@@ -105,7 +105,8 @@ Happy Hacking!
                  (display
                   (string-append
                    "Created '.genpro-metadata', '.projectile', and '.assignment'"
-                   "files.\nPlease edit those files and then run 'genpro -g'."))
+                   "files.\nPlease edit those files and then run 'genpro -g'."
+                   "\n"))
                  (quit)))
            (eval-string (call-with-input-file ".genpro-metadata"
                           (lambda (port)
