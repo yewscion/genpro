@@ -897,6 +897,8 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
              "./src/figures.tex")
 ;;
     (chdir "./src/")
+    (symlink "./main.tex"
+             (string-append "./" project-name ".tex"))
     (run-lualatex-command info)
     (run-lwarpmk-html-command)
     (move-file pdf-file-name (string-append "../" pdf-file-name))
