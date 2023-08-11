@@ -901,9 +901,9 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
     (run-lwarpmk-html-command)
     (move-file pdf-file-name (string-append "../" pdf-file-name))
     (move-file html-file-name (string-append "../" html-file-name))
-    (symlink (string-append "../" pdf-file-name) (string-append "./src/"
+    (symlink (string-append "../" pdf-file-name) (string-append "./"
                                                                 pdf-file-name))
-    (symlink (string-append "../" html-file-name) (string-append "./src/"
+    (symlink (string-append "../" html-file-name) (string-append "./"
                                                                  html-file-name))))
 
 (define (compile-project info)
