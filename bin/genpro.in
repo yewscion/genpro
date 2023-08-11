@@ -32,7 +32,7 @@ Happy Hacking!
 ;;;
 
 (define genpro-configuration
- (list
+ '(
    (foo bar)))
 ")
 
@@ -106,7 +106,7 @@ Happy Hacking!
                   (string-append
                    "Created '.genpro-metadata', '.projectile', and '.assignment'"
                    "files.\nPlease edit those files and then run 'genpro -g'."
-                   "\n"))
+                   "\n\n"))
                  (quit)))
            (eval-string (call-with-input-file ".genpro-metadata"
                           (lambda (port)
