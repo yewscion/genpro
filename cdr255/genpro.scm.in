@@ -889,20 +889,20 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                          "")
     (dump-string-to-file "figures.tex"
                          "")
-    (symlink "./.genpro-metadata"
-             "./src/.genpro-metadata")
-    (symlink "./content.tex"
-             "./src/content.tex")
-    (symlink "./figures.tex"
-             "./src/figures.tex")
+    (symlink "./src/.genpro-metadata"
+             "./.genpro-metadata")
+    (symlink "./src/content.tex"
+             "./content.tex")
+    (symlink "./src/figures.tex"
+             "./figures.tex")
 ;;
     (chdir "./src/")
     (run-lualatex-command info)
     (run-lwarpmk-html-command)
     (move-file pdf-file-name (string-append "../" pdf-file-name))
     (move-file html-file-name (string-append "../" html-file-name))
-    (symlink pdf-file-name pdf-link-name)
-    (symlink html-file-name html-link-name)))
+    (symlink pdf-link-name pdf-file-name)
+    (symlink html-link-name html-file-name)))
 
 (define (compile-project info)
   (chdir "./src/")
