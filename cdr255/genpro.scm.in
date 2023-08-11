@@ -829,10 +829,8 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 
 (define (make-project info)
   (let* ((project-name (build-project-name info))
-         (pdf-file-name (string-append "./" project-name ".pdf"))
-         (html-file-name (string-append "./" project-name ".html"))
-         (pdf-link-name (string-append "./src/" project-name ".pdf"))
-         (html-link-name (string-append "./src/" project-name ".html")))
+         (pdf-file-name (string-append project-name ".pdf"))
+         (html-file-name (string-append project-name ".html")))
     (mkdir "./src/")
     (mkdir "./src/assignment/")
     (dump-string-to-file "./src/main.tex"
@@ -903,8 +901,10 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
     (run-lwarpmk-html-command)
     (move-file pdf-file-name (string-append "../" pdf-file-name))
     (move-file html-file-name (string-append "../" html-file-name))
-    (symlink (string-append "../" pdf-file-name) pdf-link-name)
-    (symlink (string-append "../" html-file-name) html-link-name)))
+    (symlink (string-append "../" pdf-file-name) (string-append "./src/"
+                                                                pdf-file-name))
+    (symlink (string-append "../" html-file-name) (string-append "./src/"
+                                                                 html-file-name))))
 
 (define (compile-project info)
   (chdir "./src/")
