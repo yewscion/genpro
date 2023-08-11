@@ -96,7 +96,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 \renewcommand{\headrulewidth}{0pt}
 \usepackage[american]{babel}
 \usepackage{xpatch}
-\usepackage[backend=biber,style=)…
+\usepackage[backend=biber,)…
 )
 
 (define +preamble-template-infix+ #R…(loadfiles=true]{biblatex}
