@@ -832,7 +832,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
         (system +clean-files-command+)
         (system (string-append "mv -vt "
                                tempdir
-                               " ./src/assignment ./lib"))
+                               " ./src ./lib"))
         (dump-string-to-file-if-bound ".genpro-metadata" metadata)
         (dump-string-to-file-if-bound ".projectile" projectile)
         (dump-string-to-file-if-bound ".assignment" assignment)
