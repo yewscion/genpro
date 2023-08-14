@@ -828,6 +828,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                   "Temporary Directory is: "
                   tempdir
                   "\n\n"))
+        (mkdir tempdir)
         (system +clean-files-command+)
         (system (string-append "mv -vt "
                                tempdir
@@ -844,6 +845,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
                                "/src "
                                tempdir
                                "/lib"))
+        (rmdir tempdir)
         (compile-project info))))
 
 (define (make-project info)
