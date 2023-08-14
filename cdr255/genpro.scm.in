@@ -684,8 +684,10 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
   ((bluebird system build-biber-html-command) info))
 
 (define (compile-biber-component info)
-  (run-biber-pdf-command info)
-  (run-biber-html-command info))
+  (if (project-pdf? info)
+        (run-biber-pdf-command info))
+  (if (project-html? info)
+      (run-biber-html-command info)))
 
 (define (build-lwarpmk-command command)
   (string-append "lwarpmk " command))
