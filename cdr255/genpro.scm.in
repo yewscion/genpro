@@ -686,7 +686,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 
 (define (compile-biber-component info)
   (if (project-pdf? info)
-        (run-biber-pdf-command info))
+      (run-biber-pdf-command info))
   (if (project-html? info)
       (run-biber-html-command info)))
 
@@ -948,13 +948,15 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
   (if (project-metapost? info)
       (compile-metapost-component info))
   (if (project-pdf? info)
-      (compile-pdf-component info)
-      (compile-biber-component info)
-      (compile-pdf-component info))
+      (begin
+        (compile-pdf-component info)
+        (compile-biber-component info)
+        (compile-pdf-component info)))
   (if (project-html? info)
-      (compile-html-component info)
-      (compile-biber-component info)
-      (compile-html-component info))
+      (begin
+        (compile-html-component info)
+        (compile-biber-component info)
+        (compile-html-component info)))
   (if (project-local-bibliography? info)
       (compile-local-bibliography-component info))
   (if (project-text? info)
