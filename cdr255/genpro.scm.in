@@ -452,10 +452,12 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 (define (initialize-project info)
   (dump-string-to-file ".genpro-metadata"
                        (build-genpro-metadata-file-content info))
-  (dump-string-to-file ".projectile"
-                       (build-projectile-file-content info))
-  (dump-string-to-file ".assignment"
-                       ""))
+  (if (not (file-exists? ".projectile"))
+      (dump-string-to-file ".projectile"
+                           (build-projectile-file-content info)))
+  (if (not (file-exists? ".assignment"))
+      (dump-string-to-file ".assignment"
+                           "")))
 
 (define (build-lualatex-command info)
   (string-append
