@@ -213,7 +213,7 @@ moreprocnamekeys={∇}
 }[keywords, comments, strings, procnames]
 
 \lstset{%
-  basicstyle=\freemono\small,
+  basicstyle=\fontcode\small,
   keywordstyle=[2]\color{code-keyword},
   procnamestyle=\color{code-variable},
   % identifierstyle=,
