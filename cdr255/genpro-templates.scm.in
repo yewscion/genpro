@@ -153,7 +153,7 @@ Documentation: @PACKAGE_DOCS_COMMAND@ @PACKAGE_NAME@
 \renewcommand\labelitemiii{\circ}
 \AtBeginEnvironment{appendices}{\crefalias{section}{appendix}}
 \newcommand{\hlabel}{\phantomsection\label}
-\newcommand{\noteheader}{ \\ \frenchspacing{}\textit{Note.}\nonfrenchspacing{}\doublespacing{} }
+\newcommand{\noteheader}{ \frenchspacing{}\textit{Note.}\nonfrenchspacing{}\doublespacing{} }
 \newcommand{\figuretitle}[1]{\caption[]{ \\~\\ \textit{#1}}}
 \doublespacing
 \DeclareCaptionLabelSeparator*{spaced}{\\[2ex]}
